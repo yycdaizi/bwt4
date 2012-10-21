@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>病案首页</title>
+        <style type="text/css">
+        	input{
+        		width: 240px;
+        	}
+        	.longtext{
+        		width: 90%;
+        	}
+        	.layout-table{
+        		width: 100%;
+        	}
+        	textarea{
+        		width: 90%;
+        		height: 50px;
+        		font-size: 13px;
+        	}
+        </style>
+        <link rel="stylesheet" type="text/css" href="resourse/jslib/easyui/themes/default/easyui.css" />
+        <link rel="stylesheet" type="text/css" href="resourse/jslib/easyui/themes/icon.css" />
+        <link rel="stylesheet" type="text/css" href="resourse/jslib/autocomplete/jquery.autocomplete.css" />
+		<link rel="stylesheet" type="text/css" href="medicalrecord/css/autocomplete.table.css" />
+		<script type="text/javascript" src="dics/czData.js"></script>
+		<script type="text/javascript" src="dics/zdData.js"></script>
+		<script type="text/javascript" src="dics/dic-streat.js"></script>
+		<script type="text/javascript" src="dics/dic-blzd.js"></script>
+		<script type="text/javascript" src="dics/dic-rybq.js"></script>
+		<script type="text/javascript" src="dics/dic-bool.js"></script>
+        <script type="text/javascript" src="resourse/jslib/easyui/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="resourse/jslib/easyui/jquery.easyui.min.js"></script>
+        <script type="text/javascript" src="resourse/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+        <script type="text/javascript" src="resourse/jslib/autocomplete/jquery.autocomplete.js"></script>
+		<script type="text/javascript" src="medicalrecord/js/autocomplete.commontable.js"></script>
+		<script type="text/javascript" src="medicalrecord/js/autocomplete.diagnosetable.js"></script>
+		<script type="text/javascript" src="medicalrecord/js/autocomplete.babytable.js"></script>
+		<script type="text/javascript" src="medicalrecord/js/autocomplete.surgerytable.js"></script>
+        <script type="text/javascript" src="resourse/jslib/xmloperator/XMLWriter.js"></script>
+        <script type="text/javascript" src="medicalrecord/js/CaseXmlWriter.js"></script>
+        <script type="text/javascript" src="medicalrecord/js/CaseXmlExport.js"></script>
+		<script type="text/javascript" src="resourse/jslib/blockui/jquery.blockUI.js"></script>
+        <!--游永春的js-->
+        <script type="text/javascript" src="resourse/jslib/My97DatePicker/WdatePicker.js"></script>
+        <script type="text/javascript" src="resourse/jscommon/expand.js"></script>
+        <script type="text/javascript" src="resourse/jscommon/dataset.js"></script>
+        <script type="text/javascript" src="medicalrecord/js/model.js"></script>
+        <script type="text/javascript" src="medicalrecord/js/loadXML.js"></script>
+        <script type="text/javascript" src="medicalrecord/js/init.js"></script>
+        <!--End游永春的js-->
+        <script type="text/javascript">
+            var mrDataset = window.dataset;
+            $(function(){
+				//遍历加载所有的tab
+            	var tabs = $('#mainTabs').tabs("tabs");
+            	for(var i=0;i<tabs.length;i++){
+					$('#mainTabs').tabs("select",tabs[i].panel('options').title);
+				}
+
+            	$("#importBtn").click(function(){
+            		$('#importWin').dialog('open');
+            	});
+            	
+            	$("#addBtn").click(function(){
+            		var index = mrDataset.add(new MedicalRecord());
+            		$('#mrList').tree('append', {
+						parent: null,
+						data: [{
+							id: index,
+							text: "新病案"+(index+1)
+							
+						}]
+					});
+            	});
+            	
+            	$('#mrList').tree({
+            		data:[{
+							id: 0,
+							text: "新病案1",	
+							selected:true						
+						}],
+					onBeforeSelect:function(node){
+						mrDataset.setCurrent(node.id);
+						return true;
+					}
+				});
+				$('#importWin').dialog({
+					buttons:[{
+						iconCls:'icon-ok',
+						text: '确定',
+						handler: function(){
+							if(!$("#importfile").validatebox("isValid")){
+								return;
+							}
+							var path = $("#importfile").val();
+							var recordList = parseMedicalRecordXML(path);
+							for(var re in recordList){
+								var index = mrDataset.add(recordList[re]);
+								$('#mrList').tree('append', {
+									parent: null,
+									data: [{
+										id: index,
+										text: recordList[re]["AAA01"]
+									}]
+								});
+							}
+							
+							$("#importfile").val("");
+							$('#importWin').dialog('close');
+						}
+					},{
+						iconCls:'icon-cancel',
+						text: '取消',
+						handler: function(){
+							$('#importWin').dialog('close');
+						}
+					}]
+				});
+			});
+        </script>
+    </head>
+    <body class="easyui-layout">
+        <div region="west" split="true" title="菜单" style="width:280px;padding1:1px;overflow:hidden;">
+			<div class="easyui-accordion" fit="true" border="false">
+                <div title="病案首页录入" style="">
+                	<div class="easyui-panel" style="padding:5px;background:#efefef;">
+						<a id="addBtn" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add">新增</a>
+						<a id="importBtn" href="#" class="easyui-linkbutton" plain="true">导入</a>
+					</div>
+					<ul id="mrList" class="easyui-tree" animate="true">
+						
+					</ul>
+                </div>
+            </div>
+        </div>
+        <div region="center" title="病案首页录入" style="overflow:hidden;">
+            <div id="mainTabs" class="easyui-tabs" fit="true" border="false">
+                <div title="第一页" style="padding:10px;" href="medicalrecord/view/tab1.html">
+                </div>
+                <!--
+                -->
+                <div title="第二页" style="padding:10px;" href="medicalrecord/view/tab2.html">
+                </div>
+                <div title="第三页" style="padding:10px;" href="medicalrecord/view/tab3.html">
+                </div>
+                <div title="第四页" style="padding:10px;" href="medicalrecord/view/tab4.html">
+                </div>
+                <div title="第五页" style="padding:10px;" href="medicalrecord/view/tab5.html">
+                </div>
+                <!--
+                -->
+            </div>
+        </div>
+        <div id="importWin" class="easyui-dialog" title="导入病案" closed="true" modal="true" iconCls="icon-save" style="width:500px;padding:10px;background: #fafafa;">
+			<label for="importfile" style="width: 30%;float: left">病例文件（*.xml）：</label>
+			<input id="importfile" name="importfile" class="easyui-validatebox" type="file" required="true" style="width: 70%;float: left"/>
+		</div>
+    </body>
+</html>

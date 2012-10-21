@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity id="diagnose" table="b_wt4_diagnose" code="ABD">
+	<field id="DIAGNOSE_CODE" code="ABD01C" column="DIAGNOSE_CODE" datatype="string" />
+	<field id="DIAGNOSE_NAME" code="ABD01N" column="DIAGNOSE_NAME" datatype="string" />
+	<field id="IN_STATUS" code="ABD03C" column="IN_STATUS" datatype="string" />
+</entity>

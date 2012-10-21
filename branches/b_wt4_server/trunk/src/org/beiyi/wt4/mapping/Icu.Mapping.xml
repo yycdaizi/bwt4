@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity id="icu" table="b_wt4_icu" code="AEK">
+	<field id="UNITCODE" code="AEK01C" column="UNITCODE" datatype="string" />
+	<field id="INDATE" code="AEK02" column="INDATE" datatype="datetime" />
+	<field id="OUTDATE" code="AEK03" column="OUTDATE" datatype="datetime" />
+</entity>

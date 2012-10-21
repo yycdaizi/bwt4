@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity id="disabled" table="b_wt4_disabled" code="AEN">
+	<field id="DISABLED_DIAGNOSE_NAME" code="AEN02N" column="DISABLED_DIAGNOSE_NAME" datatype="string" />
+	<field id="DISABLED_DIAGNOSE_CODE" code="AEN02C" column="DISABLED_DIAGNOSE_CODE" datatype="string" />
+	<field id="SF0101" code="AEN01" column="SF0101" datatype="string" />
+</entity>

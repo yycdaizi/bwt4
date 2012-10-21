@@ -1,0 +1,343 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http：//www.w3.org/TR/html4/loose.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title></title>
+		<script type="text/javascript">
+			$(function(){
+        		$(".my97-date").click(function(){
+        			WdatePicker();
+        		});
+        		$(".my97-datetime-h").click(function(){
+        			WdatePicker({dateFmt:"yyyy-MM-dd HH:00:00"});
+        		});
+        	});
+		</script>
+	</head>
+	<body>
+		<form id="formTab1">
+			<fieldset>
+				<legend>
+					患者信息
+				</legend>
+				<table class="layout-table">
+					<colgroup>
+						<col width="20%"/>
+						<col width="30%"/>
+						<col width="20%"/>
+						<col width="30%"/>
+					</colgroup>
+					<tbody>
+						<tr>
+							<td align="right"><label for="AAA01">姓名：</label></td>
+							<td>
+							<input id="AAA01" name="AAA01" type="text" class="easyui-validatebox" required="true" validType="length[1,50]"/>
+							</td>
+							<td align="right"><label for="AAA02C">性别代码：</label></td>
+							<td>
+							<input id="AAA02C" name="AAA02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-sex.json" panelHeight="auto" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA03">出生日期：</label></td>
+							<td>
+							<input id="AAA03" name="AAA03" type="text" class="easyui-validatebox my97-date" required="true"/>
+							</td>
+							<td align="right"><label for="AAA04">年龄：</label></td>
+							<td>
+							<input id="AAA04" name="AAA04" type="text" class="easyui-numberbox" min="0" max="999"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA05C">国籍代码：</label></td>
+							<td>
+							<input id="AAA05C" name="AAA05C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-country.json" panelHeight="auto"/>
+							</td>
+							<td align="right"><label for="AAA40">年龄不足1周岁天数：</label></td>
+							<td>
+							<input id="AAA40" name="AAA40" type="text" class="easyui-numberbox" min="1" max="365"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA42">新生儿入院体重(克)：</label></td>
+							<td>
+							<input id="AAA42" name="AAA42" type="text" class="easyui-numberbox" min="1" max="9999"/>
+							</td>
+							<td align="right"><label for="AAA06C">民族代码：</label></td>
+							<td>
+							<input id="AAA06C" name="AAA06C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-nation.json"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA07">身份证号：</label></td>
+							<td>
+							<input id="AAA07" name="AAA07" type="text" class="easyui-validatebox" validType="length[18,18]"/>
+							</td>
+							<td align="right"><label for="AAA08C">婚姻状况代码：</label></td>
+							<td>
+							<input id="AAA08C" name="AAA08C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-marital-status.json" panelHeight="auto" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA09">出生地省（区、市）：</label></td>
+							<td>
+							<input id="AAA09" name="AAA09" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+							<td align="right"><label for="AAA10">出生地市：</label></td>
+							<td>
+							<input id="AAA10" name="AAA10" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA11">出生地县：</label></td>
+							<td>
+							<input id="AAA11" name="AAA11" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+							<td align="right"><label for="AAA43">籍贯省（区、市）：</label></td>
+							<td>
+							<input id="AAA43" name="AAA43" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA44">籍贯市：</label></td>
+							<td>
+							<input id="AAA44" name="AAA44" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+							<td align="right"><label for="AAA45">户籍省（区、市）：</label></td>
+							<td>
+							<input id="AAA45" name="AAA45" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA46">户籍市：</label></td>
+							<td>
+							<input id="AAA46" name="AAA46" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+							<td align="right"><label for="AAA47">户籍县：</label></td>
+							<td>
+							<input id="AAA47" name="AAA47" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA13C">户籍地址区县编码：</label></td>
+							<td>
+							<input id="AAA13C" name="AAA13C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-area.json"/>
+							</td>
+							<td align="right"><label for="AAA33C">户籍街道乡镇代码：</label></td>
+							<td>
+							<input id="AAA33C" name="AAA33C" class="easyui-validatebox autocomplete_streat_code" required="true" type="text" />
+							</td>
+							<script type="text/javascript">
+							$(function(){
+		               			$("input.autocomplete_streat_code").autocomplete(Dic_Streat, {
+		                   			mustMatch: true,
+		                   			autoFill: false,
+									matchContains: true,
+		                   			formatItem: function(item){
+		                   				return item.code+"-"+item.name;
+		                 			},
+									formatResult: function(data) {
+										return data.code;
+									}
+		              			});
+		            		});
+							</script>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA14C">户籍地址邮政编码：</label></td>
+							<td>
+							<input id="AAA14C" name="AAA14C" type="text" class="easyui-numberbox" min="100000" max="999999"/>
+							</td>
+							<td align="right"><label for="AAA48">现住址省（区、市）（居住半年以上）：</label></td>
+							<td>
+							<input id="AAA48" name="AAA48" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA49">现住址市：</label></td>
+							<td>
+							<input id="AAA49" name="AAA49" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+							<td align="right"><label for="AAA50">现住址县：</label></td>
+							<td>
+							<input id="AAA50" name="AAA50" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA16C">现住址区县编码（居住半年以上）：</label></td>
+							<td>
+							<input id="AAA16C" name="AAA16C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-area.json" required="true"/>
+							</td>
+							<td align="right"><label for="AAA36C">现住址街道乡镇代码（居住半年以上）：</label></td>
+							<td>
+							<input id="AAA36C" name="AAA36C" type="text" class="easyui-validatebox autocomplete_streat_code" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA51">现住址电话：</label></td>
+							<td>
+							<input id="AAA51" name="AAA51" type="text" class="easyui-validatebox" validType="length[0,20]"/>
+							</td>
+							<td align="right"><label for="AAA17C">现住址邮政编码（居住半年以上）：</label></td>
+							<td>
+							<input id="AAA17C" name="AAA17C" type="text" class="easyui-numberbox" min="100000" max="999999"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA18C">职业代码：</label></td>
+							<td>
+							<input id="AAA18C" name="AAA18C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-profession.json" required="true"/>
+							</td>
+							<td></td><td></td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA19">工作单位及地址：</label></td>
+							<td colspan="3">
+							<input id="AAA19" name="AAA19" type="text" class="easyui-validatebox longtext" validType="length[0,200]" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA20">工作单位电话：</label></td>
+							<td>
+							<input id="AAA20" name="AAA20" type="text" class="easyui-validatebox" validType="length[0,20]"/>
+							</td>
+							<td align="right"><label for="AAA21C">工作单位邮政编码：</label></td>
+							<td>
+							<input id="AAA21C" name="AAA21C" type="text" class="easyui-numberbox" min="100000" max="999999"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA22">联系人姓名：</label></td>
+							<td>
+							<input id="AAA22" name="AAA22" type="text" class="easyui-validatebox" validType="length[0,20]"/>
+							</td>
+							<td align="right"><label for="AAA23C">联系人关系代码：</label></td>
+							<td>
+							<input id="AAA23C" name="AAA23C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-relationship.json"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA24">联系人地址：</label></td>
+							<td colspan="3">
+							<input id="AAA24" name="AAA24" type="text" class="easyui-validatebox longtext"  validType="length[0,200]"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA25">联系人电话：</label></td>
+							<td>
+							<input id="AAA25" name="AAA25" type="text" class="easyui-validatebox" validType="length[0,20]"/>
+							</td>
+							<td align="right"><label for="AAA26C">医疗付费方式代码：</label></td>
+							<td>
+							<input id="AAA26C" name="AAA26C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-payment-method.json" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA27">医疗保险手册(卡)号(健康卡号)：</label></td>
+							<td>
+							<input id="AAA27" name="AAA27" type="text" class="easyui-validatebox" validType="length[0,40]"/>
+							</td>
+							<td align="right"><label for="AAA28">病案号：</label></td>
+							<td>
+							<input id="AAA28" name="AAA28" type="text" class="easyui-validatebox" required="true" validType="length[1,20]" />
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAA29">住院次数：</label></td>
+							<td>
+							<input id="AAA29" name="AAA29" type="text" class="easyui-numberbox" min="1" max="9999" required="true"/>
+							</td>
+							<td></td><td></td>
+						</tr>
+					</tbody>
+				</table>
+			</fieldset>
+			<fieldset>
+				<legend>
+					入院信息
+				</legend>
+				<table class="layout-table">
+					<colgroup>
+						<col width="20%"/>
+						<col width="30%"/>
+						<col width="20%"/>
+						<col width="30%"/>
+					</colgroup>
+					<tbody>
+						<tr>
+							<td align="right"><label for="AAB01">入院时间（时）：</label></td>
+							<td>
+							<input id="AAB01" name="AAB01" type="text" class="easyui-validatebox my97-datetime-h" required="true"/>
+							</td>
+							<td align="right"><label for="AAB02C">入院科别代码：</label></td>
+							<td>
+							<input id="AAB02C" name="AAB02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-medical-subject.json" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAB03">入院病房：</label></td>
+							<td>
+							<input id="AAB03" name="AAB03" type="text" class="easyui-validatebox" validType="length[0,20]"/>
+							</td>
+							<td align="right"><label for="AAB06C">入院途径：</label></td>
+							<td>
+							<input id="AAB06C" name="AAB06C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-RuYuanTuJing.json" panelHeight="auto" required="true"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</fieldset>
+			<fieldset>
+				<legend>
+					出院信息
+				</legend>
+				<table class="layout-table">
+					<colgroup>
+						<col width="20%"/>
+						<col width="30%"/>
+						<col width="20%"/>
+						<col width="30%"/>
+					</colgroup>
+					<tbody>
+						<tr>
+							<td align="right"><label for="AAC01">出院时间（时）：</label></td>
+							<td>
+							<input id="AAC01" name="AAC01" type="text" class="easyui-validatebox my97-datetime-h" required="true"/>
+							</td>
+							<td align="right"><label for="AAC02C">出院科别代码：</label></td>
+							<td>
+							<input id="AAC02C" name="AAC02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-medical-subject.json" required="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td align="right"><label for="AAC03">出院病房：</label></td>
+							<td>
+							<input id="AAC03" name="AAC03" type="text" class="easyui-validatebox"  validType="length[0,20]"/>
+							</td>
+							<td align="right"><label for="AAC04">实际住院(天)：</label></td>
+							<td>
+							<input id="AAC04" name="AAC04" type="text" class="easyui-numberbox" min="1" max="999999" required="true"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</fieldset>
+			<fieldset>
+				<legend>
+					转经信息
+				</legend>
+				<table class="layout-table">
+					<tbody>
+						<tr>
+							<td align="right" style="width: 20%"><label for="AAD01C">转经科别代码：</label></td>
+							<td style="width: 80%">
+							<input id="AAD01C" name="AAD01C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-medical-subject.json" multiple="true" style="width: 600px"/>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</fieldset>
+		</form>
+	</body>
+</html>

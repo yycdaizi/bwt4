@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity id="surgery" table="b_wt4_surgery" code="ACA">
+	<field id="OPERATION_DATE" code="ACA01" column="OPERATION_DATE" datatype="datetime" />
+	<field id="OPERATION_EDATE" code="ACA11" column="OPERATION_EDATE" datatype="datetime" />
+	<field id="OPERATION_DOCTOR" code="ACA02" column="OPERATION_DOCTOR" datatype="string" />
+	<field id="FIRST_ASSISTANT" code="ACA03" column="FIRST_ASSISTANT" datatype="string" />
+	<field id="SECOND_ASSISTANT" code="ACA04" column="SECOND_ASSISTANT" datatype="string" />
+	<field id="HOCUS" code="ACA06C" column="HOCUS" datatype="string" />
+	<field id="CLOSEUP" code="ACA07C" column="CLOSEUP" datatype="string" />
+	<field id="HOCUS_DOCTOR" code="ACA08" column="HOCUS_DOCTOR" datatype="string" />
+	<field id="OPERATION_LEVEL" code="ACA10C" column="OPERATION_LEVEL" datatype="string" />
+	<list id="operations" code="ACA09S" object-ref="operator" join-column="b_wt4_surgery_id" />
+</entity>

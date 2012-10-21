@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity id="operation" table="b_wt4_operation" code="ACA09">
+	<field id="ISSHUSHI" code="ACA0902C" column="ISSHUSHI" datatype="string" />
+	<field id="ISPRIMARY" code="ACA0903C" column="ISPRIMARY" datatype="string" />
+	<field id="OPERATION_CODE" code="ACA0901C" column="OPERATION_CODE" datatype="string" />
+	<field id="OPERATION_NAME" code="ACA0901N" column="OPERATION_NAME" datatype="string" />
+</entity>

@@ -240,7 +240,7 @@
             								opacity: .5, 
             								color: '#fff' 
         					} ,message:"<b>请稍后...</b>" });
-							var isvalid=checkValid();
+							var isvalid = checkValid();
 							if (!isvalid) {
 								$.unblockUI({ 
                						 onUnblock: function(){ 
@@ -251,6 +251,8 @@
 							}
 							var xmlWriter = new CaseXmlWriter();
 							var xmlStr = xmlWriter.generateCase();
+							//alert(xmlStr);
+							return true;
 							$.post("SaveServlet", {
 								"xmlStr" : xmlStr,
 								"pk_case" : $("#pk").val()

@@ -184,6 +184,12 @@
 							var el = $(target).parent().parent().parent().parent().parent().parent().prev().find("input");
 							el.val(item.code);
 						}
+						function rybq_Formatter(value){
+							for(var i=0; i<dic_rybq.length; i++){
+								if (dic_rybq[i].value == value) return dic_rybq[i].text;
+							}
+							return value;
+						}
 
 					</script>
 					<table id="ABDS" style="height:180px" title="出院其他诊断信息" singleSelect="true" rownumbers="true">
@@ -191,7 +197,7 @@
 							<tr>
 								<th field="ABD01C" width="400" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,formatItem: function(item){return item.code;},resultHandler:ABD01C_resultHandler,required:true}}"> 出院时其他诊断编码(ICD-10) </th>
 								<th field="ABD01N" width="400" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,formatItem: function(item){return item.name;},resultHandler:ABD01N_resultHandler,required:true}}"> 出院其他诊断名称 </th>
-								<th field="ABD03C" width="200" editor="{type:'combobox',options:{required:true}}"> 入院病情《指标》 </th>
+								<th field="ABD03C" width="200" formatter="rybq_Formatter" editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto'}}"> 入院病情 </th>
 							</tr>
 						</thead>
 					</table>

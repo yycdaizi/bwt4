@@ -23,8 +23,12 @@ function loadXMLDoc(xmlPath) {
 function getValue(root, tagName) {
 	var nodes = root.getElementsByTagName(tagName);
 	if (nodes.length != 0) {
-		return nodes[0].childNodes[0].nodeValue;
+		var child = nodes[0].childNodes[0];
+		if(child){			
+			return child.nodeValue;
+		}
 	}
+	return null;
 }
 
 function parseMedicalRecordXML(path){

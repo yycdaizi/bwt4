@@ -198,6 +198,12 @@
 							var el = $(target).parent().parent().parent().parent().parent().parent().prev().find("input");
 							el.val(item.code);
 						}
+						function bool_Formatter(value){
+							for(var i=0; i<dic_bool.length; i++){
+								if (dic_bool[i].value == value) return dic_bool[i].text;
+							}
+							return value;
+						}
 
 					</script>
 					<table id="ACA09S" style="height:180px" title="术式信息" singleSelect="true" rownumbers="true">
@@ -205,8 +211,8 @@
 							<tr>
 								<th field="ACA0901C" width="200" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,formatItem: function(item){return item.code;},resultHandler:ACA0901C_resultHandler,required:true}}"> 手术及操作编码 </th>
 								<th field="ACA0901N" width="400" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,formatItem: function(item){return item.name;},resultHandler:ACA0901N_resultHandler,required:true}}"> 手术及操作名称 </th>
-								<th field="ACA0902C" width="200" editor="{type:'combobox',options:{required:true}}"> 是否主要术式 </th>
-								<th field="ACA0903C" width="200" editor="{type:'combobox',options:{required:true}}"> 是否主要手术或操作 </th>
+								<th field="ACA0902C" width="200" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto'}}"> 是否主要术式 </th>
+								<th field="ACA0903C" width="200" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto'}}"> 是否主要手术或操作 </th>
 							</tr>
 						</thead>
 					</table>		

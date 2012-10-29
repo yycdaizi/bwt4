@@ -32,6 +32,46 @@ function copyArray(obj){
 }
 
 //加载病案记录到页面
+function loadRecordToTab(record, title) {
+	switch(title){
+	case "第一页":
+		$("#formTab1").form("load",record);
+		break;
+	case "第二页":
+		$("#formTab2").form("load",record);
+		//诊断情况
+		$('#ABDS').datagrid("loadData",{"total":record["ABDS"].length,"rows":record["ABDS"]});
+		break;
+	case "第三页":
+		var tabs = $('#surgerys').tabs("tabs");
+		for(var i=tabs.length-1;i>=0;i--){
+			$('#surgerys').tabs("close",tabs[i].panel('options').title);
+		}
+		$.surgerys = copyArray(record["ACAS"]);
+		for(var j=0;j<$.surgerys.length;j++){
+			if($.surgerys[j]){
+				addSurgeryTab(j+1);
+			}
+		}
+		break;
+	case "第四页":
+		$("#formTab4").form("load",record);
+		//重症情况
+		$('#AEKS').datagrid("loadData",{"total":record["AEKS"].length,"rows":record["AEKS"]});
+		//新生儿情况
+		$('#AENS').datagrid("loadData",{"total":record["AENS"].length,"rows":record["AENS"]});
+		break;
+	case "第五页":
+		$("#formTab5").form("load",record);
+		break;
+	default:
+		break;
+	}
+	//主键
+	$("#pk").val(record["id"]);
+}
+
+//加载病案记录到页面
 function loadRecord(record) {
 	$("#formTab1").form("load",record);
 	$("#formTab2").form("load",record);
@@ -119,13 +159,3 @@ function saveMediaRecord(){
 		}
 	}
 }
-window.dataset.beforeCurrentChanged= function(cur,newCur){
-	//提示是否保存，并进行相应的操作
-	if(confirm('是否保存当前病案?')){
-		saveMediaRecord();
-	}
-};
-window.dataset.afterCurrentChanged= function(cur,oldCur){
-	//加载新记录的数据到表单
-	loadRecord(this.getCurrent());
-};

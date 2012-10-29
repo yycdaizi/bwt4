@@ -74,14 +74,17 @@
             	$('#mrList').tree({
             		data:[{
 							id: 0,
-							text: "新病案1",	
-							selected:true						
+							text: "新病案1",						
 						}],
 					onBeforeSelect:function(node){
 						mrDataset.setCurrent(node.id);
 						return true;
 					}
 				});
+            	
+            	var root = $('#mrList').tree("getRoot");
+            	$('#mrList').tree("select",root.target);
+            	
 				$('#importWin').dialog({
 					buttons:[{
 						iconCls:'icon-ok',
@@ -114,6 +117,17 @@
 						}
 					}]
 				});
+				
+				window.dataset.beforeCurrentChanged= function(cur,newCur){
+					//提示是否保存，并进行相应的操作
+					if(confirm('是否保存当前病案?')){
+						saveMediaRecord();
+					}
+				};
+				window.dataset.afterCurrentChanged= function(cur,oldCur){
+					//加载新记录的数据到表单
+					loadRecord(this.getCurrent());
+				};
 			});
         </script>
     </head>

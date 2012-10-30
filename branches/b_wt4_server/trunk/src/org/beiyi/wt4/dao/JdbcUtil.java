@@ -6,11 +6,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.beiyi.SysInfo;
+
 public final class JdbcUtil {
-	private static String driver="com.mysql.jdbc.Driver";
-	private static String url="jdbc:mysql://localhost:3306/db_wt4";
-	private static String username="root";
-	private static String password="hatmat";
+	private static String driver=SysInfo.getParmeter("driver");
+	private static String url=SysInfo.getParmeter("url");;
+	private static String username=SysInfo.getParmeter("username");;
+	private static String password=SysInfo.getParmeter("password");;
 	
 	private JdbcUtil(){};
 	

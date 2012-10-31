@@ -252,7 +252,7 @@
 							var xmlWriter = new CaseXmlWriter();
 							var xmlStr = xmlWriter.generateCase();
 							//alert(xmlStr);
-							return true;
+							//return true;
 							$.post("SaveServlet", {
 								"xmlStr" : xmlStr,
 								"pk_case" : $("#pk").val()

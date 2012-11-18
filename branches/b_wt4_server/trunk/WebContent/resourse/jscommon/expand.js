@@ -61,12 +61,13 @@ $.extend($.fn.datagrid.defaults.editors, {
 			options = options||{};
 			var input = $('<input type="text" class="datagrid-editable-input" />').appendTo(container);
 			input.validatebox(options);
-			var my97options = options.my97||{};
 			//将options中的my97设置复制到一个新的对象
 			//因为WdatePicker(my97options);创建一个日期下拉后会改变传入的my97options，
 			//如果不复制，将改变options.my97中的设置，会对下一列的编辑框初始化造成影响。
-			var my97json = JSON.stringify(my97options);
-			my97options = JSON.parse(my97json);
+			//var my97options = options.my97||{};
+			//var my97json = JSON.stringify(my97options);
+			//my97options = JSON.parse(my97json);
+			var my97options = $.extend({},options.my97);
 			input.click(function(){
         			WdatePicker(my97options);
         		});

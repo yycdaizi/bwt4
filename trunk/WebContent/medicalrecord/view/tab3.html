@@ -56,6 +56,9 @@
 							var index = parseInt(strs[1])-1;
 							
 							$.surgerys[index]=undefined;
+						},
+						onBeforeClose:function(title){
+							return confirm("你即将删除这条手术记录，确定删除吗？");
 						}
 					});
 	        	});

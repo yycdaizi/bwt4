@@ -14,7 +14,6 @@ function addSurgeryTab(index){
 	$('#surgerys').tabs('add',{
 		title:'手术信息-' + index,
 		content:'',
-		iconCls:'icon-save',
 		closable:true
 	});
 }

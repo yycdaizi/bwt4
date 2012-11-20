@@ -21,6 +21,22 @@
 		<form id="formTab4">
 			<!--第四页开始-->
 			<fieldset>
+				<script type="text/javascript">
+					$(function(){
+						$("#AEB02C").width(240).combobox({
+							onSelect: function(record){
+								var val = $(this).combobox("getValue");
+								if(val=="2"){
+									$("#AEB01").validatebox({required:true});
+									$("#AEB01").validatebox("validate");
+								}else{
+									$("#AEB01").validatebox({required:false});
+									$("#AEB01").validatebox("validate");
+								}
+							}
+						});
+					});
+				</script>
 				<legend>
 					药物过敏信息
 				</legend>

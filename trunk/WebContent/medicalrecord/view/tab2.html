@@ -336,7 +336,7 @@
 					</colgroup>
 					<tbody>
 						<tr>
-							<td align="right"><label for="ABH01C">肿瘤分期是否明确：</label></td>
+							<td align="right"><label for="ABH01C">肿瘤分期是否不详：</label></td>
 							<td>
 							<input id="ABH01C" name="ABH01C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto"/>
 							</td>
@@ -364,6 +364,20 @@
 						</tr>
 					</tbody>
 				</table>
+				<script type="text/javascript">
+					$(function(){
+						$("#ABH01C").width(240).combobox({
+							onSelect: function(record){
+								var val = $(this).combobox("getValue");
+								if(val=="2"){
+									$("#ABH0201C,#ABH0202C,#ABH0203C,#ABH03C").combobox({required:true});
+								}else{
+									$("#ABH0201C,#ABH0202C,#ABH0203C,#ABH03C").combobox({required:false});
+								}
+							}
+						});
+					});
+				</script>
 			</fieldset>
 		</form>
 	</body>

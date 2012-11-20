@@ -14,11 +14,48 @@ $.extend($.fn.validatebox.defaults.rules,{
        message:'请输入正确的11位手机号码.格式:13120002221'  
    },  
    postcode:{  
-   validator:function(value,param){  
-       return /^\d{6}$/.test(value);  
-   },  
-   message:'请输入正确的6位邮政编码'  
-      }  
+	   validator:function(value,param){  
+	       return /^\d{6}$/.test(value);  
+	   },  
+	   message:'请输入正确的6位邮政编码'  
+  },
+  comboboxfixed:{
+	  validator:function(value,param){
+		  //如果value为空，则验证通过
+		  if(!value){
+			  return true;
+		  }
+		  var $target = $("#"+param[0]); 
+		  var data = $target.combobox("getData");
+		  var options = $target.combobox("options");
+		  if(!options.multiple){
+			  //单选
+			  for(var i=0;i<data.length;i++){
+				  if(data[i][options.textField]==value){
+					  return true;
+				  }
+			  }
+		  }else{
+			  //多选
+			  var valArray = value.split(options.separator);
+			  for(var k=0;k<valArray.length;k++){
+				  var flag = false;
+				  for(var i=0;i<data.length;i++){
+					  if(data[i][options.textField]==valArray[k]){
+						  flag = true;
+						  break;
+					  }
+				  }
+				  if(!flag){
+					  return false;
+				  }
+			  }
+			  return true;
+		  }
+		  return false;
+	  },
+	  message:'输入值必须在下拉选项中'
+  }
 });
 
 /**

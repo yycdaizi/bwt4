@@ -111,7 +111,7 @@
 						<tr>
 							<td align="right"><label for="ABC03C">入院病情：</label></td>
 							<td>
-							<input id="ABC03C" name="ABC03C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-RuYuanBingQing.json" panelHeight="auto" required="true"/>
+							<input id="ABC03C" name="ABC03C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-RuYuanBingQing.json" panelHeight="auto" required="true" validType="comboboxfixed['ABC03C']"/>
 							</td>
 							<td></td><td></td>
 						</tr>
@@ -197,7 +197,7 @@
 							<tr>
 								<th field="ABD01C" width="400" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,formatItem: function(item){return item.code;},resultHandler:ABD01C_resultHandler,required:true}}"> 出院时其他诊断编码(ICD-10) </th>
 								<th field="ABD01N" width="400" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,formatItem: function(item){return item.name;},resultHandler:ABD01N_resultHandler,required:true}}"> 出院其他诊断名称 </th>
-								<th field="ABD03C" width="200" formatter="rybq_Formatter" editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto'}}"> 入院病情 </th>
+								<th field="ABD03C" width="200" formatter="rybq_Formatter" editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto',editable:false}}"> 入院病情 </th>
 							</tr>
 						</thead>
 					</table>
@@ -258,13 +258,13 @@
 							</td>
 							<td align="right"><label for="ABF02C">最高诊断依据代码：</label></td>
 							<td>
-							<input id="ABF02C" name="ABF02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-diagnostic-evidence.json"/>
+							<input id="ABF02C" name="ABF02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-diagnostic-evidence.json" validType="comboboxfixed['ABF02C']"/>
 							</td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABF03C">分化程度编码：</label></td>
 							<td>
-							<input id="ABF03C" name="ABF03C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-FenHuaChengDu.json"/>
+							<input id="ABF03C" name="ABF03C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-FenHuaChengDu.json" validType="comboboxfixed['ABF03C']"/>
 							</td>
 							<td></td><td></td>
 						</tr>
@@ -338,27 +338,27 @@
 						<tr>
 							<td align="right"><label for="ABH01C">肿瘤分期是否不详：</label></td>
 							<td>
-							<input id="ABH01C" name="ABH01C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto"/>
+							<input id="ABH01C" name="ABH01C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto" validType="comboboxfixed['ABH01C']"/>
 							</td>
 							<td align="right"><label for="ABH0201C">肿瘤分期 T：</label></td>
 							<td>
-							<input id="ABH0201C" name="ABH0201C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-TNM-T.json" panelHeight="auto"/>
+							<input id="ABH0201C" name="ABH0201C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-TNM-T.json" panelHeight="auto" validType="comboboxfixed['ABH0201C']"/>
 							</td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABH0202C">肿瘤分期 N：</label></td>
 							<td>
-							<input id="ABH0202C" name="ABH0202C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-TNM-N.json" panelHeight="auto"/>
+							<input id="ABH0202C" name="ABH0202C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-TNM-N.json" panelHeight="auto" validType="comboboxfixed['ABH0202C']"/>
 							</td>
 							<td align="right"><label for="ABH0203C">肿瘤分期 M：</label></td>
 							<td>
-							<input id="ABH0203C" name="ABH0203C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-TNM-M.json" panelHeight="auto"/>
+							<input id="ABH0203C" name="ABH0203C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-TNM-M.json" panelHeight="auto" validType="comboboxfixed['ABH0203C']"/>
 							</td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABH03C">0～Ⅳ肿瘤分期：</label></td>
 							<td>
-							<input id="ABH03C" name="ABH03C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-ZhongLiuFenQi.json" panelHeight="auto"/>
+							<input id="ABH03C" name="ABH03C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-ZhongLiuFenQi.json" panelHeight="auto" validType="comboboxfixed['ABH03C']"/>
 							</td>
 							<td></td><td></td>
 						</tr>

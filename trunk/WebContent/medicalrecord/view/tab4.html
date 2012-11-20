@@ -35,7 +35,7 @@
 					<tr>
 						<td align="right"><label for="AEB02C"> 有无药物过敏: </label></td>
 						<td>
-						<input id="AEB02C" name="AEB02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-HaveOrNot.json" panelHeight="auto" required="true"/>
+						<input id="AEB02C" name="AEB02C" type="text" class="easyui-combobox" url="medicalrecord/data/dic-HaveOrNot.json" panelHeight="auto" required="true" validType="comboboxfixed['AEB02C']"/>
 						</td>
 						<td></td><td></td>
 					</tr>
@@ -62,7 +62,7 @@
 					<tr>
 						<td align="right"><label for="AED01C"> 病案质量代码: </label></td>
 						<td>
-						<input type="text" id="AED01C" name="AED01C" class="easyui-combobox" url="medicalrecord/data/dic-BinAnZhiLiang.json" panelHeight="auto"/>
+						<input type="text" id="AED01C" name="AED01C" class="easyui-combobox" url="medicalrecord/data/dic-BinAnZhiLiang.json" panelHeight="auto" validType="comboboxfixed['AED01C']"/>
 						</td>
 						<td align="right"><label for="AED02"> 质控医师姓名: </label></td>
 						<td>
@@ -96,11 +96,11 @@
 					<tr>
 						<td align="right"><label for="AEG01C"> 血型代码: </label></td>
 						<td>
-						<input type="text" id="AEG01C" name="AEG01C" class="easyui-combobox" url="medicalrecord/data/dic-BloodType.json" panelHeight="auto"/>
+						<input type="text" id="AEG01C" name="AEG01C" class="easyui-combobox" url="medicalrecord/data/dic-BloodType.json" panelHeight="auto" validType="comboboxfixed['AEG01C']"/>
 						</td>
 						<td align="right"><label for="AEG02C"> Rh 代码: </label></td>
 						<td>
-						<input type="text" id="AEG02C" name="AEG02C" class="easyui-combobox" url="medicalrecord/data/dic-Rh.json" panelHeight="auto"/>
+						<input type="text" id="AEG02C" name="AEG02C" class="easyui-combobox" url="medicalrecord/data/dic-Rh.json" panelHeight="auto" validType="comboboxfixed['AEG02C']"/>
 						</td>
 					</tr>
 					<tr>
@@ -241,7 +241,7 @@
 					<table id="AEKS" style="width:650px;height:180px" title="重症情况" singleSelect="true">
 						<thead>
 							<tr>
-								<th field="AEK01C" width="200" formatter="ICU_Formatter" editor="{type:'combobox',options:{data:dic_ICU,panelHeight:'auto',required:true}}"> 重症监护室代码 </th>
+								<th field="AEK01C" width="200" formatter="ICU_Formatter" editor="{type:'combobox',options:{data:dic_ICU,panelHeight:'auto',required:true,editable:false}}"> 重症监护室代码 </th>
 								<th field="AEK02" width="200" editor="{type:'my97datetimebox',options:{my97:{dateFmt:'yyyy-MM-dd HH:mm:ss'},required:true}}"> 监护室进入日期时间 </th>
 								<th field="AEK03" width="200" editor="{type:'my97datetimebox',options:{my97:{dateFmt:'yyyy-MM-dd HH:mm:ss'},required:true}}"> 监护室退出日期时间 </th>
 							</tr>
@@ -362,7 +362,7 @@
 					<tr>
 						<td align="right"><label for="AEM01C"> 离院方式代码: </label></td>
 						<td>
-						<input type="text" id="AEM01C" name="AEM01C" class="easyui-combobox" url="medicalrecord/data/dic-LiYuanFangShi.json" panelHeight="auto" required="true"/>
+						<input type="text" id="AEM01C" name="AEM01C" class="easyui-combobox" url="medicalrecord/data/dic-LiYuanFangShi.json" panelHeight="auto" required="true" validType="comboboxfixed['AEM01C']"/>
 						</td>
 						<td></td><td></td>
 					</tr>
@@ -375,7 +375,7 @@
 					<tr>
 						<td align="right"><label for="AEM03C"> 是否有出院31日内再住院计划: </label></td>
 						<td>
-						<input type="text" id="AEM03C" name="AEM03C" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto" required="true"/>
+						<input type="text" id="AEM03C" name="AEM03C" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto" required="true" validType="comboboxfixed['AEM03C']"/>
 						</td>
 						<td></td><td></td>
 					</tr>
@@ -401,7 +401,7 @@
 					<tr>
 						<td align="right"><label for="AEI01C"> 是否尸检代码: </label></td>
 						<td>
-						<input type="text" id="AEI01C" name="AEI01C" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto"/>
+						<input type="text" id="AEI01C" name="AEI01C" class="easyui-combobox" url="medicalrecord/data/dic-bool.json" panelHeight="auto" validType="comboboxfixed['AEI01C']"/>
 						</td>
 						<td align="right"><label for="AEI09"> 日常生活能力评定量得分（入院）: </label></td>
 						<td>

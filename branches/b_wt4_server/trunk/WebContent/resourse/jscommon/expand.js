@@ -19,6 +19,26 @@ $.extend($.fn.validatebox.defaults.rules,{
 	   },  
 	   message:'请输入正确的6位邮政编码'  
   },
+  datebefore:{  
+	   validator:function(value,param){
+		   var max = $(param[0]).val();
+		   if(max&&value){
+			   return value<max;
+		   }
+	       return true;  
+	   },  
+	   message:'输入的时间必须在[{1}]之前'  
+ },
+ dateafter:{  
+	   validator:function(value,param){  
+		   var min = $(param[0]).val();
+		   if(min&&value){
+			   return value>min;
+		   }
+	       return true;
+	   },  
+	   message:'输入的时间必须在[{1}]之后'  
+},
   comboboxfixed:{
 	  validator:function(value,param){
 		  //如果value为空，则验证通过

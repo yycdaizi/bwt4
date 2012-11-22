@@ -253,6 +253,31 @@
 					</tbody>
 				</table>
 			</fieldset>
+			<script type="text/javascript">
+			$(function(){
+				$("#AAB01,#AAC01").blur(function(){
+					if($("#AAB01").validatebox("isValid")&&$("#AAC01").validatebox("isValid")){
+						var enterTime = $("#AAB01").val();
+						var outTime = $("#AAC01").val();
+						if(enterTime&&outTime){
+							enterDate = $D(enterTime.split(" ")[0]);
+							outDate = $D(outTime.split(" ")[0]);
+							if(enterDate&&outDate){
+								var days = (outDate.getTime()-enterDate.getTime())/(24*3600*1000);
+								if(days<0){
+									$("#AAC04").val("");
+								}else if(days==0){
+									$("#AAC04").val(1);
+								}else{
+									$("#AAC04").val(Math.ceil(days));
+								}
+								$("#AAC04").validatebox("validate");
+							}
+						}
+					}
+				});
+			});
+			</script>
 			<fieldset>
 				<legend>
 					入院信息
@@ -268,7 +293,7 @@
 						<tr>
 							<td align="right"><label for="AAB01">入院时间（时）：</label></td>
 							<td>
-							<input id="AAB01" name="AAB01" type="text" class="easyui-validatebox my97-datetime-h" required="true"/>
+							<input id="AAB01" name="AAB01" type="text" class="easyui-validatebox my97-datetime-h" required="true" validType="datebefore['#AAC01','出院时间']"/>
 							</td>
 							<td align="right"><label for="AAB02C">入院科别代码：</label></td>
 							<td>
@@ -303,7 +328,7 @@
 						<tr>
 							<td align="right"><label for="AAC01">出院时间（时）：</label></td>
 							<td>
-							<input id="AAC01" name="AAC01" type="text" class="easyui-validatebox my97-datetime-h" required="true"/>
+							<input id="AAC01" name="AAC01" type="text" class="easyui-validatebox my97-datetime-h" required="true" validType="dateafter['#AAB01','入院时间']"/>
 							</td>
 							<td align="right"><label for="AAC02C">出院科别代码：</label></td>
 							<td>
@@ -317,7 +342,7 @@
 							</td>
 							<td align="right"><label for="AAC04">实际住院(天)：</label></td>
 							<td>
-							<input id="AAC04" name="AAC04" type="text" class="easyui-numberbox" min="1" max="999999" required="true"/>
+							<input id="AAC04" name="AAC04" type="text" class="easyui-numberbox" min="1" max="999999" required="true" disabled="true" />
 							</td>
 						</tr>
 					</tbody>

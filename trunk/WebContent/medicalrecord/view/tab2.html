@@ -116,6 +116,22 @@
               			}).result(function(event, item) {
               				item = item||{};
   							$("#ABC01N").val(item.name);
+  							//肿瘤作为主诊时，编码范围在C00~D48,病理诊断编码为必填。
+							if(item.code&&item.code>="C00"&&item.code<"D49"){
+								$("#ABF01C,#ABF01N").validatebox({required:true});
+								$("#ABF01C,#ABF01N").validatebox("validate");
+							}else{
+								$("#ABF01C,#ABF01N").validatebox({required:false});
+								$("#ABF01C,#ABF01N").validatebox("validate");
+							}
+  							//损伤中毒作为主诊时，编码范围在S00 – T98, 损伤外部原因必填
+							if(item.code&&item.code>="S00"&&item.code<"T99"){
+								$("#ABG01C,#ABG01N").validatebox({required:true});
+								$("#ABG01C,#ABG01N").validatebox("validate");
+							}else{
+								$("#ABG01C,#ABG01N").validatebox({required:false});
+								$("#ABG01C,#ABG01N").validatebox("validate");
+							}
 	           			});
 			   			$("#ABC01N").autocomplete(zdData, {
         					mustMatch: true,
@@ -132,7 +148,23 @@
 							}
     					}).result(function(event, item){
     						item = item||{};
-       						 $("#ABC01C").val(item.code);
+     						$("#ABC01C").val(item.code);
+       						//肿瘤作为主诊时，编码范围在C00~D48,病理诊断编码为必填。
+ 							if(item.code&&item.code>="C00"&&item.code<"D49"){
+ 								$("#ABF01C,#ABF01N").validatebox({required:true});
+ 								$("#ABF01C,#ABF01N").validatebox("validate");
+ 							}else{
+ 								$("#ABF01C,#ABF01N").validatebox({required:false});
+ 								$("#ABF01C,#ABF01N").validatebox("validate");
+ 							}
+   							//损伤中毒作为主诊时，编码范围在S00 – T98, 损伤外部原因必填
+ 							if(item.code&&item.code>="S00"&&item.code<"T99"){
+ 								$("#ABG01C,#ABG01N").validatebox({required:true});
+ 								$("#ABG01C,#ABG01N").validatebox("validate");
+ 							}else{
+ 								$("#ABG01C,#ABG01N").validatebox({required:false});
+ 								$("#ABG01C,#ABG01N").validatebox("validate");
+ 							}
     					});
             		});
 					</script>

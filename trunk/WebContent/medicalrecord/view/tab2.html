@@ -243,9 +243,16 @@
                			$("#ABF01C").autocomplete(Dic_BLZD, {
                    			mustMatch: true,
                    			autoFill: false,
+                   			matchContains:true,
                    			formatItem: function(item){
-                   				return item.code;
-                 			}
+                   				return item.code+"("+item.name+")";
+                 			},
+							formatResult:function(item,i,max){
+								return item.code;
+							},
+							formatMatch:function(row,i,max){
+								return row.code+" "+row.name+" "+row.pym
+							}
               			}).result(function(event, item) {
               				item = item||{};
   							$("#ABF01N").val(item.name);
@@ -253,9 +260,16 @@
 			   			$("#ABF01N").autocomplete(Dic_BLZD, {
         					mustMatch: true,
        	 					autoFill: false,
+        					matchContains:true,
         					formatItem: function(item){
-            					return item.name;
-        					}
+								return item.name+"("+item.code+")";
+        					},
+							formatResult:function(item,i,max){
+								return item.name;
+							},
+							formatMatch:function(item){
+								return item.code+item.name+item.pym
+							}
     					}).result(function(event, item){
     						item = item||{};
        						 $("#ABF01C").val(item.code);

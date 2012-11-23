@@ -138,56 +138,7 @@
 					</legend>
 				<script type="text/javascript">
 						$(function() {
-							var lastIndex_ACA09S;
-							$('#ACA09S').datagrid({
-								toolbar : [{
-									text : '新增',
-									iconCls : 'icon-add',
-									handler : function() {
-										$('#ACA09S').datagrid('endEdit', lastIndex_ACA09S);
-										$('#ACA09S').datagrid('appendRow', {
-											ACA0901C : '',
-											ACA0901N : '',
-											ACA0902C : '',
-											ACA0903C : ''
-										});
-										var lastIndex_ACA09S = $('#ACA09S').datagrid('getRows').length - 1;
-										$('#ACA09S').datagrid('beginEdit', lastIndex_ACA09S);
-									}
-								}, '-', {
-									text : '删除',
-									iconCls : 'icon-remove',
-									handler : function() {
-										var row = $('#ACA09S').datagrid('getSelected');
-										if(row) {
-											var index = $('#ACA09S').datagrid('getRowIndex', row);
-											$('#ACA09S').datagrid('deleteRow', index);
-										}
-									}
-								}, '-', {
-									text : '撤销',
-									iconCls : 'icon-undo',
-									handler : function() {
-										$('#ACA09S').datagrid('rejectChanges');
-									}
-								}, '-', {
-									text : '完成',
-									iconCls : 'icon-save',
-									handler : function() {
-										$('#ACA09S').datagrid('acceptChanges');
-									}
-								}],
-								onBeforeLoad : function() {
-									$(this).datagrid('rejectChanges');
-								},
-								onClickRow : function(rowIndex) {
-									if(lastIndex_ACA09S != rowIndex) {
-										$('#ACA09S').datagrid('endEdit', lastIndex_ACA09S);
-										$('#ACA09S').datagrid('beginEdit', rowIndex);
-									}
-									lastIndex_ACA09S = rowIndex;
-								}
-							});
+							$('#ACA09S').initGrid();
 						});
 						function ACA0901C_resultHandler(event, item){
 							item = item||{};

@@ -152,41 +152,61 @@
 				<legend>
 					颅脑患者昏迷情况
 				</legend>
+				<script type="text/javascript">
+					$(function(){
+						//时间联动，超出范围时自动增加到前一单位
+						function timeLinkage(dayField,hourField,minuteField){
+							$("#"+hourField).blur(function(){
+								var hours = parseInt($(this).val()||0);
+								if(hours>23){
+									var days = parseInt($("#"+dayField).val()||0)+Math.floor(hours/24);							
+									$("#"+dayField).val(days);
+									$(this).val(hours%24);
+								}
+							});
+							$("#"+minuteField).blur(function(){
+								var minutes = parseInt($(this).val()||0);
+								if(minutes>59){
+									var hours = parseInt($("#"+hourField).val()||0)+Math.floor(minutes/60);
+									if(hours>23){
+										var days = parseInt($("#"+dayField).val()||0)+Math.floor(hours/24);							
+										$("#"+dayField).val(days);
+										hours = hours%24;
+									}
+									$("#"+hourField).val(hours);
+									$(this).val(minutes%60);
+								}
+							});
+						}
+						timeLinkage("AEJ01","AEJ02","AEJ03");
+						timeLinkage("AEJ04","AEJ05","AEJ06");
+					});
+				</script>
 				<table class="layout-table">
 					<colgroup>
 						<col width="20%"/>
-						<col width="30%"/>
-						<col width="20%"/>
-						<col width="30%"/>
+						<col width="80%"/>
 					</colgroup>
 					<tr>
-						<td align="right"><label for="AEJ01"> 颅脑损伤患者入院前昏迷时间（天）: </label></td>
+						<td align="right"><label for="AEJ01"> 颅脑损伤患者入院前昏迷时间: </label></td>
 						<td>
-						<input class="easyui-numberbox" type="text" id="AEJ01" name="AEJ01" min="0" max="99999"/>
-						</td>
-						<td align="right"><label for="AEJ02"> 颅脑损伤患者入院前昏迷时间(小时): </label></td>
-						<td>
-						<input class="easyui-numberbox" type="text" id="AEJ02" name="AEJ02" min="0" max="23"/>
-						</td>
-					</tr>
-					<tr>
-						<td align="right"><label for="AEJ03"> 颅脑损伤患者入院前昏迷时间(分钟): </label></td>
-						<td>
-						<input class="easyui-numberbox" type="text" id="AEJ03" name="AEJ03" min="0" max="59"/>
-						</td>
-						<td align="right"><label for="AEJ04"> 颅脑损伤患者入院后昏迷时间（天）: </label></td>
-						<td>
-						<input class="easyui-numberbox" type="text" id="AEJ04" name="AEJ04" min="0" max="99999"/>
+						<input style="width:60px;" class="easyui-numberbox" type="text" id="AEJ01" name="AEJ01" min="0" max="99999"/>
+						天
+						<input style="width:60px;" class="easyui-numberbox" type="text" id="AEJ02" name="AEJ02" min="0"/>
+						小时
+						<input style="width:60px;" class="easyui-numberbox" type="text" id="AEJ03" name="AEJ03" min="0"/>
+						分钟
 						</td>
 					</tr>
 					<tr>
-						<td align="right"><label for="AEJ05"> 颅脑损伤患者入院后昏迷时间(小时): </label></td>
+						<td align="right"><label for="AEJ04"> 颅脑损伤患者入院后昏迷时间: </label></td>
 						<td>
-						<input class="easyui-numberbox" type="text" id="AEJ05" name="AEJ05" min="0" max="23"/>
-						</td>
-						<td align="right"><label for="AEJ06"> 颅脑损伤患者入院后昏迷时间(分钟): </label></td>
-						<td>
-						<input class="easyui-numberbox" type="text" id="AEJ06" name="AEJ06" min="0" max="59"/>
+						<input style="width:60px;" class="easyui-numberbox" type="text" id="AEJ04" name="AEJ04" min="0" max="99999"/>
+						天
+						<input style="width:60px;" class="easyui-numberbox" type="text" id="AEJ05" name="AEJ05" min="0" max="23"/>
+						小时
+						<input style="width:60px;" class="easyui-numberbox" type="text" id="AEJ06" name="AEJ06" min="0" max="59"/>
+						分钟
 						</td>
 					</tr>
 				</table>

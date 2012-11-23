@@ -182,55 +182,7 @@
 				<legend>出院其他诊断信息</legend>
 				<script type="text/javascript">
 						$(function() {
-							var lastIndex_ABDS;
-							$('#ABDS').datagrid({
-								toolbar : [{
-									text : '新增',
-									iconCls : 'icon-add',
-									handler : function() {
-										$('#ABDS').datagrid('endEdit', lastIndex_ABDS);
-										$('#ABDS').datagrid('appendRow', {
-											ABD01C : '',
-											ABD01N : '',
-											ABD03C : ''
-										});
-										var lastIndex_ABDS = $('#ABDS').datagrid('getRows').length - 1;
-										$('#ABDS').datagrid('beginEdit', lastIndex_ABDS);
-									}
-								}, '-', {
-									text : '删除',
-									iconCls : 'icon-remove',
-									handler : function() {
-										var row = $('#ABDS').datagrid('getSelected');
-										if(row) {
-											var index = $('#ABDS').datagrid('getRowIndex', row);
-											$('#ABDS').datagrid('deleteRow', index);
-										}
-									}
-								}, '-', {
-									text : '撤销',
-									iconCls : 'icon-undo',
-									handler : function() {
-										$('#ABDS').datagrid('rejectChanges');
-									}
-								}, '-', {
-									text : '完成',
-									iconCls : 'icon-save',
-									handler : function() {
-										$('#ABDS').datagrid('acceptChanges');
-									}
-								}],
-								onBeforeLoad : function() {
-									$(this).datagrid('rejectChanges');
-								},
-								onClickRow : function(rowIndex) {
-									if(lastIndex_ABDS != rowIndex) {
-										$('#ABDS').datagrid('endEdit', lastIndex_ABDS);
-										$('#ABDS').datagrid('beginEdit', rowIndex);
-									}
-									lastIndex_ABDS = rowIndex;
-								}
-							});
+							$('#ABDS').initGrid();
 						});
 						function ABD01C_resultHandler(event, item){
 							item = item||{};

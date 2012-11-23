@@ -158,3 +158,64 @@ function saveMediaRecord(){
 		}
 	}
 }
+
+//创建表格
+jQuery.fn.initGrid = function(){
+	var $grid = $(this);
+	$grid.datagrid({
+		toolbar : [{
+			text : '新增',
+			iconCls : 'icon-add',
+			handler : function() {
+				var lastIndex = $grid.data("lastIndex");
+				if(!$grid.datagrid('validateRow', lastIndex)){
+					return;
+				}
+				$grid.datagrid('endEdit', lastIndex);
+				$grid.datagrid('appendRow', {});
+				lastIndex = $grid.datagrid('getRows').length - 1;
+				$grid.datagrid('beginEdit', lastIndex);
+				$grid.data("lastIndex",lastIndex);
+			}
+		}, '-', {
+			text : '删除',
+			iconCls : 'icon-remove',
+			handler : function() {
+				var row = $grid.datagrid('getSelected');
+				if(row) {
+					var index = $grid.datagrid('getRowIndex', row);
+					$grid.datagrid('deleteRow', index);
+				}
+			}
+		}, '-', {
+			text : '撤销',
+			iconCls : 'icon-undo',
+			handler : function() {
+				$grid.datagrid('rejectChanges');
+			}
+		}, '-', {
+			text : '完成',
+			iconCls : 'icon-save',
+			handler : function() {
+				$grid.datagrid('acceptChanges');
+			}
+		}],
+		onBeforeLoad : function() {
+			$(this).datagrid('rejectChanges');
+		},
+		onClickRow : function(rowIndex) {
+			var $grid = $(this);
+			var lastIndex = $grid.data("lastIndex");
+			if(!$grid.datagrid('validateRow', lastIndex)){
+				return;
+			}
+			if(lastIndex != rowIndex) {
+				$grid.datagrid('endEdit', lastIndex);
+				$grid.datagrid('beginEdit', rowIndex);
+			}else{
+				$grid.datagrid('beginEdit', rowIndex);
+			}
+			$grid.data("lastIndex",rowIndex);
+		}
+	});
+};

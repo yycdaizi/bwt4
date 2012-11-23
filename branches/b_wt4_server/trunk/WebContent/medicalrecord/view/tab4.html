@@ -197,55 +197,7 @@
 				</legend>
 					<script type="text/javascript">
 						$(function() {
-							var lastIndex_AEKS;
-							$('#AEKS').datagrid({
-								toolbar : [{
-									text : '新增',
-									iconCls : 'icon-add',
-									handler : function() {
-										$('#AEKS').datagrid('endEdit', lastIndex_AEKS);
-										$('#AEKS').datagrid('appendRow', {
-											AEK01C : '',
-											AEK02 : '',
-											AEK03 : ''
-										});
-										var lastIndex_AEKS = $('#AEKS').datagrid('getRows').length - 1;
-										$('#AEKS').datagrid('beginEdit', lastIndex_AEKS);
-									}
-								}, '-', {
-									text : '删除',
-									iconCls : 'icon-remove',
-									handler : function() {
-										var row = $('#AEKS').datagrid('getSelected');
-										if(row) {
-											var index = $('#AEKS').datagrid('getRowIndex', row);
-											$('#AEKS').datagrid('deleteRow', index);
-										}
-									}
-								}, '-', {
-									text : '撤销',
-									iconCls : 'icon-undo',
-									handler : function() {
-										$('#AEKS').datagrid('rejectChanges');
-									}
-								}, '-', {
-									text : '完成',
-									iconCls : 'icon-save',
-									handler : function() {
-										$('#AEKS').datagrid('acceptChanges');
-									}
-								}],
-								onBeforeLoad : function() {
-									$(this).datagrid('rejectChanges');
-								},
-								onClickRow : function(rowIndex) {
-									if(lastIndex_AEKS != rowIndex) {
-										$('#AEKS').datagrid('endEdit', lastIndex_AEKS);
-										$('#AEKS').datagrid('beginEdit', rowIndex);
-									}
-									lastIndex_AEKS = rowIndex;
-								}
-							});
+							$('#AEKS').initGrid();
 						});
 						function ICU_Formatter(value){
 							for(var i=0; i<dic_ICU.length; i++){
@@ -290,55 +242,7 @@
 				<!--新生儿情况-->
 				<script type="text/javascript">
 						$(function() {
-							var lastIndex_AENS;
-							$('#AENS').datagrid({
-								toolbar : [{
-									text : '新增',
-									iconCls : 'icon-add',
-									handler : function() {
-										$('#AENS').datagrid('endEdit', lastIndex_AENS);
-										$('#AENS').datagrid('appendRow', {
-											AEN01 : '',
-											AEN02C : '',
-											AEN02N : ''
-										});
-										var lastIndex_AENS = $('#AENS').datagrid('getRows').length - 1;
-										$('#AENS').datagrid('beginEdit', lastIndex_AENS);
-									}
-								}, '-', {
-									text : '删除',
-									iconCls : 'icon-remove',
-									handler : function() {
-										var row = $('#AENS').datagrid('getSelected');
-										if(row) {
-											var index = $('#AENS').datagrid('getRowIndex', row);
-											$('#AENS').datagrid('deleteRow', index);
-										}
-									}
-								}, '-', {
-									text : '撤销',
-									iconCls : 'icon-undo',
-									handler : function() {
-										$('#AENS').datagrid('rejectChanges');
-									}
-								}, '-', {
-									text : '完成',
-									iconCls : 'icon-save',
-									handler : function() {
-										$('#AENS').datagrid('acceptChanges');
-									}
-								}],
-								onBeforeLoad : function() {
-									$(this).datagrid('rejectChanges');
-								},
-								onClickRow : function(rowIndex) {
-									if(lastIndex_AENS != rowIndex) {
-										$('#AENS').datagrid('endEdit', lastIndex_AENS);
-										$('#AENS').datagrid('beginEdit', rowIndex);
-									}
-									lastIndex_AENS = rowIndex;
-								}
-							});
+							$('#AENS').initGrid();
 						});
 						function AEN02C_resultHandler(event, item){
 							item = item||{};

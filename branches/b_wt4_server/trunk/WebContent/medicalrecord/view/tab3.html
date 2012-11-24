@@ -165,8 +165,8 @@
 							<tr>
 								<th field="ACA0901C" width="200" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901C_resultHandler,required:true}}"> 手术及操作编码 </th>
 								<th field="ACA0901N" width="400" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901N_resultHandler,required:true}}"> 手术及操作名称 </th>
-								<th field="ACA0902C" width="200" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要术式 </th>
-								<th field="ACA0903C" width="200" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要手术或操作 </th>
+								<th field="ACA0902C" width="130" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要术式 </th>
+								<th field="ACA0903C" width="130" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要手术或操作 </th>
 							</tr>
 						</thead>
 					</table>		

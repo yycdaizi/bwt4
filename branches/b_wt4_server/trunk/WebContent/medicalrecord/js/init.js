@@ -4,32 +4,6 @@ window.dataset = new Dataset();
 var index = window.dataset.add(new MedicalRecord());
 window.dataset.current = index;
 
-//全局变量，保存当前病案记录的手术情况信息
-$.surgerys = copyArray(window.dataset.getCurrent()["ACAS"]);
-//保存当前页面上【手术信息】tab显示的手术信息记录的编号
-$.surgerys.current = 0;
-
-//增加一个手术信息tab页
-function addSurgeryTab(index){
-	$('#surgerys').tabs('add',{
-		title:'手术信息-' + index,
-		content:'',
-		closable:true
-	});
-}
-
-//复制一个数组，数组中的对象并没有复制
-function copyArray(obj){
-	if(!obj){
-		return obj;
-	}
-	var cloneObj = new Array();
-	for(var i=0;i<obj.length;i++){
-		cloneObj[i]=obj[i];
-	}
-	return cloneObj;
-}
-
 //加载病案记录到页面
 function loadRecordToTab(record, title) {
 	switch(title){
@@ -42,16 +16,7 @@ function loadRecordToTab(record, title) {
 		$('#ABDS').datagrid("loadData",{"total":record["ABDS"].length,"rows":record["ABDS"]});
 		break;
 	case "第三页":
-		var tabs = $('#surgerys').tabs("tabs");
-		for(var i=tabs.length-1;i>=0;i--){
-			$('#surgerys').tabs("close",tabs[i].panel('options').title);
-		}
-		$.surgerys = copyArray(record["ACAS"]);
-		for(var j=0;j<$.surgerys.length;j++){
-			if($.surgerys[j]){
-				addSurgeryTab(j+1);
-			}
-		}
+		SurgeryPanel.loadData(record["ACAS"]);
 		break;
 	case "第四页":
 		$("#formTab4").form("load",record);
@@ -74,57 +39,22 @@ function loadRecordToTab(record, title) {
 function loadRecord(record) {
 	$("#formTab1").form("load",record);
 	$("#formTab2").form("load",record);
-	//$("#AAD01C").combobox("setValues",record["AAD01C"].split(","));
-	//$('#ABDS').datagrid("loadData",{"total":record["ABDS"].length,"rows":record["ABDS"]});
-	//..................................................................................................
-	////////////////////////////////////////////////////////////////////////
-	var tabs = $('#surgerys').tabs("tabs");
-	for(var i=tabs.length-1;i>=0;i--){
-		$('#surgerys').tabs("close",tabs[i].panel('options').title);
-	}
-	$.surgerys = copyArray(record["ACAS"]);
-	for(var j=0;j<$.surgerys.length;j++){
-		if($.surgerys[j]){
-			addSurgeryTab(j+1);
-		}
-	}
+	
+	SurgeryPanel.loadData(record["ACAS"]);
+	
 	$("#formTab4").form("load",record);
 	$("#formTab5").form("load",record);
 	//主键
 	$("#pk").val(record["id"]);
 	
 	//诊断情况
-	//setGridDataToTable_D("ABDS",record["ABDS"]);
 	$('#ABDS').datagrid("loadData",{"total":record["ABDS"].length,"rows":record["ABDS"]});
 	//重症情况
 	$('#AEKS').datagrid("loadData",{"total":record["AEKS"].length,"rows":record["AEKS"]});
 	//新生儿情况
-	//setGridDataToTable_B("AENS",record["AENS"]);
 	$('#AENS').datagrid("loadData",{"total":record["AENS"].length,"rows":record["AENS"]});
 }
-//加载当前【手术信息】tab页中的数据
-function loadSurgery(surgery){
-	$("#surgery").form("load",surgery);
-	$('#ACA09S').datagrid("loadData",{"total":surgery["ACA09S"].length,"rows":surgery["ACA09S"]});
-}
 
-//保存当前【手术信息】tab页中的数据
-function saveSurgery(){
-	var obj = $.surgerys[$.surgerys.current];
-	for(var tag in obj){
-		if('ACA09S' == tag){
-			//...................................................................
-			//var data=getGridDataFromTable_SS("ACA09S");
-			obj[tag]= $("#"+tag).datagrid('getData').rows;
-		}else{
-			var el = $("#"+tag);
-			if(el.length!=0){
-				obj[tag]=el.getValue();
-			}
-		}
-	}
-	return obj;
-}
 //保存当前页面的数据
 function saveMediaRecord(){
 	var obj = window.dataset.getCurrent();
@@ -132,8 +62,7 @@ function saveMediaRecord(){
 		switch(tag){
 		//手术情况集合
 		case 'ACAS':
-			saveSurgery();
-			obj[tag]=copyArray($.surgerys);
+			obj[tag]=SurgeryPanel.getData();
 			break;
 		//出院其他诊断集合
 		case 'ABDS':
@@ -163,6 +92,7 @@ function saveMediaRecord(){
 jQuery.fn.initGrid = function(){
 	var $grid = $(this);
 	$grid.datagrid({
+		fitColumns:true,
 		toolbar : [{
 			text : '新增',
 			iconCls : 'icon-add',

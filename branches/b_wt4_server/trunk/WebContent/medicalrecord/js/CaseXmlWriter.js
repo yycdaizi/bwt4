@@ -316,10 +316,9 @@ function CaseXmlWriter(){
      * 手术情况
      */
     this.writeSurgeryGrid = function(){
-        saveSurgery();
         this.writer.writeStartElement("ACAS");
         var topwriter = this;
-        var surgerys = $.surgerys;
+        var surgerys = SurgeryPanel.getData();
         $.each(surgerys, function(index, item){
             if (!$.isEmptyObject(item)) {
                 topwriter.writer.writeStartElement("ACA");

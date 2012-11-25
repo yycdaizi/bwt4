@@ -198,3 +198,11 @@ jQuery.fn.getValue = function(id){
 	}        		
 	return el.val();
 };
+
+/**
+ * 数组深度复制
+ * @returns
+ */
+Array.prototype.clone = function(){
+	return $.extend(true,new Array(),this);
+};

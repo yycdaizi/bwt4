@@ -226,7 +226,7 @@
 							return value;
 						}
 					</script>
-					<table id="AEKS" style=";height:180px" title="重症情况" singleSelect="true">
+					<table id="AEKS" style="height:180px" title="重症情况" singleSelect="true">
 						<thead>
 							<tr>
 								<th field="AEK01C" width="200" formatter="ICU_Formatter" editor="{type:'combobox',options:{data:dic_ICU,panelHeight:'auto',required:true,editable:false}}"> 重症监护室代码 </th>
@@ -281,9 +281,9 @@
 					<table id="AENS" style="height:180px" title="新生儿情况" singleSelect="true" rownumbers="true">
 						<thead>
 							<tr>
-								<th field="AEN01" width="200" editor="{type:'numberbox',options:{required:true,min:1,max:9999}}"> 新生儿出生体重(克) </th>
-								<th field="AEN02C" width="350" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler,required:true}}"> 新生儿出生缺陷诊断编码(ICD-10)《指标》 </th>
-								<th field="AEN02N" width="350" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler,required:true}}"> 新生儿出生缺陷诊断名称 </th>
+								<th field="AEN01" width="100" editor="{type:'numberbox',options:{required:true,min:1,max:9999}}"> 新生儿出生体重(克) </th>
+								<th field="AEN02C" width="200" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler,required:true}}"> 新生儿出生缺陷诊断编码(ICD-10) </th>
+								<th field="AEN02N" width="400" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler,required:true}}"> 新生儿出生缺陷诊断名称 </th>
 							</tr>
 						</thead>
 					</table>

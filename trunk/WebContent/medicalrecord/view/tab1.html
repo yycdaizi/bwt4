@@ -21,6 +21,25 @@
 				<legend>
 					患者信息
 				</legend>
+				<script type="text/javascript">
+				$(function(){
+					$("#AAA40").blur(function(){
+						$(this).numberbox('fix');
+						var val = $(this).val();
+						if(val){
+							var days = parseInt(val);
+							if(!isNaN(days)&&days>=1&&days<=28){
+								$("#AAA42").numberbox({required:true});
+							}else{
+								$("#AAA42").numberbox({required:false});
+							}
+						}else{
+							$("#AAA42").numberbox({required:false});
+						}
+						$("#AAA42").numberbox("validate");
+					});
+				});
+				</script>
 				<table class="layout-table">
 					<colgroup>
 						<col width="20%"/>

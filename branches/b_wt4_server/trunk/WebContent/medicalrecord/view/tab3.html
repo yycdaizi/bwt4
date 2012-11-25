@@ -19,54 +19,13 @@
 	        	//var mrDataset = window.dataset;
 	    			    			    		
 	        	$(function(){
-	        		$('#surgerys').tabs({
-						tools:[{
-							iconCls:'icon-add',
-							handler: function(){
-								var surgerys = $.surgerys;
-								//在当前病案记录中增加一条手术信息记录
-								surgerys[surgerys.length] = new Surgery();
-								//增加一个tab
-								addSurgeryTab(surgerys.length);
-							}
-						}],
-						onSelect:function(title){
-							//取得index
-							var strs = title.split('-');
-							var index = parseInt(strs[1])-1;
-							
-							var surgerys = $.surgerys;
-							var cur = $.surgerys.current;
-							if(cur!=index&&surgerys[cur]){
-								//保存当前表单中的值
-								saveSurgery();
-							}
-							
-							//设置表单中的值
-							if(!surgerys[index]){
-								surgerys[index]=new Surgery();
-							}
-							loadSurgery(surgerys[index]);
-							//设置当前记录
-							$.surgerys.current = index;
-						},
-						onClose:function(title){
-							//取得index
-							var strs = title.split('-');
-							var index = parseInt(strs[1])-1;
-							
-							$.surgerys[index]=undefined;
-						},
-						onBeforeClose:function(title){
-							return confirm("你即将删除这条手术记录，确定删除吗？");
-						}
-					});
+	        		SurgeryPanel.init();
 	        	});
 	        </script>
 	        
 			<div id="surgeryPanel"  border="true" style="border-style: none solid solid solid;border-color: #99BBE8;border-width: 1px">
 				<div id="surgerys" class="easyui-tabs" border="false">
-					<div title="手术信息-1"></div>
+					<div title="手术信息-1" closable="true"></div>
 				</div>
 				<form id="surgery">
 				<fieldset>
@@ -160,12 +119,12 @@
 						}
 
 					</script>
-					<table id="ACA09S" style="height:180px" title="术式信息" singleSelect="true" rownumbers="true">
+					<table id="ACA09S" style="height:350px" title="术式信息" singleSelect="true" rownumbers="true">
 						<thead>
 							<tr>
 								<th field="ACA0901C" width="200" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901C_resultHandler,required:true}}"> 手术及操作编码 </th>
 								<th field="ACA0901N" width="400" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901N_resultHandler,required:true}}"> 手术及操作名称 </th>
-								<th field="ACA0902C" width="130" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要术式 </th>
+								<th field="ACA0902C" width="100" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要术式 </th>
 								<th field="ACA0903C" width="130" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要手术或操作 </th>
 							</tr>
 						</thead>

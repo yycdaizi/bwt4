@@ -4,7 +4,7 @@
 function checkValid(){
     var isvalid1 = validateTab1();
     var isvalid2 = validateTab2();
-    var isvalid3 = $("#surgery").form('validate');
+    var isvalid3 = validateTab3();
     var isvalid4 = validateTab4();
     var isvalid5 = validateTab5();
     var isvalid = (isvalid1 && isvalid2 && isvalid3 && isvalid4 && isvalid5);
@@ -32,6 +32,18 @@ function validateTab2(){
 		updateTabIcon(mainTabs,'诊断信息','');
 	}else{
 		updateTabIcon(mainTabs,'诊断信息','icon-warn');
+	}
+	return valid;
+}
+
+//校验tab3
+function validateTab3(){
+	var valid= SurgeryPanel.validate();
+	var mainTabs = $('#mainTabs');
+	if(valid){
+		updateTabIcon(mainTabs,'手术及操作信息','');
+	}else{
+		updateTabIcon(mainTabs,'手术及操作信息','icon-warn');
 	}
 	return valid;
 }
@@ -66,9 +78,11 @@ function validateGrid(id){
 	var $grid = $("#"+id);
 	var valid = true;
 	for(var i=0;i<$grid.datagrid('getRows').length;i++){
+		$grid.datagrid('beginEdit', i);
 		if(!$grid.datagrid('validateRow', i)){
 			valid = false;
-			$grid.datagrid('beginEdit', i);
+		}else{
+			$grid.datagrid('endEdit', i);
 		}
 	}
 	return valid;

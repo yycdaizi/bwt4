@@ -207,9 +207,9 @@
 					<table id="ABDS" style="height:180px;" title="出院其他诊断信息" singleSelect="true" rownumbers="true">
 						<thead>
 							<tr>
-								<th field="ABD01C" width="200" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01C_resultHandler,required:true}}"> 出院时其他诊断编码(ICD-10) </th>
-								<th field="ABD01N" width="400" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01N_resultHandler,required:true}}"> 出院其他诊断名称 </th>
-								<th field="ABD03C" width="100" formatter="rybq_Formatter" editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto',editable:false}}"> 入院病情 </th>
+								<th field="ABD01C" width="200" align="center" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01C_resultHandler,required:true}}"> 出院时其他诊断编码(ICD-10) </th>
+								<th field="ABD01N" width="400" align="center" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01N_resultHandler,required:true}}"> 出院其他诊断名称 </th>
+								<th field="ABD03C" width="100" align="center" formatter="rybq_Formatter" editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto',editable:false}}"> 入院病情 </th>
 							</tr>
 						</thead>
 					</table>

@@ -86,6 +86,18 @@ $.fn.combobox.defaults.filter = function(q,row){
 	return row[options.textField].indexOf(q)>=0;
 };
 
+/**
+ * 获得焦点和单击时自动出现下拉框
+ */
+$.extend($.fn.combobox.defaults.box,{
+	onclick:function(){
+		$(this).combobox('showPanel');
+	},
+	onfocus:function(){
+		$(this).combobox('showPanel');
+	}
+});
+
  /**
   * 扩展表格
   */

@@ -75,7 +75,23 @@ $.extend($.fn.validatebox.defaults.rules,{
 		  return false;
 	  },
 	  message:'输入值必须在下拉选项中'
-  }
+  },
+  fixedin:{  
+	   validator:function(value,param){
+		   var dic = param[0];
+		   var validField = param[1]; 
+		   if(!(value&&dic&&validField)){
+			   return true;
+		   }
+		   for(var i=0;i<dic.length;i++){
+			  if(dic[i][validField]==value){
+				  return true;
+			  }
+		   }
+		   return false;
+	   },  
+	   message:'输入值必须在下拉选项中'  
+}
 });
 
 /**

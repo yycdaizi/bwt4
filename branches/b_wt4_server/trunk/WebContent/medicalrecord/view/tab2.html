@@ -22,53 +22,53 @@
 						<tr>
 							<td align="right"><label for="ABA01C">门(急)诊诊断编码(ICD-10)：</label></td>
 							<td>
-							<input id="ABA01C" name="ABA01C" type="text" class="easyui-validatebox" required="true" />
+							<input id="ABA01C" name="ABA01C" type="text" class="easyui-validatebox" validType="fixedin[zdData,'code']"/>
 							</td>
 							<td></td><td></td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABA01N">门（急）诊诊断名称：</label></td>
 							<td colspan="3">
-							<input id="ABA01N" name="ABA01N" type="text" class="easyui-validatebox longtext"  validType="length[0,200]"/>
+							<input id="ABA01N" name="ABA01N" type="text" class="easyui-validatebox longtext" validType="fixedin[zdData,'name']"/>
 							</td>
 							<script type="text/javascript">
-					$(function(){
-               			$("#ABA01C").autocomplete(zdData, {
-                   			mustMatch: true,
-                   			autoFill: false,
-							matchContains:true,
-                   			formatItem: function(item){
-                   				return item.code+"("+item.name+")";
-                 			},
-							formatResult:function(item,i,max){
-								return item.code;
-							},
-							formatMatch:function(row,i,max){
-								return row.code+" "+row.name+" "+row.pym
-							}
-              			}).result(function(event, item) {
-              				item = item||{};
-  							$("#ABA01N").val(item.name);
-	           			});
-			   			$("#ABA01N").autocomplete(zdData, {
-        					mustMatch: true,
-       	 					autoFill: false,
-							matchContains:true,
-        					formatItem: function(item){
-								return item.name+"("+item.code+")";
-        					},
-							formatResult:function(item,i,max){
-								return item.name;
-							},
-							formatMatch:function(item){
-								return item.code+item.name+item.pym
-							}
-    					}).result(function(event, item){
-    						item = item||{};
-       						 $("#ABA01C").val(item.code);
-    					});
-            		});
-					</script>
+							$(function(){
+		               			$("#ABA01C").autocomplete(zdData, {
+		                   			autoFill: false,
+									matchContains:true,
+		                   			formatItem: function(item){
+		                   				return item.code+"("+item.name+")";
+		                 			},
+									formatResult:function(item,i,max){
+										return item.code;
+									},
+									formatMatch:function(row,i,max){
+										return row.code+" "+row.name+" "+row.pym
+									}
+		              			}).result(function(event, item) {
+		              				item = item||{};
+		  							$("#ABA01N").val(item.name);
+		  							$("#ABA01N").validatebox("validate");
+			           			});
+					   			$("#ABA01N").autocomplete(zdData, {
+		       	 					autoFill: false,
+									matchContains:true,
+		        					formatItem: function(item){
+										return item.name+"("+item.code+")";
+		        					},
+									formatResult:function(item,i,max){
+										return item.name;
+									},
+									formatMatch:function(item){
+										return item.code+item.name+item.pym
+									}
+		    					}).result(function(event, item){
+		    						item = item||{};
+		       						$("#ABA01C").val(item.code);
+		       						$("#ABA01C").validatebox("validate");
+		    					});
+		            		});
+							</script>
 						</tr>
 					</tbody>
 				</table>
@@ -88,20 +88,20 @@
 						<tr>
 							<td align="right" ><label for="ABC01C">出院时主要诊断编码(ICD-10)：</label></td>
 							<td>
-							<input id="ABC01C" name="ABC01C" type="text" class="easyui-validatebox"  required="true" />
+							<input id="ABC01C" name="ABC01C" type="text" class="easyui-validatebox"  required="true" validType="fixedin[zdData,'code']"/>
 							</td>
 							<td></td><td></td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABC01N">出院主要诊断名称：</label></td>
 							<td colspan="3">
-							<input id="ABC01N" name="ABC01N" type="text" class="easyui-validatebox longtext" validType="length[0,200]"  required="true"/>
+							<input id="ABC01N" name="ABC01N" type="text" class="easyui-validatebox longtext" validType="fixedin[zdData,'name']"  required="true"/>
 							</td>
 						</tr>
 						<script type="text/javascript">
 					$(function(){
                			$("#ABC01C").autocomplete(zdData, {
-                   			mustMatch: true,
+                   			//mustMatch: true,
                    			autoFill: false,
 							matchContains:true,
                    			formatItem: function(item){
@@ -116,6 +116,7 @@
               			}).result(function(event, item) {
               				item = item||{};
   							$("#ABC01N").val(item.name);
+  							$("#ABC01N").validatebox("validate");
   							//肿瘤作为主诊时，编码范围在C00~D48,病理诊断编码为必填。
 							if(item.code&&item.code>="C00"&&item.code<"D49"){
 								$("#ABF01C,#ABF01N").validatebox({required:true});
@@ -134,7 +135,7 @@
 							}
 	           			});
 			   			$("#ABC01N").autocomplete(zdData, {
-        					mustMatch: true,
+        					//mustMatch: true,
        	 					autoFill: false,
 							matchContains:true,
         					formatItem: function(item){
@@ -149,6 +150,7 @@
     					}).result(function(event, item){
     						item = item||{};
      						$("#ABC01C").val(item.code);
+     						$("#ABC01C").validatebox("validate");
        						//肿瘤作为主诊时，编码范围在C00~D48,病理诊断编码为必填。
  							if(item.code&&item.code>="C00"&&item.code<"D49"){
  								$("#ABF01C,#ABF01N").validatebox({required:true});
@@ -189,12 +191,14 @@
 							var target = event.currentTarget;
 							var el = $(target).parent().parent().parent().parent().parent().parent().next().find("input");
 							el.val(item.name);
+							el.validatebox("validate");
 						}
 						function ABD01N_resultHandler(event, item){
 							item = item||{};
 							var target = event.currentTarget;
 							var el = $(target).parent().parent().parent().parent().parent().parent().prev().find("input");
 							el.val(item.code);
+							el.validatebox("validate");
 						}
 						function rybq_Formatter(value){
 							for(var i=0; i<dic_rybq.length; i++){
@@ -207,8 +211,8 @@
 					<table id="ABDS" style="height:180px;" title="出院其他诊断信息" singleSelect="true" rownumbers="true">
 						<thead>
 							<tr>
-								<th field="ABD01C" width="200" align="center" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01C_resultHandler,required:true}}"> 出院时其他诊断编码(ICD-10) </th>
-								<th field="ABD01N" width="400" align="center" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01N_resultHandler,required:true}}"> 出院其他诊断名称 </th>
+								<th field="ABD01C" width="200" align="center" editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01C_resultHandler,required:true,validType:'fixedin[zdData,\'code\']'}}"> 出院时其他诊断编码(ICD-10) </th>
+								<th field="ABD01N" width="400" align="center" editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01N_resultHandler,required:true,validType:'fixedin[zdData,\'name\']'}}"> 出院其他诊断名称 </th>
 								<th field="ABD03C" width="100" align="center" formatter="rybq_Formatter" editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto',editable:false}}"> 入院病情 </th>
 							</tr>
 						</thead>
@@ -229,19 +233,18 @@
 						<tr>
 							<td align="right"><label for="ABF01C">病理诊断编码(M码)：</label></td>
 							<td>
-							<input id="ABF01C" name="ABF01C" type="text" class="easyui-validatebox" />
+							<input id="ABF01C" name="ABF01C" type="text" class="easyui-validatebox" validType="fixedin[Dic_BLZD,'code']"/>
 							</td>
 							<td></td><td></td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABF01N">病理诊断名称：</label></td>
 							<td colspan="3">
-							<input id="ABF01N" name="ABF01N" type="text" class="easyui-validatebox longtext" validType="length[0,100]"/>
+							<input id="ABF01N" name="ABF01N" type="text" class="easyui-validatebox longtext" validType="fixedin[Dic_BLZD,'name']"/>
 							</td>
 							<script type="text/javascript">
 					$(function(){
                			$("#ABF01C").autocomplete(Dic_BLZD, {
-                   			mustMatch: true,
                    			autoFill: false,
                    			matchContains:true,
                    			formatItem: function(item){
@@ -256,9 +259,9 @@
               			}).result(function(event, item) {
               				item = item||{};
   							$("#ABF01N").val(item.name);
+  							$("#ABF01N").validatebox("validate");
 	           			});
 			   			$("#ABF01N").autocomplete(Dic_BLZD, {
-        					mustMatch: true,
        	 					autoFill: false,
         					matchContains:true,
         					formatItem: function(item){
@@ -272,7 +275,8 @@
 							}
     					}).result(function(event, item){
     						item = item||{};
-       						 $("#ABF01C").val(item.code);
+       						$("#ABF01C").val(item.code);
+       						$("#ABF01C").validatebox("validate");
     					});
             		});
 					</script>
@@ -312,20 +316,19 @@
 						<tr>
 							<td align="right"><label for="ABG01C">损伤和中毒外部原因编码(ICD-10)：</label></td>
 							<td>
-							<input id="ABG01C" name="ABG01C" type="text" class="easyui-validatebox" />
+							<input id="ABG01C" name="ABG01C" type="text" class="easyui-validatebox" validType="fixedin[zdData,'code']"/>
 							</td>
 							<td></td><td></td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ABG01N">损伤和中毒外部原因名称：</label></td>
 							<td colspan="3">
-							<input id="ABG01N" name="ABG01N" type="text" class="easyui-validatebox longtext" validType="length[0,200]"/>
+							<input id="ABG01N" name="ABG01N" type="text" class="easyui-validatebox longtext" validType="fixedin[zdData,'name']"/>
 							</td>
 						</tr>
 						<script type="text/javascript">
 					$(function(){
                			$("#ABG01C").autocomplete(zdData, {
-                   			mustMatch: true,
                    			autoFill: false,
 							matchContains:true,
                    			formatItem: function(item){
@@ -340,9 +343,9 @@
               			}).result(function(event, item) {
               				item = item||{};
   							$("#ABG01N").val(item.name);
+  							$("#ABG01N").validatebox("validate");
 	           			});
 			   			$("#ABG01N").autocomplete(zdData, {
-        					mustMatch: true,
        	 					autoFill: false,
 							matchContains:true,
         					formatItem: function(item){
@@ -356,7 +359,8 @@
 							}
     					}).result(function(event, item){
     						item = item||{};
-       						 $("#ABG01C").val(item.code);
+       						$("#ABG01C").val(item.code);
+       						$("#ABG01C").validatebox("validate");
     					});
             		});
 					</script>

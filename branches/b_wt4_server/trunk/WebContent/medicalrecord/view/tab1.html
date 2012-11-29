@@ -228,6 +228,21 @@
 							</tr>							
 						</table>
 					</fieldset>
+					<script type="text/javascript">
+					$(function(){
+               			$("input.autocomplete_streat_code").autocomplete(Dic_Streat, {
+                   			//mustMatch: true,
+                   			autoFill: false,
+							matchContains: true,
+                   			formatItem: function(item){
+                   				return item.code+"-"+item.name;
+                 			},
+							formatResult: function(data) {
+								return data.code;
+							}
+              			});
+            		});
+					</script>
 					<fieldset>
 						<legend>户籍地址</legend>
 						<table class="layout-table">
@@ -257,23 +272,8 @@
 								</td>
 								<td align="right"><label for="AAA33C">街道乡镇代码：</label></td>
 								<td>
-								<input style="width:200px;" id="AAA33C" name="AAA33C" class="easyui-validatebox autocomplete_streat_code" type="text" />
+								<input style="width:200px;" id="AAA33C" name="AAA33C" class="easyui-validatebox autocomplete_streat_code" type="text" validType="fixedin[Dic_Streat,'code']"/>
 								</td>
-								<script type="text/javascript">
-								$(function(){
-			               			$("input.autocomplete_streat_code").autocomplete(Dic_Streat, {
-			                   			mustMatch: true,
-			                   			autoFill: false,
-										matchContains: true,
-			                   			formatItem: function(item){
-			                   				return item.code+"-"+item.name;
-			                 			},
-										formatResult: function(data) {
-											return data.code;
-										}
-			              			});
-			            		});
-								</script>
 								<td align="right"><label for="AAA14C">邮政编码：</label></td>
 								<td>
 								<input style="width:200px;" id="AAA14C" name="AAA14C" type="text" class="easyui-numberbox" min="100000" max="999999"/>
@@ -306,7 +306,7 @@
 							<tr>							
 								<td align="right"><label for="AAA36C">街道乡镇代码：</label></td>
 								<td>
-								<input style="width:200px;" id="AAA36C" name="AAA36C" type="text" class="easyui-validatebox autocomplete_streat_code" />
+								<input style="width:200px;" id="AAA36C" name="AAA36C" type="text" class="easyui-validatebox autocomplete_streat_code" validType="fixedin[Dic_Streat,'code']"/>
 								</td>
 								<td align="right"><label for="AAA51">电话：</label></td>
 								<td>

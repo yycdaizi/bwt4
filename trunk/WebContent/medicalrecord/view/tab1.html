@@ -38,6 +38,22 @@
 						}
 						$("#AAA42").numberbox("validate");
 					});
+					//自动计算年龄
+					function generateAge(birth, enterDate){
+						if(birth&&enterDate){
+							birth = $D(birth);
+							enterDate = $D(enterDate);
+							var age = getAge(birth, enterDate);
+							$("#AAA04").val(age);
+						}else{
+							$("#AAA04").val("");
+						}
+					}
+					$("#AAA03,#AAB01").blur(function(){
+						var birth = $("#AAA03").val();
+						var enterDate = $("#AAB01").val();
+						generateAge(birth, enterDate);
+					});
 				});
 				</script>
 				<table class="layout-table">
@@ -71,7 +87,7 @@
 						<tr>
 							<td align="right"><label for="AAA04">年龄：</label></td>
 							<td>
-							<input id="AAA04" name="AAA04" type="text" class="easyui-numberbox" min="0" max="999"/>
+							<input id="AAA04" name="AAA04" type="text" class="easyui-numberbox" min="0" max="999" disabled="true"/>
 							</td>
 							<td align="right"><label for="AAA05C">国籍代码：</label></td>
 							<td>

@@ -234,3 +234,55 @@ jQuery.fn.getValue = function(id){
 Array.prototype.clone = function(){
 	return $.extend(true,new Array(),this);
 };
+
+/**
+ * 计算年龄
+ * @param birth 生日
+ * @param dudate 计算日期
+ * @returns
+ */
+function getAge(birth, dudate) {
+	var returnAge = -1;
+	var duYear = dudate.getFullYear();
+	var duMonth = dudate.getMonth() + 1;
+	var duDay = dudate.getDate();
+	if (!birth) {
+		return returnAge;
+	}
+	birthYear = birth.getFullYear();
+	birthMonth = birth.getMonth() + 1;
+	birthDay = birth.getDate();
+
+	if (duYear == birthYear) {
+		returnAge = 0;
+		if (duMonth < birthMonth) {
+			returnAge = -1;//同年 则为0岁
+		}
+		if (duMonth == birthMonth && duDay < birthDay) {
+			returnAge = -1;
+		}
+	} else {
+		var ageDiff = duYear - birthYear; //年之差
+		if (ageDiff > 0) {
+			if (duMonth == birthMonth) {
+				var dayDiff = duDay - birthDay;//日之差
+				if (dayDiff < 0) {
+					returnAge = ageDiff - 1;
+				} else {
+					returnAge = ageDiff;
+				}
+			} else {
+				var monthDiff = duMonth - birthMonth;//月之差
+				if (monthDiff < 0) {
+					returnAge = ageDiff - 1;
+				} else {
+					returnAge = ageDiff;
+				}
+			}
+		} else {
+			returnAge = -1;//返回-1 表示出生日期输入错误 晚于今天
+		}
+	}
+
+	return returnAge;//返回周岁年龄
+}

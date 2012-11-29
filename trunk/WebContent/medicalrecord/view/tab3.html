@@ -104,12 +104,14 @@
 							var target = event.currentTarget;
 							var el = $(target).parent().parent().parent().parent().parent().parent().next().find("input");
 							el.val(item.name);
+							el.validatebox("validate");
 						}
 						function ACA0901N_resultHandler(event, item){
 							item = item||{};
 							var target = event.currentTarget;
 							var el = $(target).parent().parent().parent().parent().parent().parent().prev().find("input");
 							el.val(item.code);
+							el.validatebox("validate");
 						}
 						function bool_Formatter(value){
 							for(var i=0; i<dic_bool.length; i++){
@@ -122,8 +124,8 @@
 					<table id="ACA09S" style="height:350px" title="术式信息" singleSelect="true" rownumbers="true">
 						<thead>
 							<tr>
-								<th field="ACA0901C" width="200" align="center" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901C_resultHandler,required:true}}"> 手术及操作编码 </th>
-								<th field="ACA0901N" width="400" align="center" editor="{type:'autocompletebox',options:{source:czData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901N_resultHandler,required:true}}"> 手术及操作名称 </th>
+								<th field="ACA0901C" width="200" align="center" editor="{type:'autocompletebox',options:{source:czData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901C_resultHandler,required:true,validType:'fixedin[czData,\'code\']'}}"> 手术及操作编码 </th>
+								<th field="ACA0901N" width="400" align="center" editor="{type:'autocompletebox',options:{source:czData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901N_resultHandler,required:true,validType:'fixedin[czData,\'name\']'}}"> 手术及操作名称 </th>
 								<th field="ACA0902C" width="100" align="center" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要术式 </th>
 								<th field="ACA0903C" width="130" align="center" formatter="bool_Formatter" editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}"> 是否主要手术或操作 </th>
 							</tr>

@@ -269,12 +269,14 @@
 							var target = event.currentTarget;
 							var el = $(target).parent().parent().parent().parent().parent().parent().next().find("input");
 							el.val(item.name);
+							el.validatebox("validate");
 						}
 						function AEN02N_resultHandler(event, item){
 							item = item||{};
 							var target = event.currentTarget;
 							var el = $(target).parent().parent().parent().parent().parent().parent().prev().find("input");
 							el.val(item.code);
+							el.validatebox("validate");
 						}
 
 					</script>
@@ -282,8 +284,8 @@
 						<thead>
 							<tr>
 								<th field="AEN01" width="100" align="center" editor="{type:'numberbox',options:{required:true,min:1,max:9999}}"> 新生儿出生体重(克) </th>
-								<th field="AEN02C" width="200" align="center" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler}}"> 新生儿出生缺陷诊断编码(ICD-10) </th>
-								<th field="AEN02N" width="400" align="center" editor="{type:'autocompletebox',options:{source:zdData,mustMatch : true,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler}}"> 新生儿出生缺陷诊断名称 </th>
+								<th field="AEN02C" width="200" align="center" editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler,validType:'fixedin[zdData,\'code\']'}}"> 新生儿出生缺陷诊断编码(ICD-10) </th>
+								<th field="AEN02N" width="400" align="center" editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler,validType:'fixedin[zdData,\'name\']'}}"> 新生儿出生缺陷诊断名称 </th>
 							</tr>
 						</thead>
 					</table>

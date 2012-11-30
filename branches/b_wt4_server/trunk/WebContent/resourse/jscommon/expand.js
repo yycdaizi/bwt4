@@ -108,10 +108,10 @@ $.fn.combobox.defaults.filter = function(q,row){
 $.extend($.fn.combobox.defaults.box,{
 	onclick:function(){
 		$(this).combobox('showPanel');
-	},
-	onfocus:function(){
-		$(this).combobox('showPanel');
-	}
+	}//,
+	//onfocus:function(){
+	//	$(this).combobox('showPanel');
+	//}
 });
 
  /**

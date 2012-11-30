@@ -88,6 +88,22 @@ function validateGrid(id){
 	return valid;
 }
 
+//校验总费用
+function validExpenses(){
+	var tags = ["ADA0101","ADA11","ADA21","ADA22","ADA23","ADA24","ADA25","ADA26","ADA27","ADA28","ADA13","ADA15","ADA12",
+	"ADA29","ADA03","ADA30","ADA31","ADA32","ADA07","ADA08","ADA33","ADA34","ADA35","ADA36","ADA37","ADA38","ADA02",
+	"ADA39","ADA09","ADA10","ADA04","ADA40","ADA41","ADA42","ADA43","ADA44","ADA05","ADA06","ADA20"];
+	var total = parseFloat($("#ADA01").val()||0);
+	var count=0;
+	for(var i=0;i<tags.length;i++){
+		var exp = $("#"+tags[i]).val();
+		if(exp){
+			count += parseFloat(exp);
+		}
+	}
+	return (total==count);
+}
+
 function updateTabIcon(tabs,title,iconCls){
 	var tab = tabs.tabs('getTab',title);
 	tabs.tabs('update', {

@@ -198,6 +198,70 @@
 					</tbody>
 				</table>
 				<div class="easyui-panel" title="展开这里，填写更多地址信息" collapsible="true" collapsed="true">
+					<script type="text/javascript">
+					function addressFilter(q,row){
+						return (row["text"].indexOf(q)>=0)||(row["pym"].toUpperCase().indexOf(q.toUpperCase())>=0);
+					}
+					//formatter: addressFormatter
+					function addressFormatter(row){
+						return row.text+row.pym;
+					}
+					$(function(){
+						$("#AAA09").combobox({
+							valueField:"text",
+							data:address,
+							filter: addressFilter,
+							box:$.extend({},$.fn.combobox.defaults.box,{
+								onblur:function(){
+									var value = $(this).combobox("getValue");
+									if(value){
+										var data = $(this).combobox("getData");							
+										for(var i=0;i<data.length;i++){
+											if(data[i]["text"]==value){
+												$("#AAA10").combobox("loadData",data[i].children||[]);
+												$("#AAA11").combobox("loadData",[]);
+												return;
+											}
+										}
+									}
+									$("#AAA10").combobox("loadData",[]);
+									$("#AAA11").combobox("loadData",[]);
+								}
+							})
+							//onSelect: function(record){
+							//	$("#AAA10").combobox("loadData",record.children||[]);
+							//	$("#AAA11").combobox("loadData",[]);
+							//}
+						});
+						$("#AAA10").combobox({
+							valueField:"text",
+							filter: addressFilter,
+							box:$.extend({},$.fn.combobox.defaults.box,{
+								onblur:function(){
+									var value = $(this).combobox("getValue");
+									if(value){
+										var data = $(this).combobox("getData");							
+										for(var i=0;i<data.length;i++){
+											if(data[i]["text"]==value){
+												$("#AAA11").combobox("loadData",data[i].children||[]);
+												return;
+											}
+										}
+									}
+									$("#AAA11").combobox("loadData",[]);
+								}
+							})
+							//onSelect: function(record){
+							//	//$("#AAA11").combobox("clear");
+							//	$("#AAA11").combobox("loadData",record.children||[]);
+							//}
+						});
+						$("#AAA11").combobox({
+							valueField:"text",
+							filter: addressFilter
+						});
+					});					
+					</script>
 					<fieldset>
 						<legend>出生地</legend>
 						<table class="layout-table">
@@ -212,16 +276,44 @@
 							<tr>
 								<td align="right"><label for="AAA09">出生地：</label></td>
 								<td colspan="5">
-								<input style="width:200px;" id="AAA09" name="AAA09" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA09" name="AAA09" type="text" validType="comboboxfixed['AAA09']"/>
 								省（区、市）
-								<input style="width:200px;" id="AAA10" name="AAA10" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA10" name="AAA10" type="text" class="easyui-combobox" validType="comboboxfixed['AAA10']"/>
 								市
-								<input style="width:200px;" id="AAA11" name="AAA11" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA11" name="AAA11" type="text" class="easyui-combobox" validType="comboboxfixed['AAA11']"/>
 								县
 								</td>
 							</tr>
 						</table>
 					</fieldset>
+					<script type="text/javascript">
+					$(function(){
+						$("#AAA43").combobox({
+							valueField:"text",
+							data:address,
+							filter: addressFilter,
+							box:$.extend({},$.fn.combobox.defaults.box,{
+								onblur:function(){
+									var value = $(this).combobox("getValue");
+									if(value){
+										var data = $(this).combobox("getData");							
+										for(var i=0;i<data.length;i++){
+											if(data[i]["text"]==value){
+												$("#AAA44").combobox("loadData",data[i].children||[]);
+												return;
+											}
+										}
+									}
+									$("#AAA44").combobox("loadData",[]);
+								}
+							})
+						});
+						$("#AAA44").combobox({
+							valueField:"text",
+							filter: addressFilter
+						});
+					});					
+					</script>
 					<fieldset>
 						<legend>籍贯</legend>
 						<table class="layout-table">
@@ -236,9 +328,9 @@
 							<tr>
 								<td align="right"><label for="AAA43">籍贯：</label></td>
 								<td colspan="5">
-								<input style="width:200px;" id="AAA43" name="AAA43" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA43" name="AAA43" type="text" class="easyui-combobox" validType="comboboxfixed['AAA43']"/>
 								省（区、市）
-								<input style="width:200px;" id="AAA44" name="AAA44" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA44" name="AAA44" type="text" class="easyui-combobox" validType="comboboxfixed['AAA44']"/>
 								市
 								</td>
 							</tr>							
@@ -257,6 +349,51 @@
 								return data.code;
 							}
               			});
+               			$("#AAA45").combobox({
+							valueField:"text",
+							data:address,
+							filter: addressFilter,
+							box:$.extend({},$.fn.combobox.defaults.box,{
+								onblur:function(){
+									var value = $(this).combobox("getValue");
+									if(value){
+										var data = $(this).combobox("getData");							
+										for(var i=0;i<data.length;i++){
+											if(data[i]["text"]==value){
+												$("#AAA46").combobox("loadData",data[i].children||[]);
+												$("#AAA47").combobox("loadData",[]);
+												return;
+											}
+										}
+									}
+									$("#AAA46").combobox("loadData",[]);
+									$("#AAA47").combobox("loadData",[]);
+								}
+							})
+						});
+						$("#AAA46").combobox({
+							valueField:"text",
+							filter: addressFilter,
+							box:$.extend({},$.fn.combobox.defaults.box,{
+								onblur:function(){
+									var value = $(this).combobox("getValue");
+									if(value){
+										var data = $(this).combobox("getData");							
+										for(var i=0;i<data.length;i++){
+											if(data[i]["text"]==value){
+												$("#AAA47").combobox("loadData",data[i].children||[]);
+												return;
+											}
+										}
+									}
+									$("#AAA47").combobox("loadData",[]);
+								}
+							})
+						});
+						$("#AAA47").combobox({
+							valueField:"text",
+							filter: addressFilter
+						});
             		});
 					</script>
 					<fieldset>
@@ -273,11 +410,11 @@
 							<tr>
 								<td align="right"><label for="AAA45">户籍地址：</label></td>
 								<td colspan="5">
-								<input style="width:200px;" id="AAA45" name="AAA45" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA45" name="AAA45" type="text" class="easyui-combobox" validType="comboboxfixed['AAA45']"/>
 								省（区、市）
-								<input style="width:200px;" id="AAA46" name="AAA46" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA46" name="AAA46" type="text" class="easyui-combobox" validType="comboboxfixed['AAA46']"/>
 								市
-								<input style="width:200px;" id="AAA47" name="AAA47" type="text" class="easyui-validatebox" validType="length[0,50]"/>
+								<input style="width:200px;" id="AAA47" name="AAA47" type="text" class="easyui-combobox" validType="comboboxfixed['AAA47']"/>
 								县
 								</td>
 							</tr>

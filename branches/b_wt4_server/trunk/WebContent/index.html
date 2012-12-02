@@ -96,6 +96,21 @@
 								return;
 							}
 							var path = $("#importfile").val();
+							/*
+							var xmlDoc = loadXMLDoc(path);
+						    var cases = xmlDoc.getElementsByTagName("CASE");
+						    for(var i=0; i<cases.length; i++){
+						    	var patient = getValue(cases[i], "AAA01");
+						    	
+						    	$('#mrList').tree('append', {
+									parent: null,
+									data: [{
+										text: patient,
+										attributes:{parsed:false,data:cases[i]}
+									}]
+								});
+						    }*/
+							
 							var recordList = parseMedicalRecordXML(path);
 							for(var re in recordList){
 								var index = mrDataset.add(recordList[re]);

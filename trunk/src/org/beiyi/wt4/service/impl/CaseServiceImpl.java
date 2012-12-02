@@ -98,9 +98,11 @@ public class CaseServiceImpl implements ICaseService {
 			String joinColumn = node.valueOf("@join-column");
 			String objectRef = operator.getObjectRef(node);
 			List<Map<String, Object>> childList = (List<Map<String, Object>>) map.get(id);
-			for (Map<String, Object> child : childList) {
-				child.put(joinColumn, pk_medical);  //设置外键的值
-				save(child, objectRef);
+			if(childList!=null){
+				for (Map<String, Object> child : childList) {
+					child.put(joinColumn, pk_medical);  //设置外键的值
+					save(child, objectRef);
+				}
 			}
 		}
 		return pk_medical;

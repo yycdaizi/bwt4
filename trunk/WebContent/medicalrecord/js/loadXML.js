@@ -35,10 +35,9 @@ function parseMedicalRecordXML(path){
 	var xmlDoc = loadXMLDoc(path);
     var cases = xmlDoc.getElementsByTagName("CASE");
     var recordList = new Object();
-    var index = 0;
     for(var i=0; i<cases.length; i++){
     	var record = MedicalRecord.parse(cases[i]);
-    	recordList[index] = record;
+    	recordList[i] = record;
     }
     return recordList;
 }

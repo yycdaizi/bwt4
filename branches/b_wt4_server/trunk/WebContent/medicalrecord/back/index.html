@@ -22,6 +22,7 @@
         <link rel="stylesheet" type="text/css" href="resourse/jslib/easyui/themes/default/easyui.css" />
         <link rel="stylesheet" type="text/css" href="resourse/jslib/easyui/themes/icon.css" />
         <link rel="stylesheet" type="text/css" href="resourse/jslib/autocomplete/jquery.autocomplete.css" />
+        <link rel="stylesheet" type="text/css" href="resourse/jslib/ztree/css/zTreeStyle/zTreeStyle.css" />
 		<script type="text/javascript" src="medicalrecord/data/dics/czData.js"></script>
 		<script type="text/javascript" src="medicalrecord/data/dics/zdData.js"></script>
 		<script type="text/javascript" src="medicalrecord/data/dics/dic-address.js"></script>
@@ -40,6 +41,7 @@
 		<script type="text/javascript" src="resourse/jslib/blockui/jquery.blockUI.js"></script>
         <!--游永春的js-->
         <script type="text/javascript" src="resourse/jslib/My97DatePicker/WdatePicker.js"></script>
+        <script type="text/javascript" src="resourse/jslib/ztree/jquery.ztree.core-3.5.min.js"></script>
         <script type="text/javascript" src="resourse/jslib/date/Date.min.js"></script>
         <script type="text/javascript" src="resourse/jscommon/expand.js"></script>
         <script type="text/javascript" src="resourse/jscommon/dataset.js"></script>
@@ -73,6 +75,24 @@
 					});
             	});
             	
+            	var ztreeSetting = {
+            			view:{
+            				autoCancelSelected: false,
+            				selectedMulti: false,
+            				showIcon: false,
+            				showLine: false,
+            				showTitle: false
+            			},
+		            	callback: {
+		            		beforeClick: function(treeId, treeNode, clickFlag){
+								mrDataset.setCurrent(treeNode.dataIndex);
+								return true;
+							}
+		            	}
+            		};
+            	var mrList = $.fn.zTree.init($("#mrList"), ztreeSetting, [{name:"新病案1",dataIndex:0}]);
+            	mrList.selectNode(mrList.getNodes()[0]);
+            	/*
             	$('#mrList').tree({
             		data:[{
 							id: 0,
@@ -83,10 +103,7 @@
 						return true;
 					}
 				});
-            	
-            	var root = $('#mrList').tree("getRoot");
-            	$('#mrList').tree("select",root.target);
-            	
+            	*/
 				$('#importWin').dialog({
 					buttons:[{
 						iconCls:'icon-ok',
@@ -96,17 +113,37 @@
 								return;
 							}
 							var path = $("#importfile").val();
-							
+							/*
+							var xmlDoc = loadXMLDoc(path);
+						    var cases = xmlDoc.getElementsByTagName("CASE");
+						    for(var i=0; i<cases.length; i++){
+						    	var patient = getValue(cases[i], "AAA01");
+						    	
+						    	$('#mrList').tree('append', {
+									parent: null,
+									data: [{
+										text: patient,
+										attributes:{parsed:false,data:cases[i]}
+									}]
+								});
+						    }*/
+							var before = new Date();
 							var recordList = parseMedicalRecordXML(path);
-							var nodes = [];
+						    var nodes = [];
 							for(var re in recordList){
 								var index = mrDataset.add(recordList[re]);
-								nodes[nodes.length]= {text:recordList[re]["AAA01"],id:index};
-							}
+								nodes[nodes.length]= {name:recordList[re]["AAA01"],dataIndex:index};
+								//nodes[nodes.length]= {text:recordList[re]["AAA01"],id:index};
+							}							
+							var ztree = $.fn.zTree.getZTreeObj("mrList");
+							ztree.addNodes(null, nodes);
+							/*
 							$('#mrList').tree('append', {
-								parent: null,
-								data: nodes
-							});
+									parent: null,
+									data: nodes
+								});*/
+							var after = new Date();
+							alert(after.getTime()- before.getTime());
 							
 							$("#importfile").val("");
 							$('#importWin').dialog('close');
@@ -142,9 +179,10 @@
 						<a id="addBtn" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add">新增</a>
 						<a id="importBtn" href="#" class="easyui-linkbutton" plain="true">导入</a>
 					</div>
-					<ul id="mrList" class="easyui-tree" animate="true">
-						
-					</ul>
+					<div style="width:100%">
+						<ul id="mrList" class="ztree">						
+						</ul>
+					</div>
                 </div>
             </div>
         </div>

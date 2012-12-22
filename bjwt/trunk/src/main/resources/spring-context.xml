@@ -45,10 +45,14 @@
 	</bean>
 	<tx:annotation-driven />
 
-	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
 	<!-- 使用注解来配置bean -->
 	<context:annotation-config />
-	<context:component-scan base-package="org.bjdrgs.bjwt" />
+	<context:component-scan base-package="org.bjdrgs.bjwt">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<!-- Dao类声明 -->
+	<bean id="baseDao" class="org.bjdrgs.bjwt.core.dao.impl.BaseDao" scope="prototype">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
 </beans>

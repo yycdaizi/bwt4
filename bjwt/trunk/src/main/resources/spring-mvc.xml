@@ -15,12 +15,14 @@
 	
 	<mvc:annotation-driven/>
 	
-	<mvc:default-servlet-handler/> 
 	 <bean id="jspViewResolver"
 		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/" />
 		<property name="suffix" value=".html" />
 	</bean>
 	
+	<mvc:default-servlet-handler/> 
+	<!-- 
 	<mvc:resources mapping="/resources/**" location="/resources/" />
+	 -->
 </beans>

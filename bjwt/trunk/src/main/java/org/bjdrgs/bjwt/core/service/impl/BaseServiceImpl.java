@@ -12,6 +12,8 @@ import org.bjdrgs.bjwt.core.service.IBaseService;
 import org.bjdrgs.bjwt.core.util.ReflectionUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.hibernate.criterion.DetachedCriteria;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 基础Service类
@@ -21,6 +23,8 @@ import org.hibernate.criterion.DetachedCriteria;
  *
  */
 public class BaseServiceImpl<T extends Serializable> implements IBaseService<T> {
+	
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private Class<T> entityClass;
 

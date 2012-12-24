@@ -3,11 +3,72 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+<script type="text/javascript" src="../resourses/jslib/easyui/jquery-1.4.4.min.js"></script>
 </head>
 <body>
-<form action="login" method="post">
-	<input type="text" name="user"/>
-	<input type="submit" value="submit"/>
+<form id="dicType" action="login" method="post">
+	<input type="text" name="code"/>
+	<input type="text" name="name"/>
 </form>
+	<input id="submit" type="button" value="submit"/>
+<script type="text/javascript">
+(function($){  
+	  $.fn.serializeObject = function() {  
+	    if ( !this.length ) { return false; }  
+	  
+	    var $el = this,  
+	      data = {},  
+	      lookup = data; //current reference of data  
+	  
+	      $el.find(':input[type!="checkbox"][type!="radio"], input:checked').each(function() {  
+	        // data[a][b] becomes [ data, a, b ]  
+	        var named = this.name.replace(/\[([^\]]+)?\]/g, ',$1').split(','),  
+	            cap = named.length - 1,  
+	            i = 0;  
+	  
+	        for ( ; i < cap; i++ ) {  
+	            // move down the tree - create objects or array if necessary  
+	            lookup = lookup[ named[i] ] = lookup[ named[i] ] ||  
+	                ( named[i+1] == "" ? [] : {} );  
+	        }  
+	  
+	        // at the end, psuh or assign the value  
+	        if ( lookup.length != undefined ) {  
+	             lookup.push( $(this).val() );  
+	        }else {  
+	              lookup[ named[ cap ] ]  = $(this).val();  
+	        }  
+	  
+	        // assign the reference back to root  
+	        lookup = data;  
+	      });  
+	  
+	    return data;  
+	  };  
+	})(jQuery); 
+
+$(function(){
+	$("#submit").click(function(){
+		$.ajax({
+			type:'POST',
+			contentType : 'application/json',
+			url : '/bjwt/dicmanager/dicType/add',
+			dataType : 'json',
+			data : JSON.stringify($("#dicType").serializeObject()),
+			success : function(data) {  
+	            alert(JSON.stringify(data));  
+	        },  
+          	error : function(data) {  
+          		alert(JSON.stringify(data));
+          	}
+		});
+		/*
+		$.postJSON('application/json',JSON.stringify($("#dicType").serializeObject()),function(data) {  
+            alert(JSON.stringify(data));  
+        })
+		*/
+	});
+});
+</script>
 </body>
 </html>

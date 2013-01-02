@@ -26,8 +26,8 @@ import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
 /**
  * 基础DAO类
- * @author Tim Lu
- * @date 2011-08-12
+ * @author ying
+ * @date 2012-12-12
  *
  * @param <T>
  */
@@ -97,21 +97,8 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 		try {
 			Query query = this.getSession().createQuery(hql);
 			
-			for(int i=0,c=parameters.length;i<c;i++) {
-				query.setParameter(i, parameters[i]);
-			}
+			this.applyParametersToQuery(query, parameters);
 			
-			query.executeUpdate();
-		} catch(RuntimeException e) {
-			throw new ApplicationException(e);
-		}
-	}
-	
-	@Override
-	public void update(String hql, Map<String, Object> parameters) {
-		try {
-			Query query = this.getSession().createQuery(hql);
-			DaoUtils.applyMapParameterToQuery(query, parameters);			
 			query.executeUpdate();
 		} catch(RuntimeException e) {
 			throw new ApplicationException(e);
@@ -154,22 +141,9 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 	public void delete(String hql, Object... parameters) {
 		try {
 			Query query = this.getSession().createQuery(hql);
-
-			for(int i=0,c=parameters.length;i<c;i++) {
-				query.setParameter(i, parameters[i]);
-			}
 			
-			query.executeUpdate();
-		} catch (RuntimeException re) {
-			throw new ApplicationException(re);
-		}
-	}
-	
-	@Override
-	public void delete(String hql, Map<String, Object> parameters) {
-		try {
-			Query query = this.getSession().createQuery(hql);
-			DaoUtils.applyMapParameterToQuery(query, parameters);			
+			this.applyParametersToQuery(query, parameters);
+			
 			query.executeUpdate();
 		} catch (RuntimeException re) {
 			throw new ApplicationException(re);
@@ -277,19 +251,9 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 	@Override
 	public List<T> query(String hql, Object... parameters) {
 		try {
-			return getHibernateTemplate().find(hql, parameters);
-		} catch (RuntimeException re) {
-			throw new ApplicationException(re);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<T> query(String hql, Map<String, Object> parameters) {
-		try {
 			List<T> result = null;
 			Query query = this.getSession().createQuery(hql);
-			DaoUtils.applyMapParameterToQuery(query, parameters);
+			this.applyParametersToQuery(query, parameters);
 
 			prepareQuery(query);
 			result = query.list();
@@ -316,18 +280,13 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 	@Override
 	public Pagination<T> findPageByHql(Pagination<T> pagination, final String hql, Object... parameters) {
 		//设置数据的总条数
-		String countHql = "select count(*) "+hql.substring(hql.indexOf("from"));
-		Query queryCount = this.getSession().createQuery(countHql);
-		for(int i=0,c=parameters.length;i<c;i++) {
-			queryCount.setParameter(i, parameters[i]);
-		}
+		Query queryCount = this.getSession().createQuery(createCountHql(hql));
+		this.applyParametersToQuery(queryCount, parameters);
 		Long count = (Long) queryCount.uniqueResult();
 		pagination.setRecordCount(count.intValue());	
 		
 		Query queryResult = this.getSession().createQuery(hql);
-		for(int i=0,c=parameters.length;i<c;i++) {
-			queryResult.setParameter(i, parameters[i]);
-		}
+		this.applyParametersToQuery(queryResult, parameters);
 		queryResult.setFirstResult(pagination.getFirst()-1);
 		queryResult.setMaxResults(pagination.getPageSize());
 	   	pagination.setResult(queryResult.list());
@@ -340,43 +299,14 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 			final String hql, final Object... parameters) {
 		return (Pagination<T>) getHibernateTemplate().execute(new HibernateCallback<T>() {
 			public T doInHibernate(Session session) throws HibernateException {
-				
 				// 查询总记录数
 				Query queryCount = session.createQuery(createCountHql(hql));
-				for(int i=0,c=parameters.length;i<c;i++) {
-					queryCount.setParameter(i, parameters[i]);
-				}
-				int recordCount = (Integer) queryCount.uniqueResult();
+				applyParametersToQuery(queryCount, parameters);
+				int recordCount = ((Long) queryCount.uniqueResult()).intValue();
 
 				// 查询指定分页记录
 				Query queryResult = session.createQuery(hql);
-				for(int i=0,c=parameters.length;i<c;i++) {
-					queryResult.setParameter(i, parameters[i]);
-				}
-				return (T) getResultPage(queryResult, pageNo, pageSize, recordCount);
-			}
-		});
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public Pagination<T> findPageByHql(final int pageNo, final int pageSize,
-			final String hql, final Map<String, Object> parameters) {
-		return (Pagination<T>) getHibernateTemplate().execute(new HibernateCallback<T>() {
-			public T doInHibernate(Session session) throws HibernateException {
-				
-				// 查询总记录数
-				Query queryCount = session.createQuery(createCountHql(hql));
-				if(parameters != null) {
-					DaoUtils.applyMapParameterToQuery(queryCount, parameters);
-				}
-				int recordCount = (Integer) queryCount.uniqueResult();
-
-				// 查询指定分页记录
-				Query queryResult = session.createQuery(hql);
-				if(parameters != null) {
-					DaoUtils.applyMapParameterToQuery(queryResult, parameters);
-				}
+				applyParametersToQuery(queryResult, parameters);
 				return (T) getResultPage(queryResult, pageNo, pageSize, recordCount);
 			}
 		});
@@ -425,7 +355,7 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 	}
 	
 	@Override
-	public void deleteByParamList(String hql, String name, Object... parameterList) {
+	public void deleteByParamList(String hql, String name, Object[] parameterList) {
 		try {
 			Query query = this.getSession().createQuery(hql);
 			query.setParameterList(name, parameterList).executeUpdate();
@@ -579,4 +509,16 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 		SessionFactoryUtils.applyTransactionTimeout(criteria, getHibernateTemplate().getSessionFactory());
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void applyParametersToQuery(Query query, Object[] parameters){
+		if(parameters!=null){
+			if(parameters.length>0&&parameters[0] instanceof Map<?, ?>){
+				DaoUtils.applyMapParameterToQuery(query, (Map<String, Object>) parameters[0]);
+			}else{
+					for(int i=0;i<parameters.length;i++) {
+						query.setParameter(i, parameters[i]);
+					}
+			}
+		}
+	}
 }

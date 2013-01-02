@@ -3,16 +3,14 @@ package org.bjdrgs.bjwt.core.dao;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.hibernate.criterion.DetachedCriteria;
 
 /**
  * 基础DAO接口
- * @author yyc
+ * @author ying
  * @date 2012-12-12
- * @copyright bjdrgs Ltd.
  *
  * @param <T>
  * 
@@ -59,7 +57,8 @@ public interface IBaseDao<T> {
 	/**
 	 * HQL方式更新数据
 	 * @param hql
-	 * @param parameters
+	 * @param parameters 可以是0个或多个参数、数组、Map<br>
+	 * 		如果传入的第一个参数是Map,则会使用该参数按key:value的方式设置hql中的值
 	 * @usage
 	 * <pre>
 	 *  String hql = "update User u set u.name = ?,u.age = ? where u.id = ?";
@@ -74,16 +73,8 @@ public interface IBaseDao<T> {
 	 *  parameters[1] = age;
 	 *  parameters[2] = id;
 	 *  update(hql,parameters);
-	 * </pre>
-	 */
-	public abstract void update(String hql, Object... parameters);
-	
-	/**
-	 * HQL方式更新数据
-	 * @param hql
-	 * @param parameters
-	 * @usage
-	 * <pre>
+	 *  
+	 *  //使用方法3
 	 * String hql = "update User u set u.name = :name,u.age = :age where u.id = :id";
 	 * Map<String, Object>  paratmers = new HashMap<String, Object>();
 	 * String name = "test";
@@ -95,7 +86,7 @@ public interface IBaseDao<T> {
 	 * update(hql, parameters);
 	 * </pre>
 	 */
-	public abstract void update(String hql, Map<String, Object> parameters);
+	public abstract void update(String hql, Object... parameters);
 	
 	/**
 	 * 保存或更新数据对象集合
@@ -120,7 +111,8 @@ public interface IBaseDao<T> {
 	/**
 	 * HQL方式删除数据
 	 * @param hql
-	 * @param parameters
+	 * @param parameters 可以是0个或多个参数、数组、Map<br>
+	 * 		如果传入的第一个参数是Map,则会使用该参数按key:value的方式设置hql中的值
 	 * @usage
 	 * <pre>
 	 *  String hql = "delete from User u where u.id = ? or u.name = ?"; 
@@ -133,16 +125,8 @@ public interface IBaseDao<T> {
 	 *  parameters[0] = id;
 	 *  parameters[1] = name;
 	 *  delete(hql,parameters);
-	 * </pre>
-	 */
-	public abstract void delete(String hql, Object... parameters);
-	
-	/**
-	 * HQL方式删除数据
-	 * @param hql
-	 * @param parameters
-	 * @usage
-	 * <pre>
+	 *  
+	 *  //使用方法3
 	 * String hql = "delete from User u where u.id = :id or u.name = :name";
 	 * Map<String, Object>  paratmers = new HashMap<String, Object>();
 	 * Long id = 1;
@@ -150,9 +134,9 @@ public interface IBaseDao<T> {
 	 * paratmers.put("id", id);
 	 * paratmers.put("name", name);
 	 * delete(hql, parameters);
-	 * </pre> 
+	 * </pre>
 	 */
-	public abstract void delete(String hql, Map<String, Object> parameters);
+	public abstract void delete(String hql, Object... parameters);
 	
 	/**
 	 * 根据ID删除数据对象
@@ -206,18 +190,11 @@ public interface IBaseDao<T> {
 	/**
 	 * HQL方式查询数据
 	 * @param hql
-	 * @param parameters
+	 * @param parameters 可以是0个或多个参数、数组、Map<br>
+	 * 		如果传入的第一个参数是Map,则会使用该参数按key:value的方式设置hql中的值
 	 * @return
 	 */
 	public abstract List<T> query(String hql, Object... parameters);
-	
-	/**
-	 * HQL方式查询数据
-	 * @param hql
-	 * @param parameters
-	 * @return
-	 */
-	public abstract List<T> query(String hql, Map<String, Object> parameters);
 	
 	/**
 	 * DetachedCriteria方式查询数据
@@ -230,7 +207,8 @@ public interface IBaseDao<T> {
 	 * HQL方式分页查询数据
 	 * @param pagination
 	 * @param hql
-	 * @param parameters
+	 * @param parameters 可以是0个或多个参数、数组、Map<br>
+	 * 		如果传入的第一个参数是Map,则会使用该参数按key:value的方式设置hql中的值
 	 * @return
 	 */
 	public abstract Pagination<T> findPageByHql(Pagination<T> pagination,String hql,Object... parameters);
@@ -240,22 +218,12 @@ public interface IBaseDao<T> {
 	 * @param pageNo
 	 * @param pageSize
 	 * @param hql
-	 * @param parameters
+	 * @param parameters 可以是0个或多个参数、数组、Map<br>
+	 * 		如果传入的第一个参数是Map,则会使用该参数按key:value的方式设置hql中的值
 	 * @return
 	 */
 	public abstract Pagination<T> findPageByHql(final int pageNo, final int pageSize,
 			final String hql, final Object... parameters);
-	
-	/**
-	 * HQL方式分页查询数据
-	 * @param pageNo
-	 * @param pageSize
-	 * @param hql
-	 * @param parameters
-	 * @return
-	 */
-	public abstract Pagination<T> findPageByHql(final int pageNo, final int pageSize,
-			final String hql, final Map<String, Object> parameters);
 	
 	/**
 	 * DetachedCriteria方式分页查询数据
@@ -281,6 +249,6 @@ public interface IBaseDao<T> {
 	 * deleteByParamList(hql, name, ids);
 	 * </pre>
 	 */
-	public abstract void deleteByParamList(String hql, String name, Object... parameterList);
+	public abstract void deleteByParamList(String hql, String name, Object[] parameterList);
 
 }

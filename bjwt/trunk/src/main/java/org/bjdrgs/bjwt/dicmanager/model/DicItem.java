@@ -25,7 +25,7 @@ public class DicItem implements Serializable {
 	@Id
 	@GeneratedValue(generator="increment")
 	@Column(name="id",nullable=false,unique=true)
-	private int id;
+	private Integer id;
 	
 	@ManyToOne
 	@JoinColumn(name="type_id")
@@ -44,11 +44,11 @@ public class DicItem implements Serializable {
 	@Column(name="create_time")
 	private Date createTime;
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

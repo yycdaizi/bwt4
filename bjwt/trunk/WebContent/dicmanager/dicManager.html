@@ -2,72 +2,203 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript" src="../resourses/jslib/easyui/jquery-1.4.4.min.js"></script>
+<title>数据字典管理</title>
+<link rel="stylesheet" type="text/css" href="../resourses/jslib/easyui/themes/default/easyui.css" />
+<link rel="stylesheet" type="text/css" href="../resourses/jslib/easyui/themes/icon.css" />
+<link rel="stylesheet" type="text/css" href="../resourses/css/main.css" />
+<script type="text/javascript" src="../resourses/jslib/easyui/jquery-1.8.0.min.js"></script>
+<script type="text/javascript" src="../resourses/jslib/easyui/jquery.easyui.min.js"></script>
+<script type="text/javascript" src="../resourses/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+<script type="text/javascript" src="../resourses/jslib/date/Date.min.js"></script>
 </head>
 <body>
-<form id="dicType" action="login" method="post">
-	<input type="text" name="code"/>
-	<input type="text" name="name"/>
-</form>
-	<input id="submit" type="button" value="submit"/>
+	<table id="gridDicType" style="height:400px" class="easyui-datagrid" title='字典类型'
+		autoRowHeight="false" singleSelect="true" url="dicType/findPage"
+		pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
+        sortOrder="desc" toolbar="#gridDicType-toolbar">
+		<thead>
+			<tr>
+				<th data-options="field:'code',width:100,sortable:true">字典类型</th>
+				<th data-options="field:'name',width:200">字典名称</th>
+				<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+			</tr>
+		</thead>
+	</table>
+	<div id="gridDicType-toolbar" style="padding:5px">
+		<div style="float:left;">
+		<span>关键字:</span>
+		<input id="dicType-keyword"  style="width:300px"></input>
+		<a id="dicType-btnQuery" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search">查询</a>
+		</div>
+		<a id="dicType-btnDelete" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" style="float:right">删除</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
+		<a id="dicType-btnUpdate" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" style="float:right">修改</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
+		<a id="dicType-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
+	</div>
+	<div id="dialogDicType" class="easyui-dialog" closed="true" modal="true" buttons="#formDicType-buttons" style="width:400px;height:200px;padding:10px 20px">
+		<div class="ftitle">数据字典类型</div> 
+		<form id="formDicType" method="post" class="fform">
+			<input name="id" type="hidden">
+			<input name="createTime" type="hidden">
+			<div class="fitem">    
+	            <label>字典类型:</label>    
+	            <input name="code" class="easyui-validatebox" required="true"> 
+	        </div>
+	        <div class="fitem">    
+	            <label>字典名称:</label>  
+	            <input name="name" class="easyui-validatebox">    
+	        </div> 
+		</form>
+	</div>
+	<div id="formDicType-buttons">
+		<a id="formDicType-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">确定</a>    
+    	<a id="formDicType-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+	</div>
 <script type="text/javascript">
-(function($){  
-	  $.fn.serializeObject = function() {  
-	    if ( !this.length ) { return false; }  
-	  
-	    var $el = this,  
-	      data = {},  
-	      lookup = data; //current reference of data  
-	  
-	      $el.find(':input[type!="checkbox"][type!="radio"], input:checked').each(function() {  
-	        // data[a][b] becomes [ data, a, b ]  
-	        var named = this.name.replace(/\[([^\]]+)?\]/g, ',$1').split(','),  
-	            cap = named.length - 1,  
-	            i = 0;  
-	  
-	        for ( ; i < cap; i++ ) {  
-	            // move down the tree - create objects or array if necessary  
-	            lookup = lookup[ named[i] ] = lookup[ named[i] ] ||  
-	                ( named[i+1] == "" ? [] : {} );  
-	        }  
-	  
-	        // at the end, psuh or assign the value  
-	        if ( lookup.length != undefined ) {  
-	             lookup.push( $(this).val() );  
-	        }else {  
-	              lookup[ named[ cap ] ]  = $(this).val();  
-	        }  
-	  
-	        // assign the reference back to root  
-	        lookup = data;  
-	      });  
-	  
-	    return data;  
-	  };  
-	})(jQuery); 
-
 $(function(){
-	$("#submit").click(function(){
-		$.ajax({
-			type:'POST',
-			contentType : 'application/json',
-			url : '/bjwt/dicmanager/dicType/add',
-			dataType : 'json',
-			data : JSON.stringify($("#dicType").serializeObject()),
-			success : function(data) {  
-	            alert(JSON.stringify(data));  
-	        },  
-          	error : function(data) {  
-          		alert(JSON.stringify(data));
-          	}
+	$("#dicType-btnQuery").click(function(){
+		$("#gridDicType").datagrid('load',{
+			keyword:$("#dicType-keyword").val()
 		});
-		/*
-		$.postJSON('application/json',JSON.stringify($("#dicType").serializeObject()),function(data) {  
-            alert(JSON.stringify(data));  
-        })
-		*/
 	});
+	$("#dicType-btnAdd").click(function(){
+		$("#dialogDicType").dialog({title:'新增数据字典',iconCls:'icon-add'}).dialog('open');  
+        $('#formDicType').form('clear');
+	});
+	$("#dicType-btnUpdate").click(function(){
+		var row = $('#gridDicType').datagrid('getSelected');  
+        if (row){  
+            $('#dialogDicType').dialog({title:'编辑数据字典',iconCls:'icon-edit'}).dialog('open');  
+            $('#formDicType').form('load',row);
+        }else{
+        	$.messager.show({  
+                title: '提示',  
+                msg: '请选择一条记录'  
+            }); 
+        }
+	});
+	$("#dicType-btnDelete").click(function(){
+		$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){  
+            if (r){
+				var row = $('#gridDicType').datagrid('getSelected');
+				if(row){
+					$.post('dicType/deleteById',{id:row.id},function(result){
+						if (result.success){  
+		                    $('#gridDicType').datagrid('reload');    // reload the user data  
+		                } else {  
+		                    $.messager.show({  
+		                        title: '错误',  
+		                        msg: result.message  
+		                    });  
+		                }
+					});
+				}else{
+		        	$.messager.show({  
+		                title: '提示',  
+		                msg: '请选择一条记录'  
+		            }); 
+		        }
+            }  
+        });
+	});
+	$("#formDicType-btnSubmit").click(function(){
+		$('#formDicType').form('submit',{  
+            url: "dicType/save",  
+            onSubmit: function(){  
+                return $(this).form('validate');
+            },  
+            success: function(result){  
+                var result = $.parseJSON(result);  
+                if (result.success){  
+                	$.messager.show({  
+                        title: '提示',  
+                        msg: result.message  
+                    }); 
+                    $('#dialogDicType').dialog('close');      // close the dialog  
+                    $('#gridDicType').datagrid('reload');    // reload the user data  
+                } else {  
+                    $.messager.show({  
+                        title: '错误',  
+                        msg: result.message  
+                    });  
+                }
+            }
+        }); 
+	});
+	$("#formDicType-btnCancel").click(function(){
+		$("#dialogDicType").dialog("close");
+	});
+	/*
+	$("#gridDicType").datagrid({
+		title:'字典类型',
+        height:400,
+        autoRowHeight: false,
+        url:'dicType/findPage',
+        singleSelect: true,
+        pagination:true,  
+        rownumbers:true,
+        fitColumns: true,
+        sortName: 'code',  
+        sortOrder: 'desc',
+        columns:[[
+			{field:'code',title:'字典类型',width:100,sortable:true}, 
+			{field:'name',title:'字典名称',width:200}, 
+            {field:'createTime',title:'创建时间',width:150,sortable:true,  
+                formatter:function(value){  
+                	var date = new Date(value);
+					return date.strftime('%Y-%m-%d %H:%M:%S');  
+                }  
+            }
+        ]],
+		toolbar : [{
+			text : '新增',
+			iconCls : 'icon-add',
+			handler : function() {
+				$("#dialogDicType").dialog({title:'新增数据字典',iconCls:'icon-add'}).dialog('open');  
+	            $('#formDicType').form('clear');
+			}
+		}, '-', {
+			text : '修改',
+			iconCls : 'icon-edit',
+			handler : function() {
+				var row = $('#gridDicType').datagrid('getSelected');  
+	            if (row){  
+	                $('#dialogDicType').dialog({title:'编辑数据字典',iconCls:'icon-edit'}).dialog('open');  
+	                $('#formDicType').form('load',row);
+	            }else{
+	            	$.messager.show({  
+                        title: '提示',  
+                        msg: '请选择一条记录'  
+                    }); 
+	            }
+			}
+		}, '-', {
+			text : '删除',
+			iconCls : 'icon-remove',
+			handler : function() {
+				var row = $('#gridDicType').datagrid('getSelected');
+				if(row){
+					$.post('dicType/deleteById',{id:row.id},function(result){
+						if (result.success){  
+		                    $('#gridDicType').datagrid('reload');    // reload the user data  
+		                } else {  
+		                    $.messager.show({  
+		                        title: '错误',  
+		                        msg: result.message  
+		                    });  
+		                }
+					});
+				}else{
+	            	$.messager.show({  
+                        title: '提示',  
+                        msg: '请选择一条记录'  
+                    }); 
+	            }
+			}
+		}]
+	});*/
+	
 });
 </script>
 </body>

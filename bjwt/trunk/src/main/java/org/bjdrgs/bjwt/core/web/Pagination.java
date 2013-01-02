@@ -1,5 +1,6 @@
 package org.bjdrgs.bjwt.core.web;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,8 +9,9 @@ import java.util.List;
  * @date 2012-12-12
  *
  */
-public class Pagination<T> {
-	
+public class Pagination<T> implements Serializable{
+	private static final long serialVersionUID = 1L;
+
 	//每页记录数
 	private int pageSize=10;
 

@@ -170,7 +170,7 @@ public abstract class ReflectionUtils {
 	 * @return the first generic declaration, or Object.class if cannot be
 	 *         determined
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> Class<T> getSuperClassGenricType(final Class clazz) {
 		return getSuperClassGenricType(clazz, 0);
 	}
@@ -187,7 +187,7 @@ public abstract class ReflectionUtils {
 	 * @return the index generic declaration, or Object.class if cannot be
 	 *         determined
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	public static Class getSuperClassGenricType(final Class clazz,
 			final int index) {
 		Type genType = clazz.getGenericSuperclass();

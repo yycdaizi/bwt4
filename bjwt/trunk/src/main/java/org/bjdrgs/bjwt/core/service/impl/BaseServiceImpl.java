@@ -3,13 +3,13 @@ package org.bjdrgs.bjwt.core.service.impl;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 
 import org.bjdrgs.bjwt.core.dao.IBaseDao;
 import org.bjdrgs.bjwt.core.service.IBaseService;
 import org.bjdrgs.bjwt.core.util.ReflectionUtils;
+import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.hibernate.criterion.DetachedCriteria;
 import org.slf4j.Logger;
@@ -17,9 +17,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * 基础Service类
- * @author Tim Lu
- * @date 2011-08-14
- * @company MediaShare Ltd.
+ * @author ying
+ * @date 2012-12-14
  *
  */
 public class BaseServiceImpl<T extends Serializable> implements IBaseService<T> {
@@ -81,12 +80,7 @@ public class BaseServiceImpl<T extends Serializable> implements IBaseService<T> 
 	}
 	
 	@Override
-	public void update(String hql, Object[] parameters) {
-		dao.update(hql, parameters);
-	}
-	
-	@Override
-	public void update(String hql, Map<String, Object> parameters) {
+	public void update(String hql, Object... parameters) {
 		dao.update(hql, parameters);
 	}
 	
@@ -107,11 +101,6 @@ public class BaseServiceImpl<T extends Serializable> implements IBaseService<T> 
 	
 	@Override
 	public void delete(String hql, Object... parameters) {
-		dao.delete(hql, parameters);
-	}
-	
-	@Override
-	public void delete(String hql, Map<String, Object> parameters) {
 		dao.delete(hql, parameters);
 	}
 	
@@ -156,36 +145,25 @@ public class BaseServiceImpl<T extends Serializable> implements IBaseService<T> 
 	}
 	
 	@Override
-	public List<T> query(String hql, Map<String, Object> parameters) {
-		return dao.query(hql, parameters);
-	}
-	
-	@Override
 	public List<T> query(final DetachedCriteria detachedCriteria) {
 		return dao.query(detachedCriteria);
 	}
 	
 	@Override
-	public Pagination<T> findPageByHql(String hql, Pagination<T> pagination) {
-		return dao.findPageByHql(pagination, hql);
+	public GridPage<T> findPageByHql(Pagination<T> pagination, String hql, Object... parameters) {
+		return new GridPage<T>(dao.findPageByHql(pagination, hql, parameters));
 	}
 	
 	@Override
-	public Pagination<T> findPageByHql(final int pageNo, final int pageSize,
+	public GridPage<T> findPageByHql(final int pageNo, final int pageSize,
 			final String hql, final Object... parameters) {
-		return dao.findPageByHql(pageNo, pageSize, hql, parameters);
+		return new GridPage<T>(dao.findPageByHql(pageNo, pageSize, hql, parameters));
 	}
 	
 	@Override
-	public Pagination<T> findPageByHql(final String hql, final Map<String, Object> parameters,
-			final int pageNo, final int pageSize) {
-		return dao.findPageByHql(pageNo, pageSize,hql, parameters);
-	}
-	
-	@Override
-	public Pagination<T> findPageByDetachedCriteria(final DetachedCriteria detachedCriteria,
+	public GridPage<T> findPageByDetachedCriteria(final DetachedCriteria detachedCriteria,
 			final Pagination<T> pagination) {
-		return dao.findPageByDetachedCriteria(detachedCriteria, pagination);
+		return new GridPage<T>(dao.findPageByDetachedCriteria(detachedCriteria, pagination));
 	}
 	
 	@Override

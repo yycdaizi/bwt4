@@ -12,11 +12,8 @@ import org.bjdrgs.bjwt.dicmanager.parameter.DicTypeParam;
 import org.bjdrgs.bjwt.dicmanager.service.IDicTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.BindingResultUtils;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -62,23 +59,5 @@ public class DicTypeController {
 	public AjaxResult deleteById(Integer id){
 		dicTypeService.deleteById(id);
 		return new AjaxResult(true, "删除成功！");
-	}
-
-	/*
-	 * @RequestMapping("/add")
-	 * 
-	 * @ResponseBody public DicType add(@RequestBody DicType entity){
-	 * entity.setCreateTime(new Date()); dicTypeService.save(entity); return
-	 * entity; }
-	 * 
-	 * @RequestMapping("/add")
-	 * 
-	 * @ResponseBody public DicType add(DicType entity){ return entity; }
-	 */
-	@RequestMapping("/add")
-	public ResponseEntity<DicType> add(DicType entity) {
-		ResponseEntity<DicType> responseEntity = new ResponseEntity<DicType>(
-				entity, HttpStatus.OK);
-		return responseEntity;
 	}
 }

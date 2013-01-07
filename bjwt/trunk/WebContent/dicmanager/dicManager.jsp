@@ -25,6 +25,8 @@
 		<input id="dicType-keyword"  style="width:300px"></input>
 		<a id="dicType-btnQuery" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search">查询</a>
 		</div>
+		<a id="dicType-btnEditItems" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" style="float:right">字典项管理</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="dicType-btnDelete" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" style="float:right">删除</a>
 		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="dicType-btnUpdate" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" style="float:right">修改</a>
@@ -37,18 +39,22 @@
 			<input name="id" type="hidden">
 			<input name="createTime" type="hidden">
 			<div class="fitem">    
-	            <label>字典类型:</label>    
+	            <label>字典类型：</label>    
 	            <input name="code" class="easyui-validatebox" required="true"> 
 	        </div>
 	        <div class="fitem">    
-	            <label>字典名称:</label>  
+	            <label>字典名称：</label>  
 	            <input name="name" class="easyui-validatebox">    
 	        </div> 
 		</form>
 	</div>
-	<div id="formDicType-buttons">
+	<div id="formDicType-buttons" style="text-align: center;">
 		<a id="formDicType-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">确定</a>    
     	<a id="formDicType-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+	</div>
+	
+	<div id="winDicItemEdit" class="easyui-window" title="字典数据项列表" style="width:600px;height:400px"
+		collapsible="false" minimizable="false" closed="true" modal="true" href="${pageContext.request.contextPath}/dicmanager/dicItemList.jsp">
 	</div>
 <script type="text/javascript">
 $(function(){
@@ -74,10 +80,10 @@ $(function(){
         }
 	});
 	$("#dicType-btnDelete").click(function(){
-		$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){  
-            if (r){
-				var row = $('#gridDicType').datagrid('getSelected');
-				if(row){
+		var row = $('#gridDicType').datagrid('getSelected');
+		if(row){
+			$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){  
+	            if (r){
 					$.post('${pageContext.request.contextPath}/dicmanager/dicType/deleteById.do',{id:row.id},function(result){
 						if (result.success){  
 		                    $('#gridDicType').datagrid('reload');    // reload the user data  
@@ -88,15 +94,45 @@ $(function(){
 		                    });  
 		                }
 					});
-				}else{
-		        	$.messager.show({  
-		                title: '提示',  
-		                msg: '请选择一条记录'  
-		            }); 
-		        }
-            }  
-        });
+				}  
+	        });
+        }else{
+        	$.messager.show({  
+                title: '提示',  
+                msg: '请选择一条记录'  
+            }); 
+        }
 	});
+	$("#dicType-btnEditItems").click(function(){
+		var row = $('#gridDicType').datagrid('getSelected');
+		if (row){
+			var hasLoaded = $("#winDicItemEdit").data('hasLoaded');
+			if(hasLoaded){
+				if($("#gridDicItem").data('dicType').id != row.id){
+					$("#winDicItemEdit").window('setTitle',row.name +" — 字典数据项列表");
+					$("#gridDicItem").data('dicType',row);
+		            $("#gridDicItem").datagrid('load',{typeId:row.id});
+				}
+			}else{
+	            $("#winDicItemEdit").window({
+	            	title:row.name +" — 字典数据项列表",
+	            	onLoad:function(){
+	            		//第一次加载页面时查询数据项
+		            	$("#gridDicItem").data('dicType',row);
+		            	$("#gridDicItem").datagrid('load',{typeId:row.id});
+		            	$("#winDicItemEdit").data('hasLoaded',true);
+	            	}	
+	            });
+			}
+            $("#winDicItemEdit").window("open");
+        }else{
+        	$.messager.show({
+                title: '提示',  
+                msg: '请选择一条记录'  
+            }); 
+        }
+	});
+	
 	$("#formDicType-btnSubmit").click(function(){
 		$('#formDicType').form('submit',{  
             url: "${pageContext.request.contextPath}/dicmanager/dicType/save.do",  

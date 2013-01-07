@@ -510,7 +510,7 @@ public class BaseDao<T extends Serializable> extends HibernateDaoSupport impleme
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void applyParametersToQuery(Query query, Object[] parameters){
+	private void applyParametersToQuery(Query query, Object... parameters){
 		if(parameters!=null){
 			if(parameters.length>0&&parameters[0] instanceof Map<?, ?>){
 				DaoUtils.applyMapParameterToQuery(query, (Map<String, Object>) parameters[0]);

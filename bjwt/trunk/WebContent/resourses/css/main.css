@@ -2,7 +2,7 @@
 
 .fform {
 	margin: 0;
-	padding: 10px 30px;
+	padding: 10px 10px;
 }
 
 .ftitle {
@@ -20,4 +20,12 @@
 .fitem label {
 	display: inline-block;
 	width: 80px;
+	text-align:right;
+}
+.fitem input {
+	width:200px;
+}
+.fitem textarea {
+	width:200px;
+	height: 60px;
 }

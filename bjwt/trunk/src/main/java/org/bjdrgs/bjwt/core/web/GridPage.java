@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.core.web;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 /**
  * DataGrid数据加载请求的返回数据
@@ -14,6 +15,10 @@ public class GridPage<T> implements Serializable{
 	private int total;
 	private List<T> rows;
 	
+	public static <T> GridPage<T> getEmptyPage(){
+		return new GridPage<T>(0, new ArrayList<T>());
+	}
+	
 	public GridPage(){
 	}
 	public GridPage(int total, List<T> rows){
@@ -23,7 +28,11 @@ public class GridPage<T> implements Serializable{
 	
 	public GridPage(Pagination<T> pagination){
 		this.total = pagination.getRecordCount();
-		this.rows = pagination.getResult();
+		if(pagination.getResult()!=null){
+			this.rows = pagination.getResult();
+		}else{
+			this.rows = new ArrayList<T>(); 
+		}
 	}
 	
 	public int getTotal() {

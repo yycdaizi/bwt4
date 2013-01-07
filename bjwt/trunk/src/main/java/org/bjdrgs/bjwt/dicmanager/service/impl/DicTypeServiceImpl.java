@@ -1,14 +1,18 @@
 package org.bjdrgs.bjwt.dicmanager.service.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.service.impl.BaseServiceImpl;
 import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.dicmanager.model.DicType;
 import org.bjdrgs.bjwt.dicmanager.parameter.DicTypeParam;
+import org.bjdrgs.bjwt.dicmanager.service.IDicItemService;
 import org.bjdrgs.bjwt.dicmanager.service.IDicTypeService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("dicTypeService")
 public class DicTypeServiceImpl extends BaseServiceImpl<DicType> implements	IDicTypeService {
 
+	@Resource(name = "dicItemService")
+	private IDicItemService dicItemService;
+	
 	@Override
 	public GridPage<DicType> findPage(DicTypeParam param) {
 		StringBuilder hql = new StringBuilder();
@@ -45,6 +52,12 @@ public class DicTypeServiceImpl extends BaseServiceImpl<DicType> implements	IDic
 			entity.setCreateTime(new Date());
 		}
 		super.save(entity);
+	}
+
+	@Override
+	public void deleteById(Serializable id) {
+		dicItemService.deleteByTypeId(id);
+		super.deleteById(id);
 	}
 
 }

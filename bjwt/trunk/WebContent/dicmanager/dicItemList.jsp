@@ -29,22 +29,22 @@
 		<a id="dicItem-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
 	</div>
 	<div id="dialogDicItem" class="easyui-dialog" closed="true" modal="true" buttons="#formDicItem-buttons" style="width:400px;height:270px;padding:10px 20px">
-		<div class="ftitle">数据字典类型</div> 
+		<div class="ftitle">数据字典项</div> 
 		<form id="formDicItem" method="post" class="fform">
 			<input name="id" type="hidden">
 			<input name="createTime" type="hidden">
 			<input name="type.id" type="hidden">
 			<div class="fitem">    
 	            <label>编码：</label>    
-	            <input name="code" class="easyui-validatebox" required="true"> 
+	            <input name="code" class="easyui-validatebox" required="true" validType="maxLength[30]"> 
 	        </div>
 	        <div class="fitem">    
 	            <label>名称：</label>  
-	            <input name="text" class="easyui-validatebox">    
+	            <input name="text" class="easyui-validatebox" validType="maxLength[60]">    
 	        </div>
 	        <div class="fitem">    
 	            <label>描述：</label>  
-	            <textarea name="description" class="easyui-validatebox"></textarea>    
+	            <textarea name="description" class="easyui-validatebox" validType="maxLength[100]"></textarea>    
 	        </div> 
 		</form>
 	</div>
@@ -85,6 +85,10 @@
 		            if (r){
 						$.post('${pageContext.request.contextPath}/dicmanager/dicItem/deleteById.do',{id:row.id},function(result){
 							if (result.success){  
+								$.messager.show({  
+			                        title: '提示',  
+			                        msg: result.message  
+			                    }); 
 			                    $('#gridDicItem').datagrid('reload');    // reload the user data  
 			                } else {  
 			                    $.messager.show({  

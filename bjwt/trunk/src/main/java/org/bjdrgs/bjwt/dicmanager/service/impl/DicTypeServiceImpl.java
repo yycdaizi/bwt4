@@ -60,4 +60,9 @@ public class DicTypeServiceImpl extends BaseServiceImpl<DicType> implements	IDic
 		super.deleteById(id);
 	}
 
+	@Override
+	public DicType getByCode(String code) {
+		return super.findByUnique("code", code);
+	}
+
 }

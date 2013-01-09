@@ -5,6 +5,8 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.apache.commons.lang3.StringUtils;
+import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.dicmanager.model.DicType;
@@ -36,6 +38,10 @@ public class DicTypeController {
 	@RequestMapping("/save")
 	@ResponseBody
 	public AjaxResult save(@Valid DicType entity, BindingResult errors) {
+		if(!isCodeUnique(entity.getCode())){
+			errors.rejectValue("code", "DicType.code.unique", SpringContextUtils.getMessage("DicType.code.unique"));
+		}
+		
 		AjaxResult result = new AjaxResult();
 		if(errors.hasErrors()){
 			StringBuilder msg = new StringBuilder();
@@ -49,7 +55,7 @@ public class DicTypeController {
 		}else{
 			dicTypeService.save(entity);
 			result.setSuccess(true);
-			result.setMessage("保存成功！");
+			result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
 		}
 		return result;
 	}
@@ -58,6 +64,13 @@ public class DicTypeController {
 	@ResponseBody
 	public AjaxResult deleteById(Integer id){
 		dicTypeService.deleteById(id);
-		return new AjaxResult(true, "删除成功！");
+		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
+	}
+	
+	private boolean isCodeUnique(String code){
+		if(StringUtils.isNotEmpty(code)){
+			return dicTypeService.getByCode(code)==null;
+		}
+		return true;
 	}
 }

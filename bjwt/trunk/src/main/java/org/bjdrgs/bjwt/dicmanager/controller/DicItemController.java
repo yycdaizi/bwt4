@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
+import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.dicmanager.model.DicItem;
@@ -39,6 +40,14 @@ public class DicItemController {
 	@RequestMapping("/save")
 	@ResponseBody
 	public AjaxResult save(@Valid DicItem entity, BindingResult errors) {
+		if(entity.getType()==null||entity.getType().getId()==null){
+			errors.rejectValue("type.id", "DicItem.type.id.notNull", SpringContextUtils.getMessage("DicItem.type.id.notNull"));
+		}else{
+			if(!dicItemService.isCodeUnique(entity.getType().getId(), entity.getCode())){
+				errors.rejectValue("code", "DicItem.code.unique", SpringContextUtils.getMessage("DicItem.code.unique"));
+			}
+		}
+		
 		AjaxResult result = new AjaxResult();
 		if(errors.hasErrors()){
 			StringBuilder msg = new StringBuilder();
@@ -52,7 +61,7 @@ public class DicItemController {
 		}else{
 			dicItemService.save(entity);
 			result.setSuccess(true);
-			result.setMessage("保存成功！");
+			result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
 		}
 		return result;
 	}
@@ -61,6 +70,6 @@ public class DicItemController {
 	@ResponseBody
 	public AjaxResult deleteById(Integer id){
 		dicItemService.deleteById(id);
-		return new AjaxResult(true, "删除成功！");
+		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 }

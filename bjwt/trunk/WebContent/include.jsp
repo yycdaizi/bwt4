@@ -6,3 +6,5 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/easyui/jquery.easyui.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/date/Date.min.js"></script>
+
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/expand.js"></script>

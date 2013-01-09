@@ -40,11 +40,11 @@
 			<input name="createTime" type="hidden">
 			<div class="fitem">    
 	            <label>字典类型：</label>    
-	            <input name="code" class="easyui-validatebox" required="true"> 
+	            <input name="code" class="easyui-validatebox" required="true" validType="length[4,30]"> 
 	        </div>
 	        <div class="fitem">    
 	            <label>字典名称：</label>  
-	            <input name="name" class="easyui-validatebox">    
+	            <input name="name" class="easyui-validatebox" validType="maxLength[60]">    
 	        </div> 
 		</form>
 	</div>
@@ -85,7 +85,11 @@ $(function(){
 			$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){  
 	            if (r){
 					$.post('${pageContext.request.contextPath}/dicmanager/dicType/deleteById.do',{id:row.id},function(result){
-						if (result.success){  
+						if (result.success){
+							$.messager.show({  
+		                        title: '提示',  
+		                        msg: result.message  
+		                    }); 
 		                    $('#gridDicType').datagrid('reload');    // reload the user data  
 		                } else {  
 		                    $.messager.show({  
@@ -110,16 +114,14 @@ $(function(){
 			if(hasLoaded){
 				if($("#gridDicItem").data('dicType').id != row.id){
 					$("#winDicItemEdit").window('setTitle',row.name +" — 字典数据项列表");
-					$("#gridDicItem").data('dicType',row);
-		            $("#gridDicItem").datagrid('load',{typeId:row.id});
+					initItemList(row);
 				}
 			}else{
 	            $("#winDicItemEdit").window({
 	            	title:row.name +" — 字典数据项列表",
 	            	onLoad:function(){
 	            		//第一次加载页面时查询数据项
-		            	$("#gridDicItem").data('dicType',row);
-		            	$("#gridDicItem").datagrid('load',{typeId:row.id});
+		            	initItemList(row);
 		            	$("#winDicItemEdit").data('hasLoaded',true);
 	            	}	
 	            });
@@ -131,6 +133,11 @@ $(function(){
                 msg: '请选择一条记录'  
             }); 
         }
+		
+		function initItemList(row){
+			$("#gridDicItem").data('dicType',row);
+            $("#gridDicItem").datagrid('load',{typeId:row.id});
+		}
 	});
 	
 	$("#formDicType-btnSubmit").click(function(){

@@ -21,13 +21,13 @@
 			</tr>
 		</thead>
 	</table>
-	<div id="gridDicItem-toolbar">
+	<div id="gridDicItem-toolbar" style="height: 28px;">
 		<a id="dicItem-btnDelete" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" style="float:right">删除</a>
 		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="dicItem-btnUpdate" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" style="float:right">修改</a>
 		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="dicItem-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
-	</div>
+		</div>
 	<div id="dialogDicItem" class="easyui-dialog" closed="true" modal="true" buttons="#formDicItem-buttons" style="width:400px;height:270px;padding:10px 20px">
 		<div class="ftitle">数据字典项</div> 
 		<form id="formDicItem" method="post" class="fform">

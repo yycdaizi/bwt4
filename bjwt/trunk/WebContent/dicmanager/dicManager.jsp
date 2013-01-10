@@ -19,12 +19,10 @@
 			</tr>
 		</thead>
 	</table>
-	<div id="gridDicType-toolbar" style="padding:5px">
-		<div style="float:left;">
+	<div id="gridDicType-toolbar" style="padding:5px;height:auto">
 		<span>关键字:</span>
 		<input id="dicType-keyword"  style="width:300px"></input>
 		<a id="dicType-btnQuery" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-search">查询</a>
-		</div>
 		<a id="dicType-btnEditItems" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" style="float:right">字典项管理</a>
 		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="dicType-btnDelete" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" style="float:right">删除</a>

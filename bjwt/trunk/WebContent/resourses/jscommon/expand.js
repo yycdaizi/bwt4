@@ -6,33 +6,104 @@
 /**
  * 扩展验证类型
  */
+
+$.extend($.fn.validatebox.defaults.rules, {
+	minLength : { // 判断最小长度
+		validator : function(value, param) {
+			return value.length >= param[0];
+		},
+		message : '最少输入{0}个字符。'
+	},
+	maxLength : {
+		validator : function(value, param) {
+			return value.length <= param[0];
+		},
+		message : '最多输入{0}个字符'
+	},
+	length:{validator:function(value,param){
+		var len=$.trim(value).length;
+			return len>=param[0]&&len<=param[1];
+		},
+			message:"内容长度介于{0}和{1}之间."
+	},
+	phone : {// 验证电话号码
+		validator : function(value) {
+			return /^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/i.test(value);
+		},
+		message : '格式不正确,请使用下面格式:020-88888888'
+	},
+	mobile : {// 验证手机号码
+		validator : function(value) {
+			return /^(13|15|18)\d{9}$/i.test(value);
+		},
+		message : '手机号码格式不正确(正确格式如：13450774432)'
+	},
+	phoneOrMobile:{//验证手机或电话
+		validator : function(value) {
+			return /^(13|15|18)\d{9}$/i.test(value) || /^((\(\d{2,3}\))|(\d{3}\-))?(\(0\d{2,3}\)|0\d{2,3}-)?[1-9]\d{6,7}(\-\d{1,4})?$/i.test(value);
+		},
+		message:'请填入手机或电话号码,如13688888888或020-8888888'
+	},
+	idcard : {// 验证身份证
+		validator : function(value) {
+			return /^\d{15}(\d{2}[A-Za-z0-9])?$/i.test(value);
+		},
+		message : '身份证号码格式不正确'
+	},
+	floatOrInt : {// 验证是否为小数或整数
+		validator : function(value) {
+			return /^(\d{1,3}(,\d\d\d)*(\.\d{1,3}(,\d\d\d)*)?|\d+(\.\d+))?$/i.test(value);
+		},
+		message : '请输入数字，并保证格式正确'
+	},
+	currency : {// 验证货币
+		validator : function(value) {
+			return /^d{0,}(\.\d+)?$/i.test(value);
+		},
+		message : '货币格式不正确'
+	},
+	integer : {// 验证整数
+		validator : function(value) {
+			return /^[+]?[1-9]+\d*$/i.test(value);
+		},
+		message : '请输入整数'
+	},
+	unnormal : {// 验证是否包含空格和非法字符
+		validator : function(value) {
+			return /.+/i.test(value);
+		},
+		message : '输入值不能为空和包含其他非法字符'
+	},
+	username : {// 验证用户名
+		validator : function(value) {
+			return /^[a-zA-Z][a-zA-Z0-9_]{5,15}$/i.test(value);
+		},
+		message : '用户名不合法（字母开头，允许6-16字节，允许字母数字下划线）'
+	},
+	postalCode : {// 验证邮政编码
+		validator : function(value) {
+			return /^[1-9]\d{5}$/i.test(value);
+		},
+		message : '邮政编码格式不正确'
+	},
+	name : {// 验证姓名，可以是中文或英文
+			validator : function(value) {
+				return /^[\u0391-\uFFE5]+$/i.test(value)|/^\w+[\w\s]+\w+$/i.test(value);
+			},
+			message : '请输入姓名'
+	},same:{
+		validator : function(value, param){
+			if($("#"+param[0]).val() != "" && value != ""){
+				return $("#"+param[0]).val() == value; 
+			}else{
+				return true;
+			}
+		},
+		message : '两次输入的密码不一致！'	
+	}
+});
 $.extend($.fn.validatebox.defaults.rules,
 		{
-			minLength : {
-				validator : function(value, param) {
-					return value.length >= param[0];
-				},
-				message : '最少输入{0}个字符'
-			},
-			maxLength : {
-				validator : function(value, param) {
-					return value.length <= param[0];
-				},
-				message : '最多输入{0}个字符'
-			},
-			mobile : {
-				validator : function(value, param) {
-					return /^(13[0-9]|15[0|1|2|3|6|7|8|9]|18[6|8|9])\d{8}$/
-							.test(value);
-				},
-				message : '请输入正确的11位手机号码.格式:13120002221'
-			},
-			postcode : {
-				validator : function(value, param) {
-					return /^\d{6}$/.test(value);
-				},
-				message : '请输入正确的6位邮政编码'
-			},
 			datebefore : {
 				validator : function(value, param) {
 					var max = $(param[0]).val();
@@ -244,6 +315,27 @@ jQuery.fn.getValue = function(id) {
 	}
 	return el.val();
 };
+/**
+ * 格式化字符串
+ * 使用方法：formatString('字符串{0}字符串{1}字符串','第一个变量','第二个变量',...);
+ * @returns 格式化后的字符串
+ */
+jQuery.formatString = function(str){
+	for ( var i = 0; i < arguments.length - 1; i++) {
+		str = str.replace("{" + i + "}", arguments[i + 1]);
+	}
+	return str;
+};
+
+/**
+ * 表格行中的操作按钮和分隔符
+ */
+jQuery.operateButton = function(iconCls,text,clickFn){
+	var template='<span class="operate-btn" onclick="{2}"><span class="operate-icon {0}">{1}</span></span>';
+	//var template = '&nbsp;<img src="{0}" onclick="{1}" style="cursor: pointer;"/>&nbsp;';
+	return $.formatString(template,iconCls,text,clickFn);
+};
+jQuery.operateSplit = '<span class="operate-btn-separator"></span>';
 
 /**
  * 数组深度复制

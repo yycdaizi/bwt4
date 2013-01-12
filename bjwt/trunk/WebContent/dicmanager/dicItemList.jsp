@@ -17,17 +17,14 @@
 				<th data-options="field:'code',width:100,sortable:true">编码</th>
 				<th data-options="field:'text',width:200">名称</th>
 				<th data-options="field:'type.id',width:100, formatter:function(){return $('#gridDicItem').data('dicType').code;}">字典类型</th>
-				<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+				<th	data-options="field:'createTime',width:180,sortable:true">创建时间</th>
+				<th	data-options="field:'operate',width:150,formatter:dicItemOperater">操作</th>
 			</tr>
 		</thead>
 	</table>
 	<div id="gridDicItem-toolbar" style="height: 28px;">
-		<a id="dicItem-btnDelete" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-remove" style="float:right">删除</a>
-		<div class="datagrid-btn-separator" style="float:right"></div>
-		<a id="dicItem-btnUpdate" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-edit" style="float:right">修改</a>
-		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="dicItem-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
-		</div>
+	</div>
 	<div id="dialogDicItem" class="easyui-dialog" closed="true" modal="true" buttons="#formDicItem-buttons" style="width:400px;height:270px;padding:10px 20px">
 		<div class="ftitle">数据字典项</div> 
 		<form id="formDicItem" method="post" class="fform">
@@ -53,6 +50,43 @@
     	<a id="formDicItem-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
 	<script type="text/javascript">
+	function dicItemOperater(value, row, index){
+		var html = [];
+		html.push($.operateButton('icon-edit','修改','updateDicItem('+index+')'));
+		html.push($.operateSplit);
+		html.push($.operateButton('icon-cancel','删除','deleteDicItem('+index+')'));
+		return html.join('');
+	}
+	function updateDicItem(index){
+		var rows = $('#gridDicItem').datagrid('getRows');
+		var row = rows[index];
+		$('#dialogDicItem').dialog({title:'编辑字典项',iconCls:'icon-edit'}).dialog('open');  
+        $('#formDicItem').form('load',row);
+        $("#formDicItem [name='type.id']").val($('#gridDicItem').data('dicType').id);
+	}
+	function deleteDicItem(index){
+		var rows = $('#gridDicItem').datagrid('getRows');
+		var row = rows[index];
+		$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){
+            if (r){
+				$.post('${pageContext.request.contextPath}/dicmanager/dicItem/deleteById.do',{id:row.id},function(result){
+					if (result.success){  
+						$.messager.show({  
+	                        title: '提示',  
+	                        msg: result.message  
+	                    }); 
+	                    $('#gridDicItem').datagrid('reload');    // reload the user data  
+	                } else {  
+	                    $.messager.show({  
+	                        title: '错误',  
+	                        msg: result.message  
+	                    });  
+	                }
+				});
+			}  
+        });
+	}
+	
 	$(function(){
 		$("#gridDicItem").datagrid({
 			onBeforeLoad:function(param){
@@ -64,47 +98,6 @@
 	        $('#formDicItem').form('clear');
 	        //$('#formDicItem').form('load',{type:{id:$('#gridDicItem').data('dicType').id}});
 	        $("#formDicItem [name='type.id']").val($('#gridDicItem').data('dicType').id);
-		});
-		$("#dicItem-btnUpdate").click(function(){
-			var row = $('#gridDicItem').datagrid('getSelected');  
-	        if (row){  
-	            $('#dialogDicItem').dialog({title:'编辑字典项',iconCls:'icon-edit'}).dialog('open');  
-	            $('#formDicItem').form('load',row);
-	            $("#formDicItem [name='type.id']").val($('#gridDicItem').data('dicType').id);
-	        }else{
-	        	$.messager.show({  
-	                title: '提示',  
-	                msg: '请选择一条记录'  
-	            }); 
-	        }
-		});
-		$("#dicItem-btnDelete").click(function(){
-			var row = $('#gridDicItem').datagrid('getSelected');
-			if(row){
-				$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){
-		            if (r){
-						$.post('${pageContext.request.contextPath}/dicmanager/dicItem/deleteById.do',{id:row.id},function(result){
-							if (result.success){  
-								$.messager.show({  
-			                        title: '提示',  
-			                        msg: result.message  
-			                    }); 
-			                    $('#gridDicItem').datagrid('reload');    // reload the user data  
-			                } else {  
-			                    $.messager.show({  
-			                        title: '错误',  
-			                        msg: result.message  
-			                    });  
-			                }
-						});
-					}  
-		        });
-	        }else{
-	        	$.messager.show({  
-	                title: '提示',  
-	                msg: '请选择一条记录'  
-	            }); 
-	        }
 		});
 		
 		$("#formDicItem-btnSubmit").click(function(){

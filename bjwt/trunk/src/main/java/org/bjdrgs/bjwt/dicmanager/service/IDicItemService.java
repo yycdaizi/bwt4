@@ -36,12 +36,4 @@ public interface IDicItemService extends IBaseService<DicItem> {
 	 * @return
 	 */
 	DicItem get(String type, String code);
-
-	/**
-	 * 判断某字典的字典项编码是否唯一
-	 * @param typeId 字典类型ID
-	 * @param code 字典项编码
-	 * @return
-	 */
-	boolean isCodeUnique(Integer typeId, String code);
 }

@@ -38,9 +38,7 @@ public class DicTypeController {
 	@RequestMapping("/save")
 	@ResponseBody
 	public AjaxResult save(@Valid DicType entity, BindingResult errors) {
-		if(!isCodeUnique(entity.getCode())){
-			errors.rejectValue("code", "DicType.code.unique", SpringContextUtils.getMessage("DicType.code.unique"));
-		}
+		this.validateDicType(entity, errors);
 		
 		AjaxResult result = new AjaxResult();
 		if(errors.hasErrors()){
@@ -67,9 +65,22 @@ public class DicTypeController {
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 	
-	private boolean isCodeUnique(String code){
+	private void validateDicType(DicType entity, BindingResult errors){
+		if(!isCodeUnique(entity.getId(), entity.getCode())){
+			errors.rejectValue("code", "DicType.code.unique", SpringContextUtils.getMessage("DicType.code.unique"));
+		}
+	}
+	
+	/**
+	 * 判断字典类型的编码是否唯一
+	 * @param typeId 字典类型ID，为null时表示新增操作，不为null时表示修改操作
+	 * @param code 字典类型编码
+	 * @return
+	 */
+	private boolean isCodeUnique(Integer typeId, String code){
 		if(StringUtils.isNotEmpty(code)){
-			return dicTypeService.getByCode(code)==null;
+			DicType dicType = dicTypeService.getByCode(code);
+			return dicType==null||dicType.getId().equals(typeId);
 		}
 		return true;
 	}

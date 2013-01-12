@@ -1,5 +1,6 @@
 @CHARSET "UTF-8";
 
+/*弹出窗口中的表单样式*/
 .fform {
 	margin: 0;
 	padding: 10px 10px;
@@ -28,4 +29,38 @@
 .fitem textarea {
 	width:200px;
 	height: 60px;
+}
+
+/*表格行中的操作按钮样式*/
+span.operate-btn span.operate-icon{
+	display: inline-block;
+	background-position: left center;
+	padding-left:18px;
+	margin: 0px 2px;
+}
+span.operate-btn{
+	background: none repeat scroll 0 0 transparent;
+	background-position: right 0;
+	font-size: 12px;
+	line-height: 16px;
+	display: inline-block;
+	cursor: pointer;
+	/*height: 16px;*/
+	outline: medium none;
+    /*border: 1px solid white;*/
+    padding:1px;
+    text-decoration: none;
+}
+span.operate-btn:hover {
+    background: none repeat scroll 0 0 #DAF2FF;
+    border: 1px solid #B7D2FF;
+    padding:0px;
+    border-radius: 3px 3px 3px 3px;
+    color: #000000;
+}
+span.operate-btn-separator {
+    border-left: 1px solid #CCCCCC;
+    border-right: 1px solid #FFFFFF;
+    margin: 0px 5px;
+    height: 16px;
 }

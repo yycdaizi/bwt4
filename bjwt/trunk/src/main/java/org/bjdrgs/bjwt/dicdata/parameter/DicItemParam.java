@@ -1,4 +1,4 @@
-package org.bjdrgs.bjwt.dicmanager.parameter;
+package org.bjdrgs.bjwt.dicdata.parameter;
 
 import org.bjdrgs.bjwt.core.web.GridParam;
 

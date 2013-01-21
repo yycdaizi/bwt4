@@ -200,31 +200,8 @@ $.extend($.fn.combobox.defaults.box, {
 });
 
 /**
- * 扩展表格
+ * 扩展表格编辑框
  */
-$.extend($.fn.datagrid.defaults.editors, {
-	datetimebox : {
-		init : function(container, options) {
-			var input = $('<input class="easyui-datetimebox">').appendTo(
-					container);
-			return input.datetimebox();
-		},
-		getValue : function(target) {
-			return $(target).datetimebox("getValue");
-		},
-		setValue : function(target, value) {
-			$(target).datetimebox("setValue", value);
-		},
-		resize : function(target, width) {
-			var input = $(target);
-			if ($.boxModel == true) {
-				input.width(width - (input.outerWidth() - input.width()));
-			} else {
-				input.width(width);
-			}
-		}
-	}
-});
 $.extend($.fn.datagrid.defaults.editors, {
 	my97datetimebox : {
 		init : function(container, options) {
@@ -262,10 +239,7 @@ $.extend($.fn.datagrid.defaults.editors, {
 				input.width(width);
 			}
 		}
-	}
-});
-
-$.extend($.fn.datagrid.defaults.editors, {
+	},
 	autocompletebox : {
 		init : function(container, options) {
 			options = options || {};
@@ -298,6 +272,46 @@ $.extend($.fn.datagrid.defaults.editors, {
 				input.width(width);
 			}
 		}
+	}
+});
+
+/**
+ * 扩展表格方法
+ */
+$.extend($.fn.datagrid.methods, {
+	//验证表格中的所有行
+	validateData : function(jq) {
+		var $grid = $(jq[0]);
+		var valid = true;
+		for(var i=0;i<$grid.datagrid('getRows').length;i++){
+			$grid.datagrid('beginEdit', i);
+			if(!$grid.datagrid('validateRow', i)){
+				valid = false;
+			}else{
+				$grid.datagrid('endEdit', i);
+			}
+		}
+		return valid;
+	}
+});
+
+/**
+ * 扩展Tabs方法
+ */
+$.extend($.fn.tabs.methods,{
+	//更新tab页标题图片
+	updateIcon : function(jq, param) {
+		return jq.each(function() {
+			var pp = $(this).tabs('getTab',param.title);
+			var tab = pp.panel("options").tab;
+			tab.find("span.tabs-icon").attr("class", "tabs-icon");
+			if (param.iconCls) {
+				tab.find("span.tabs-title").addClass("tabs-with-icon");
+				tab.find("span.tabs-icon").addClass(param.iconCls);
+			} else {
+				tab.find("span.tabs-title").removeClass("tabs-with-icon");
+			}
+		});
 	}
 });
 

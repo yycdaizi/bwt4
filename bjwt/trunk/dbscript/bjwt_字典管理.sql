@@ -46,4 +46,4 @@ CREATE TABLE `dic_type` (
   `create_time` datetime NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `code_UNIQUE` (`code`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8 COMMENT='数据字典类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='数据字典类型';

@@ -44,9 +44,4 @@
 		<property name="sessionFactory" ref="sessionFactory" />
 	</bean>
 	<tx:annotation-driven />
-	
-	<!-- Dao类声明 -->
-	<bean id="baseDao" class="org.bjdrgs.bjwt.core.dao.impl.BaseDao" scope="prototype">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean>
 </beans>

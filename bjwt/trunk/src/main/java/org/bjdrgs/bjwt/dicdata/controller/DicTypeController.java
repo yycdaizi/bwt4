@@ -1,4 +1,4 @@
-package org.bjdrgs.bjwt.dicmanager.controller;
+package org.bjdrgs.bjwt.dicdata.controller;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
-import org.bjdrgs.bjwt.dicmanager.model.DicType;
-import org.bjdrgs.bjwt.dicmanager.parameter.DicTypeParam;
-import org.bjdrgs.bjwt.dicmanager.service.IDicTypeService;
+import org.bjdrgs.bjwt.dicdata.model.DicType;
+import org.bjdrgs.bjwt.dicdata.parameter.DicTypeParam;
+import org.bjdrgs.bjwt.dicdata.service.IDicDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/dicmanager/dicType")
+@RequestMapping("/dicdata/dicType")
 public class DicTypeController {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Resource(name = "dicTypeService")
-	private IDicTypeService dicTypeService;
+	@Resource(name = "dicDataService")
+	private IDicDataService dicDataService;
 	
-	@RequestMapping("/findPage")
+	@RequestMapping("/page")
 	@ResponseBody
-	public GridPage<DicType> findPage(DicTypeParam param){
-		GridPage<DicType> page = dicTypeService.findPage(param);
+	public GridPage<DicType> page(DicTypeParam param){
+		GridPage<DicType> page =GridPage.valueOf(dicDataService.queryDicType(param));
 		return page;
 	}
 
@@ -51,7 +51,7 @@ public class DicTypeController {
 			result.setSuccess(false);
 			result.setMessage(msg.toString());
 		}else{
-			dicTypeService.save(entity);
+			dicDataService.saveDicType(entity);
 			result.setSuccess(true);
 			result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
 		}
@@ -61,7 +61,7 @@ public class DicTypeController {
 	@RequestMapping("/deleteById")
 	@ResponseBody
 	public AjaxResult deleteById(Integer id){
-		dicTypeService.deleteById(id);
+		dicDataService.deleteDicTypeById(id);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 	
@@ -79,7 +79,7 @@ public class DicTypeController {
 	 */
 	private boolean isCodeUnique(Integer typeId, String code){
 		if(StringUtils.isNotEmpty(code)){
-			DicType dicType = dicTypeService.getByCode(code);
+			DicType dicType = dicDataService.getDicTypeByCode(code);
 			return dicType==null||dicType.getId().equals(typeId);
 		}
 		return true;

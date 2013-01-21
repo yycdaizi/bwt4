@@ -9,7 +9,7 @@
 </head>
 <body>
 	<table id="gridDicItem" fit="true" 
-		autoRowHeight="false" singleSelect="true" url="${pageContext.request.contextPath}/dicmanager/dicItem/findPage.do"
+		autoRowHeight="false" singleSelect="true" url="${pageContext.request.contextPath}/dicdata/dicItem/page.do"
 		pagination="true" rownumbers="true" fitColumns="true" sortName="code" 
         sortOrder="asc" toolbar="#gridDicItem-toolbar" >
 		<thead>
@@ -69,7 +69,7 @@
 		var row = rows[index];
 		$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){
             if (r){
-				$.post('${pageContext.request.contextPath}/dicmanager/dicItem/deleteById.do',{id:row.id},function(result){
+				$.post('${pageContext.request.contextPath}/dicdata/dicItem/deleteById.do',{id:row.id},function(result){
 					if (result.success){  
 						$.messager.show({  
 	                        title: '提示',  
@@ -102,7 +102,7 @@
 		
 		$("#formDicItem-btnSubmit").click(function(){
 			$('#formDicItem').form('submit',{  
-	            url: "${pageContext.request.contextPath}/dicmanager/dicItem/save.do",  
+	            url: "${pageContext.request.contextPath}/dicdata/dicItem/save.do",  
 	            onSubmit: function(){  
 	                return $(this).form('validate');
 	            },  

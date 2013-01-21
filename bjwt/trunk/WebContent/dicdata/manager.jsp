@@ -8,7 +8,7 @@
 </head>
 <body>
 	<table id="gridDicType" style="height:400px" class="easyui-datagrid" title='字典类型'
-		autoRowHeight="false" singleSelect="true" url="${pageContext.request.contextPath}/dicmanager/dicType/findPage.do"
+		autoRowHeight="false" singleSelect="true" url="${pageContext.request.contextPath}/dicdata/dicType/page.do"
 		pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
         sortOrder="desc" toolbar="#gridDicType-toolbar">
 		<thead>
@@ -47,7 +47,7 @@
 	</div>
 	
 	<div id="winDicItemEdit" class="easyui-window" title="字典数据项列表" style="width:600px;height:400px"
-		collapsible="false" minimizable="false" closed="true" modal="true" href="${pageContext.request.contextPath}/dicmanager/dicItemList.jsp">
+		collapsible="false" minimizable="false" closed="true" modal="true" href="${pageContext.request.contextPath}/dicdata/dicItemList.jsp">
 	</div>
 <script type="text/javascript">
 function dicTypeOperater(value, row, index){
@@ -70,7 +70,7 @@ function deleteDicType(index){
 	var row = rows[index];
 	$.messager.confirm('提示', '确定要删除这条记录吗？', function(r){  
         if (r){
-			$.post('${pageContext.request.contextPath}/dicmanager/dicType/deleteById.do',{id:row.id},function(result){
+			$.post('${pageContext.request.contextPath}/dicdata/dicType/deleteById.do',{id:row.id},function(result){
 				if (result.success){
 					$.messager.show({  
                         title: '提示',  
@@ -101,8 +101,8 @@ function manageDicItems(index){
         	title:row.name +" — 字典数据项列表",
         	onLoad:function(){
         		//第一次加载页面时查询数据项
-            	initItemList(row);
             	$("#winDicItemEdit").data('hasLoaded',true);
+            	initItemList(row);
         	}	
         });
 	}
@@ -127,7 +127,7 @@ $(function(){
 	
 	$("#formDicType-btnSubmit").click(function(){
 		$('#formDicType').form('submit',{  
-            url: "${pageContext.request.contextPath}/dicmanager/dicType/save.do",  
+            url: "${pageContext.request.contextPath}/dicdata/dicType/save.do",  
             onSubmit: function(){  
                 return $(this).form('validate');
             },  

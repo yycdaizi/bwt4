@@ -1,4 +1,4 @@
-package org.bjdrgs.bjwt.dicmanager.controller;
+package org.bjdrgs.bjwt.dicdata.controller;
 
 import java.util.List;
 
@@ -9,11 +9,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
-import org.bjdrgs.bjwt.dicmanager.model.DicItem;
-import org.bjdrgs.bjwt.dicmanager.model.DicType;
-import org.bjdrgs.bjwt.dicmanager.parameter.DicItemParam;
-import org.bjdrgs.bjwt.dicmanager.service.IDicItemService;
-import org.bjdrgs.bjwt.dicmanager.service.IDicTypeService;
+import org.bjdrgs.bjwt.dicdata.model.DicItem;
+import org.bjdrgs.bjwt.dicdata.model.DicType;
+import org.bjdrgs.bjwt.dicdata.parameter.DicItemParam;
+import org.bjdrgs.bjwt.dicdata.service.IDicDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -23,24 +22,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/dicmanager/dicItem")
+@RequestMapping("/dicdata/dicItem")
 public class DicItemController {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Resource(name = "dicItemService")
-	private IDicItemService dicItemService;
+	@Resource(name = "dicDataService")
+	private IDicDataService dicDataService;
 	
-	@Resource(name = "dicTypeService")
-	private IDicTypeService dicTypeService;
-	
-	@RequestMapping("/findPage")
+	@RequestMapping("/page")
 	@ResponseBody
-	public GridPage<DicItem> findPage(DicItemParam param){
+	public GridPage<DicItem> page(DicItemParam param){
 		if(param.getTypeId()==null){
 			return GridPage.getEmptyPage();
 		}
-		return dicItemService.findPage(param);
+		return GridPage.valueOf(dicDataService.queryDicItem(param));
 	}
 	
 	@RequestMapping("/save")
@@ -59,7 +55,7 @@ public class DicItemController {
 			result.setSuccess(false);
 			result.setMessage(msg.toString());
 		}else{
-			dicItemService.save(entity);
+			dicDataService.saveDicItem(entity);
 			result.setSuccess(true);
 			result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
 		}
@@ -69,7 +65,7 @@ public class DicItemController {
 	@RequestMapping("/deleteById")
 	@ResponseBody
 	public AjaxResult deleteById(Integer id){
-		dicItemService.deleteById(id);
+		dicDataService.deleteDicItemById(id);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 	
@@ -77,7 +73,7 @@ public class DicItemController {
 		if(entity.getType()==null||entity.getType().getId()==null){
 			errors.rejectValue("type.id", "DicItem.type.id.notNull", SpringContextUtils.getMessage("DicItem.type.id.notNull"));
 		}else{
-			DicType dicType = dicTypeService.getById(entity.getType().getId());
+			DicType dicType = dicDataService.getDicTypeById(entity.getType().getId());
 			if(dicType==null){
 				errors.rejectValue("type", "DicItem.type.exist", SpringContextUtils.getMessage("DicItem.type.exist"));
 			}else{			
@@ -99,11 +95,11 @@ public class DicItemController {
 		if(StringUtils.isEmpty(code)||typeId==null){
 			return true;
 		}
-		DicType dicType = dicTypeService.getById(typeId);
+		DicType dicType = dicDataService.getDicTypeById(typeId);
 		if(dicType==null){
 			return true;
 		}
-		DicItem dicItem = dicItemService.get(dicType.getCode(), code);
+		DicItem dicItem = dicDataService.getDicItem(dicType.getCode(), code);
 		return dicItem==null||dicItem.getId().equals(itemId);
 	}
 }

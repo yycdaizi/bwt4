@@ -19,6 +19,10 @@ public class GridPage<T> implements Serializable{
 		return new GridPage<T>(0, new ArrayList<T>());
 	}
 	
+	public static <T> GridPage<T> valueOf(Pagination<T> pagination){
+		return new GridPage<T>(pagination);
+	}
+	
 	public GridPage(){
 	}
 	public GridPage(int total, List<T> rows){

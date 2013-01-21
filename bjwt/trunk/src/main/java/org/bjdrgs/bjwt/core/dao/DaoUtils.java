@@ -18,16 +18,28 @@ import org.hibernate.type.Type;
 public abstract class DaoUtils {
 
 	/**
+	 * 设置query的参数，Map形式
 	 * @param query
 	 * @param parameters
 	 */
-	public static void applyMapParameterToQuery(Query query, Map<String, Object> parameters) {
-
+	public static void applyParametersToQuery(Query query, Map<String, Object> parameters) {
 		Iterator<String> keyIterator = parameters.keySet().iterator();
 		while (keyIterator.hasNext()) {
 			String key = keyIterator.next();
 			Object value = parameters.get(key);
 			applyNamedParameterToQuery(query, key, value, null);
+		}
+	}
+	/**
+	 * 设置query的参数，Object[]形式
+	 * @param query
+	 * @param parameters
+	 */
+	public static void applyParametersToQuery(Query query, Object... parameters) {
+		if(parameters!=null){
+			for(int i=0;i<parameters.length;i++) {
+				query.setParameter(i, parameters[i]);
+			}
 		}
 	}
 

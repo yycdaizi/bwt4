@@ -1,0 +1,1 @@
+insert into b_menu (menuname,menuurl,menuicon) values ('','','');

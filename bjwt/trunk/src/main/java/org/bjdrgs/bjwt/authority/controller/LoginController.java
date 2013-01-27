@@ -1,9 +1,9 @@
-package org.bjdrgs.bjwt.usermananger.controller;
+package org.bjdrgs.bjwt.authority.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.bjdrgs.bjwt.usermananger.model.User;
-import org.bjdrgs.bjwt.usermananger.service.IUserService;
+import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.service.IUserService;
 import org.bjdrgs.bjwt.utils.Constants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

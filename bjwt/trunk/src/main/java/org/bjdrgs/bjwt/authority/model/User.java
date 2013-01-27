@@ -1,4 +1,4 @@
-package org.bjdrgs.bjwt.usermananger.model;
+package org.bjdrgs.bjwt.authority.model;
 
 public class User {
 	private int userid;

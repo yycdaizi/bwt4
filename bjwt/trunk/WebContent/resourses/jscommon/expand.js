@@ -322,7 +322,7 @@ jQuery.fn.getValue = function(id) {
 	var el = this;
 	if (el.hasClass("easyui-combobox")) {
 		if (el.combobox("options").multiple) {
-			return el.combobox("getValues");
+			return el.combobox("getValues").join(",");
 		} else {
 			return el.combobox("getValue");
 		}

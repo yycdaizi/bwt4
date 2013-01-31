@@ -22,7 +22,7 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.springframework.util.CollectionUtils;
 
-public class BaseDaoImpl<T extends Serializable> implements IBaseDao<T> {
+public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T> {
 
 	private Class<T> entityClass;
 	

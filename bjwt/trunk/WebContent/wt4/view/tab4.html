@@ -1,0 +1,376 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+		$(function() {
+			$(".my97-date").click(function() {
+				WdatePicker();
+			});
+			$(".my97-datetime").click(function() {
+				WdatePicker({
+					dateFmt : "yyyy-MM-dd HH:mm:ss"
+				});
+			});
+		});
+	</script>
+	<form id="formTab4">
+		<!--第四页开始-->
+		<script type="text/javascript">
+			$(function() {
+				$("#AEB02C").width(240).combobox({
+					onSelect : function(record) {
+						var val = $(this).combobox("getValue");
+						if (val == "2") {
+							$("#AEB01").validatebox({
+								required : true
+							});
+							$("#AEB01").validatebox("validate");
+						} else {
+							$("#AEB01").validatebox({
+								required : false
+							});
+							$("#AEB01").validatebox("validate");
+						}
+					}
+				});
+			});
+		</script>
+		<fieldset>
+			<legend> 药物过敏信息 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="30%" />
+					<col width="20%" />
+					<col width="30%" />
+				</colgroup>
+				<tbody>
+					<tr>
+						<td align="right"><label for="AEB02C"> 有无药物过敏: </label></td>
+						<td><input id="AEB02C" name="AEB02C" type="text"
+							class="easyui-combobox" url="data/dic-HaveOrNot.json"
+							panelHeight="auto" required="true"
+							validType="comboboxfixed['AEB02C']" /></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td align="right"><label for="AEB01"> 过敏药物: </label></td>
+						<td colspan="3"><input class="easyui-validatebox longtext"
+							type="text" id="AEB01" name="AEB01" validType="length[1,200]" />
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend> 病案质控信息 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="30%" />
+					<col width="20%" />
+					<col width="30%" />
+				</colgroup>
+				<tr>
+					<td align="right"><label for="AED01C"> 病案质量代码: </label></td>
+					<td><input type="text" id="AED01C" name="AED01C"
+						class="easyui-combobox" url="data/dic-BinAnZhiLiang.json"
+						panelHeight="auto" validType="comboboxfixed['AED01C']" /></td>
+					<td align="right"><label for="AED02"> 质控医师姓名: </label></td>
+					<td><input class="easyui-validatebox" type="text" id="AED02"
+						name="AED02" validType="length[1,20]" /></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AED03"> 质控护士姓名: </label></td>
+					<td><input class="easyui-validatebox" type="text" id="AED03"
+						name="AED03" validType="length[1,20]" /></td>
+					<td align="right"><label for="AED04"> 病案质量检查日期: </label></td>
+					<td><input class="easyui-validatebox my97-date" type="text"
+						id="AED04" name="AED04" /></td>
+				</tr>
+			</table>
+		</fieldset>
+
+		<fieldset>
+			<legend> 血液信息 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="30%" />
+					<col width="20%" />
+					<col width="30%" />
+				</colgroup>
+				<tr>
+					<td align="right"><label for="AEG01C"> 血型代码: </label></td>
+					<td><input type="text" id="AEG01C" name="AEG01C"
+						class="easyui-combobox" url="data/dic-BloodType.json"
+						panelHeight="auto" validType="comboboxfixed['AEG01C']" /></td>
+					<td align="right"><label for="AEG02C"> Rh 代码: </label></td>
+					<td><input type="text" id="AEG02C" name="AEG02C"
+						class="easyui-combobox" url="data/dic-Rh.json" panelHeight="auto"
+						validType="comboboxfixed['AEG02C']" /></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEG04"> 红细胞(单位): </label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEG04"
+						name="AEG04" min="1" max="999999" /></td>
+					<td align="right"><label for="AEG05"> 血小板(袋): </label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEG05"
+						name="AEG05" min="1" max="999999" /></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEG06"> 血浆(ml): </label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEG06"
+						name="AEG06" min="1" max="999999" /></td>
+					<td align="right"><label for="AEG07"> 全血(ml): </label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEG07"
+						name="AEG07" min="1" max="999999" /></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEG08"> 其它(ml): </label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEG08"
+						name="AEG08" min="1" max="999999" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</fieldset>
+		<script type="text/javascript">
+			$(function() {
+				//时间联动，超出范围时自动增加到前一单位
+				function timeLinkage(dayField, hourField, minuteField) {
+					$("#" + hourField)
+							.blur(
+									function() {
+										var hours = parseInt($(this).val() || 0);
+										if (hours > 23) {
+											var days = parseInt($(
+													"#" + dayField).val() || 0)
+													+ Math.floor(hours / 24);
+											$("#" + dayField).val(days);
+											$(this).val(hours % 24);
+										}
+									});
+					$("#" + minuteField).blur(
+							function() {
+								var minutes = parseInt($(this).val() || 0);
+								if (minutes > 59) {
+									var hours = parseInt($("#" + hourField)
+											.val() || 0)
+											+ Math.floor(minutes / 60);
+									if (hours > 23) {
+										var days = parseInt($("#" + dayField)
+												.val() || 0)
+												+ Math.floor(hours / 24);
+										$("#" + dayField).val(days);
+										hours = hours % 24;
+									}
+									$("#" + hourField).val(hours);
+									$(this).val(minutes % 60);
+								}
+							});
+				}
+				timeLinkage("AEJ01", "AEJ02", "AEJ03");
+				timeLinkage("AEJ04", "AEJ05", "AEJ06");
+			});
+		</script>
+		<fieldset>
+			<legend> 颅脑患者昏迷情况 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="80%" />
+				</colgroup>
+				<tr>
+					<td align="right"><label for="AEJ01"> 颅脑损伤患者入院前昏迷时间: </label></td>
+					<td><input style="width: 60px;" class="easyui-numberbox"
+						type="text" id="AEJ01" name="AEJ01" min="0" max="99999" /> 天 <input
+						style="width: 60px;" class="easyui-numberbox" type="text"
+						id="AEJ02" name="AEJ02" min="0" /> 小时 <input style="width: 60px;"
+						class="easyui-numberbox" type="text" id="AEJ03" name="AEJ03"
+						min="0" /> 分钟</td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEJ04"> 颅脑损伤患者入院后昏迷时间: </label></td>
+					<td><input style="width: 60px;" class="easyui-numberbox"
+						type="text" id="AEJ04" name="AEJ04" min="0" max="99999" /> 天 <input
+						style="width: 60px;" class="easyui-numberbox" type="text"
+						id="AEJ05" name="AEJ05" min="0" max="23" /> 小时 <input
+						style="width: 60px;" class="easyui-numberbox" type="text"
+						id="AEJ06" name="AEJ06" min="0" max="59" /> 分钟</td>
+				</tr>
+			</table>
+		</fieldset>
+		<script type="text/javascript">
+			$(function() {
+				$('#AEKS').initGrid();
+			});
+			function ICU_Formatter(value) {
+				for ( var i = 0; i < dic_ICU.length; i++) {
+					if (dic_ICU[i].value == value)
+						return dic_ICU[i].text;
+				}
+				return value;
+			}
+		</script>
+		<fieldset>
+			<legend> 重症监护情况 </legend>
+			<table id="AEKS" style="height: 180px" title="重症情况"
+				singleSelect="true">
+				<thead>
+					<tr>
+						<th field="AEK01C" width="200" align="center"
+							formatter="ICU_Formatter"
+							editor="{type:'combobox',options:{data:dic_ICU,panelHeight:'auto',required:true,editable:false}}">
+							重症监护室代码</th>
+						<th field="AEK02" width="200" align="center"
+							editor="{type:'my97datetimebox',options:{my97:{dateFmt:'yyyy-MM-dd HH:mm:ss'},required:true}}">
+							监护室进入日期时间</th>
+						<th field="AEK03" width="200" align="center"
+							editor="{type:'my97datetimebox',options:{my97:{dateFmt:'yyyy-MM-dd HH:mm:ss'},required:true}}">
+							监护室退出日期时间</th>
+					</tr>
+				</thead>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend> 呼吸机使用情况 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="30%" />
+					<col width="20%" />
+					<col width="30%" />
+				</colgroup>
+				<tr>
+					<td align="right"><label for="AEL01"> 呼吸机使用时间(小时): </label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEL01"
+						name="AEL01" min="1" max="999999" /></td>
+				</tr>
+			</table>
+		</fieldset>
+		<script type="text/javascript">
+			$(function() {
+				$('#AENS').initGrid();
+			});
+			function AEN02C_resultHandler(event, item) {
+				item = item || {};
+				var target = event.currentTarget;
+				var el = $(target).parent().parent().parent().parent().parent()
+						.parent().next().find("input");
+				el.val(item.name);
+				el.validatebox("validate");
+			}
+			function AEN02N_resultHandler(event, item) {
+				item = item || {};
+				var target = event.currentTarget;
+				var el = $(target).parent().parent().parent().parent().parent()
+						.parent().prev().find("input");
+				el.val(item.code);
+				el.validatebox("validate");
+			}
+		</script>
+		<fieldset>
+			<legend> 新生儿情况 </legend>
+			<table id="AENS" style="height: 180px" title="新生儿情况"
+				singleSelect="true" rownumbers="true">
+				<thead>
+					<tr>
+						<th field="AEN01" width="100" align="center"
+							editor="{type:'numberbox',options:{required:true,min:1,max:9999}}">
+							新生儿出生体重(克)</th>
+						<th field="AEN02C" width="200" align="center"
+							editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler,validType:'fixedin[zdData,\'code\']'}}">
+							新生儿出生缺陷诊断编码(ICD-10)</th>
+						<th field="AEN02N" width="400" align="center"
+							editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler,validType:'fixedin[zdData,\'name\']'}}">
+							新生儿出生缺陷诊断名称</th>
+					</tr>
+				</thead>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend> 离院情况 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="30%" />
+					<col width="20%" />
+					<col width="30%" />
+				</colgroup>
+				<tr>
+					<td align="right"><label for="AEM01C"> 离院方式代码: </label></td>
+					<td><input type="text" id="AEM01C" name="AEM01C"
+						class="easyui-combobox" url="data/dic-LiYuanFangShi.json"
+						panelHeight="auto" required="true"
+						validType="comboboxfixed['AEM01C']" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEM02">
+							医嘱转院、转社区、卫生院机构名称: </label></td>
+					<td colspan="3"><input class="easyui-validatebox longtext"
+						type="text" id="AEM02" name="AEM02" validType="length[0,100]" />
+					</td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEM03C"> 是否有出院31日内再住院计划:
+					</label></td>
+					<td><input type="text" id="AEM03C" name="AEM03C"
+						class="easyui-combobox" url="data/dic-bool.json"
+						panelHeight="auto" required="true"
+						validType="comboboxfixed['AEM03C']" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEM04"> 31日内再住院目的: </label></td>
+					<td colspan="3"><textarea class="easyui-validatebox"
+							id="AEM04" name="AEM04" validType="length[0,500]" /></td>
+				</tr>
+			</table>
+		</fieldset>
+		<fieldset>
+			<legend> 其他信息 </legend>
+			<table class="layout-table">
+				<colgroup>
+					<col width="20%" />
+					<col width="30%" />
+					<col width="20%" />
+					<col width="30%" />
+				</colgroup>
+				<tr>
+					<td align="right"><label for="AEI01C"> 是否尸检代码: </label></td>
+					<td><input type="text" id="AEI01C" name="AEI01C"
+						class="easyui-combobox" url="data/dic-bool.json"
+						panelHeight="auto" validType="comboboxfixed['AEI01C']" /></td>
+					<td align="right"><label for="AEI09"> 日常生活能力评定量得分（入院）:
+					</label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEI09"
+						name="AEI09" min="0" max="100" /></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEI10"> 日常生活能力评定量得分（出院）:
+					</label></td>
+					<td><input class="easyui-numberbox" type="text" id="AEI10"
+						name="AEI10" min="0" max="100" /></td>
+					<td></td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="right"><label for="AEI08"> 备注: </label></td>
+					<td colspan="3"><textarea class="easyui-validatebox"
+							id="AEI08" name="AEI08" validType="length[0,500]"></textarea></td>
+				</tr>
+			</table>
+		</fieldset>
+		<!--第四页结束-->
+	</form>
+</body>
+</html>

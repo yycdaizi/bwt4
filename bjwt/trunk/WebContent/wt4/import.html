@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>病案首页</title>
+    <link rel="stylesheet" type="text/css" href="../resourses/jslib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/jslib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/css/image.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/wt4.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/jslib/autocomplete/jquery.autocomplete.css" />
+    <script type="text/javascript" src="../resourses/jslib/easyui/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/autocomplete/jquery.autocomplete.js"></script>
+    
+    <script type="text/javascript" src="../resourses/jslib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="../resourses/jslib/date/Date.min.js"></script>
+      
+	<script type="text/javascript" src="../resourses/jscommon/expand.js"></script>
+	<script type="text/javascript" src="../resourses/jscommon/jquery.customParam.js"></script>
+	<script type="text/javascript" src="js/loadXML.js"></script>
+	
+	<script type="text/javascript" src="data/dics/czData.js"></script>
+	<script type="text/javascript" src="data/dics/zdData.js"></script>
+	<script type="text/javascript" src="data/dics/dic-address.js"></script>
+	<script type="text/javascript" src="data/dics/dic-streat.js"></script>
+	<script type="text/javascript" src="data/dics/dic-blzd.js"></script>
+	<script type="text/javascript" src="data/dics/dic-rybq.js"></script>
+	<script type="text/javascript" src="data/dics/dic-bool.js"></script>
+	<script type="text/javascript" src="data/dics/dic-ICU.js"></script>
+
+	<script type="text/javascript" src="js/model.js"></script>
+	
+	<script type="text/javascript" src="js/surgery.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+	
+<!-- 
+      <script type="text/javascript" src="../resourses/jslib/xmloperator/XMLWriter.js"></script>
+      <script type="text/javascript" src="js/CaseXmlWriter.js"></script>
+ -->
+</head>
+<body>
+	<table id="gridMedicalRecord" style="height:400px" class="easyui-datagrid" title='病案'
+		autoRowHeight="false" singleSelect="true"
+		pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
+        sortOrder="desc" toolbar="#gridMedicalRecord-toolbar">
+		<thead>
+			<tr>
+				<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
+				<th data-options="field:'AAA01',width:200">姓名</th>
+				<th data-options="field:'AAB02C',width:200">入院科别</th>
+				<th data-options="field:'AAC01',width:200">出院时间</th>
+				<th data-options="field:'AEM01C',width:200">离院方式</th>
+				<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+				<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
+			</tr>
+		</thead>
+	</table>
+	<div id="gridMedicalRecord-toolbar" style="height:28px">
+		<a id="medicalRecord-btnImport" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">导入</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
+		<a id="medicalRecord-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
+	</div>
+	
+	<div id="dialogMedicalRecordEdit" class="easyui-dialog" title="病案" maximized="true"
+		collapsible="false"  closed="true" modal="true" buttons="#dialogMREdit-buttons">
+		<div id="mainTabs" class="easyui-tabs" fit="true" border="false">
+		    <div title="患者基本信息" style="padding:10px;" href="view/tab1.html">
+		    </div>
+		    <div title="诊断信息" style="padding:10px;" href="view/tab2.html">
+		    </div>
+		    <div title="手术及操作信息" style="padding:10px;" href="view/tab3.html">
+		    </div>
+		    <div title="其他医疗信息" style="padding:10px;" href="view/tab4.html">
+		    </div>
+		    <div title="费用信息" style="padding:10px;" href="view/tab5.html">
+		    </div>
+		    <!--
+		    -->
+		</div>
+	</div>
+	<div id="dialogMREdit-buttons" style="text-align: center;">
+		<a id="dialogMREdit-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">确定</a>    
+    	<a id="dialogMREdit-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+	</div>
+	<div id="dialogImport" class="easyui-dialog" title="导入病案" closed="true" modal="true" iconCls="icon-save" style="width:500px;padding:10px 20px;background: #fafafa;">
+		<label for="importfile" style="width: 30%;float: left">病例文件（*.xml）：</label>
+		<input id="importfile" name="importfile" class="easyui-validatebox" type="file" required="true" style="width: 70%;float: left"/>
+	</div>
+<script type="text/javascript">
+function medicalRecordOperater(value, row, index){
+	var html = [];
+	html.push($.operateButton('icon-edit','修改','updateMedicalRecord('+index+')'));
+	return html.join('');
+}
+function updateMedicalRecord(index){
+	var rows = $('#gridMedicalRecord').datagrid('getRows');
+	var row = rows[index];
+	MedicalRecordForm.loadData(row);
+	$('#dialogMedicalRecordEdit').data('dataIndex',index);
+	$('#dialogMedicalRecordEdit').dialog('setTitle','编辑病案').dialog('open'); 
+}
+$(function(){
+	//遍历加载所有的tab
+	var tabs = $('#mainTabs').tabs().tabs("tabs");
+	for(var i=tabs.length-1;i>=0;i--){
+		$('#mainTabs').tabs("select",tabs[i].panel('options').title);
+	}
+	
+	$('#dialogMREdit-btnSubmit').click(function(){
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...'
+			//text:'正在验证数据...'
+		}); 
+		if(!MedicalRecordForm.validExpenses()){
+			$.messager.progress('close');
+			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			return false;
+		}
+		if (!MedicalRecordForm.validate()) {
+			$.messager.progress('close');
+			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			return false;
+		}
+		//$.messager.progress('close');
+		/*
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...',
+			text:'正在提交数据...'
+		});
+		*/
+		var record = MedicalRecordForm.getData();
+		$.post('medicalRecord/save.do',$.customParam(record),function(result){
+			if (result.success){  
+            	$.messager.show({  
+                    title: '提示',  
+                    msg: result.message  
+                }); 
+                //TODO 删除表格中的已保存的记录
+                var index = $('#dialogMedicalRecordEdit').data('dataIndex');
+                if(index||index==0){
+                	$('#gridMedicalRecord').datagrid('deleteRow',index);
+                }
+            	$('#dialogMedicalRecordEdit').dialog('close');
+            } else {  
+            	$.messager.alert('错误',result.message,'error');   
+            }
+			$.messager.progress('close');
+		});
+	});
+	
+	$('#dialogMREdit-btnCancel').click(function(){
+		$('#dialogMedicalRecordEdit').dialog('close');
+	});
+	
+	$("#medicalRecord-btnAdd").click(function(){
+		MedicalRecordForm.clear();
+		$('#dialogMedicalRecordEdit').data('dataIndex',null)
+		$('#dialogMedicalRecordEdit').dialog('setTitle','新增病案').dialog('open'); 
+	});
+	
+	$("#medicalRecord-btnImport").click(function(){
+		$('#dialogImport').dialog('open');
+	});
+	$('#dialogImport').dialog({
+		buttons:[{
+			iconCls:'icon-ok',
+			text: '确定',
+			handler: function(){
+				if(!$("#importfile").validatebox("isValid")){
+					return;
+				}
+				var path = $("#importfile").val();
+				
+				var recordList = parseMedicalRecordXML(path);
+				var rows = $('#gridMedicalRecord').datagrid('getRows');
+				//合并数据
+				$.merge(rows, recordList);
+				$('#gridMedicalRecord').datagrid('loadData',rows);
+				
+				$("#importfile").val("");
+				$('#dialogImport').dialog('close');
+			}
+		},{
+			iconCls:'icon-cancel',
+			text: '取消',
+			handler: function(){
+				$('#dialogImport').dialog('close');
+			}
+		}]
+	});
+});
+</script>
+</body>
+</html>

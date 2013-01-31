@@ -8,4 +8,6 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/date/Date.min.js"></script>
 
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/json/form2json.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/expand.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/jquery.customParam.js"></script>

@@ -72,16 +72,4 @@
 		});
 		return data;
 	};
-	//post方式发送application/json格式请求，发送数据必须为json格式的字符串
-	$.postJSON = function(url, data, successCallback, errorCallback){
-		$.ajax({
-			type:'POST',
-			contentType : 'application/json',
-			url : url,
-			dataType : 'json',
-			data : data,
-			success : successCallback,  
-          	error : errorCallback
-		});
-	};
 })(jQuery);

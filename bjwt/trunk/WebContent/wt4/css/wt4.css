@@ -1,0 +1,17 @@
+input {
+	width: 240px;
+}
+
+.longtext {
+	width: 90%;
+}
+
+.layout-table {
+	width: 100%;
+}
+
+textarea {
+	width: 90%;
+	height: 50px;
+	font-size: 13px;
+}

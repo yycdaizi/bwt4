@@ -1,0 +1,15 @@
+1.将下拉选择面板的鼠标样式设为pointer
+changes: 
+easyui.css中的.combobox-item类中增加：cursor: pointer;
+
+2.当validatebox所在面板被隐藏时，验证提示信息错位。
+changes: 
+jquery.easyui.min.js中validatebox的代码。在第5277和第5289行。让validate()时不显示提示信息，只有当鼠标在此编辑框上时才显示提示。
+
+3.为combo的text编辑框添加focus,blur,click事件。
+changes: 
+jquery.easyui.min.js中combo的代码。第9868行和第10195行
+
+4.combobox添加默认按向下方向键时，自动显示下拉选择面板的功能。
+changes:
+jquery.easyui.min.js中combobox的代码。第10510行

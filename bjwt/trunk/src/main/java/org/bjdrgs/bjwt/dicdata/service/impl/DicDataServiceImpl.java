@@ -63,7 +63,7 @@ public class DicDataServiceImpl implements IDicDataService {
 	//字典数据项操作函数
 	@Override
 	public List<DicItem> listDicItemsByType(String type) {
-		return dicItemDao.queryByProperty("type.id", type);
+		return dicItemDao.queryByProperty("type.code", type);
 	}
 
 	@Override

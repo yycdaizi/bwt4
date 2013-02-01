@@ -2,7 +2,6 @@ package org.bjdrgs.bjwt.authority.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IUserService;
 import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.springframework.stereotype.Controller;
@@ -40,8 +39,9 @@ public class LoginController {
 			model.addAttribute("message", "密码错误");
 			return "login";
 		} else if(name.equals("zhouwb") && password.equals("123")) {
+			//TODO login in
 			request.getSession().setAttribute(Constants.USER_INFO_SESSION,
-					new User());
+					null);
 			return "welcome";
 		}else{
 			return "login";

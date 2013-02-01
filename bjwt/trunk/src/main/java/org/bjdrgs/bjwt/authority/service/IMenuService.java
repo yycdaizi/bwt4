@@ -1,19 +1,12 @@
 package org.bjdrgs.bjwt.authority.service;
 
-import java.awt.Menu;
-import java.util.ArrayList;
-import java.util.List;
+import org.bjdrgs.bjwt.authority.model.Menu;
+import org.bjdrgs.bjwt.authority.parameter.MenuParam;
+import org.bjdrgs.bjwt.core.web.Pagination;
 
-import org.bjdrgs.bjwt.authority.model.User;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+public interface IMenuService {
 
-@Transactional
-@Service("menuService")
-public class IMenuService {
-	public List<Menu> getAuthoritedMenu(User user) {
-		List<Menu> menuList = new ArrayList<Menu>();
+	public Pagination<Menu> queryMenu(MenuParam param);
 
-		return menuList;
-	}
+	public void saveMenu(Menu entity);
 }

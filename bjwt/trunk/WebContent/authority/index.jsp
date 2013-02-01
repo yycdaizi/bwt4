@@ -7,7 +7,9 @@
 <title>用户权限管理</title>
 <!-- easy-ui依赖 -->
 <jsp:include page="/include.jsp"></jsp:include>
+<link href="css/basic.css" rel="stylesheet" type="text/css" />
 <link href="css/default.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/menunavi.js"></script>
 <script type="text/javascript">
 //退出
 $(function() {
@@ -42,6 +44,39 @@ $(function() {
 		style="width: 180px;" id="west">
 		<div id="nav" class="easyui-accordion" fit="true" border="false">
 			<!--  导航内容 -->
+			<ul>
+			<li>
+			<div>
+			<a href="javascript:void(0)" rel="menumng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">菜单管理</span>
+			</a>
+			</div>
+			</li>
+			<li>
+			<div>
+			<a href="javascript:void(0)" rel="rolemng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">角色管理</span>
+			</a>
+			</div>
+			</li>
+			<li>
+			<div>
+			<a href="javascript:void(0)" rel="usermng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">用户管理</span>
+			</a>
+			</div>
+			</li>
+			<li>
+			<div>
+			<a href="javascript:void(0)" rel="orgmng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">机构管理</span>
+			</a>
+			</div>
+			</li>
+			<li>
+			<div>
+			<a href="javascript:void(0)" rel="permissionmng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">权限管理</span>
+			</a>
+			</div>
+			</li>
+			</ul>
+			
 		</div>
 	</div>
 	<div id="mainPanle" region="center"

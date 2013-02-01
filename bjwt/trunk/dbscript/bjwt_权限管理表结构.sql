@@ -19,14 +19,19 @@ drop table if exists b_user;
 /*==============================================================*/
 /* Table: b_menu                                                */
 /*==============================================================*/
-create table b_menu
-(
-   menuid               int not null auto_increment,
-   menuname             varchar(50),
-   menuurl              varchar(200),
-   menuicon             varchar(200),
-   primary key (menuid)
-);
+CREATE TABLE
+    b_menu
+    (
+        menuid INT NOT NULL AUTO_INCREMENT,
+        menuname VARCHAR(50),
+        menuurl VARCHAR(200),
+        menuicon VARCHAR(200),
+        ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON
+    UPDATE
+        CURRENT_TIMESTAMP,
+        PRIMARY KEY (menuid)
+    )
+    ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*==============================================================*/
 /* Table: b_org                                                 */

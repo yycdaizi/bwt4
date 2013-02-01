@@ -4,7 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IUserService;
-import org.bjdrgs.bjwt.utils.Constants;
+import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

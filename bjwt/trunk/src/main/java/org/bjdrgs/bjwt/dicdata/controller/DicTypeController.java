@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
+import org.bjdrgs.bjwt.dicdata.model.DicItem;
 import org.bjdrgs.bjwt.dicdata.model.DicType;
 import org.bjdrgs.bjwt.dicdata.parameter.DicTypeParam;
 import org.bjdrgs.bjwt.dicdata.service.IDicDataService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -63,6 +65,12 @@ public class DicTypeController {
 	public AjaxResult deleteById(Integer id){
 		dicDataService.deleteDicTypeById(id);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
+	}
+	
+	@RequestMapping("/getDicData")
+	@ResponseBody
+	public List<DicItem> getDicData(@RequestParam("type") String type){
+		return dicDataService.listDicItemsByType(type);
 	}
 	
 	private void validateDicType(DicType entity, BindingResult errors){

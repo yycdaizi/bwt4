@@ -1,29 +1,12 @@
-﻿
 $(document).ready(function () {
     InitLeftMenu();
-    tabClose();
+    tabBind();
     tabCloseEven(); 
 });
-//初始化左侧
+//初始化左侧菜单
 function InitLeftMenu() {
     $("#nav").accordion({ animate: false });
-    $.getJSON('menu.do', function (msg) {
-        $.each(msg.menus, function (i, n) {
-            var menulist = '';
-            menulist += '<ul>';
-            $.each(n.menus, function (j, o) {
-                menulist += '<li><div><a ref="' + o.menuid + '" href="javascript:void(0)" rel="' + o.url + '" ><span class="' + o.icon + '" >&nbsp;</span><span class="nav">' + o.menuname + '</span></a></div></li> ';
-            })
-            menulist += '</ul>';
-
-            $('#nav').accordion('add', {
-                title: n.menuname,
-                content: menulist,
-                iconCls: n.icon
-            });
-
-        });
-        $('.easyui-accordion li a').click(function () {
+    $('.easyui-accordion li a').click(function () {
             var tabTitle = $(this).children('.nav').text();
             var url = $(this).attr("rel");
             var menuid = $(this).attr("ref");
@@ -37,11 +20,6 @@ function InitLeftMenu() {
         }, function () {
             $(this).parent().removeClass("hover");
         });
-        //选中第一个
-        var panels = $('#nav').accordion('panels');
-        var t = panels[0].panel('options').title;
-        $('#nav').accordion('select', t);
-    })
 }
 
 function addTab(subtitle,url,icon){
@@ -56,7 +34,7 @@ function addTab(subtitle,url,icon){
 		$('#tabs').tabs('select',subtitle);
 		$('#mm-tabupdate').click();
 	}
-	tabClose();
+	tabBind();
 }
 
 function createFrame(url)
@@ -64,8 +42,8 @@ function createFrame(url)
 	var s = '<iframe scrolling="auto" frameborder="0"  src="'+url+'" style="width:100%;height:100%;"></iframe>';
 	return s;
 }
-
-function tabClose()
+//绑定菜单事件
+function tabBind()
 {
 	/*双击关闭TAB选项卡*/
 	$(".tabs-inner").dblclick(function(){

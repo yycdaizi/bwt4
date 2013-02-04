@@ -51,6 +51,8 @@ public class User implements Serializable {
 	@Column(name = "email", nullable = false, length = 600)
 	private String email;
    
+	@Column(name = "ts")
+	private String ts;
     
 	public Integer getUserid() {
 		return userid;
@@ -115,6 +117,15 @@ public class User implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-   
+
+	public String getTs() {
+		return ts;
+	}
+
+	public void setTs(String ts) {
+		this.ts = ts;
+	}
+	
+	
 }
 

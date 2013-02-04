@@ -20,7 +20,7 @@ public class User implements Serializable {
 	@GenericGenerator(name = "increment", strategy = "increment")
 	@Id
 	@GeneratedValue(generator = "increment")
-	@Column(name = "menuid", nullable = false, unique = true)
+	@Column(name = "userid", nullable = false, unique = true)
 	private Integer userid;
 
 	@Length(max = 0, message = "{common.length.limit}")

@@ -20,7 +20,7 @@ public class Role implements Serializable {
 	@GenericGenerator(name = "increment", strategy = "increment")
 	@Id
 	@GeneratedValue(generator = "increment")
-	@Column(name = "menuid", nullable = false, unique = true)
+	@Column(name = "roleid", nullable = false, unique = true)
 	private Integer roleid;
 
 	@NotBlank(message = "{common.text.notBlank}")

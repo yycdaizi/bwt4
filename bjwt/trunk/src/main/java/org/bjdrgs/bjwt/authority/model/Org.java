@@ -20,7 +20,7 @@ public class Org implements Serializable {
 	@GenericGenerator(name = "increment", strategy = "increment")
 	@Id
 	@GeneratedValue(generator = "increment")
-	@Column(name = "menuid", nullable = false, unique = true)
+	@Column(name = "orgid", nullable = false, unique = true)
 	private Integer orgid;
 
 	@NotBlank(message = "{common.text.notBlank}")

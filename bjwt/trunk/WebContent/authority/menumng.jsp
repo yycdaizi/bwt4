@@ -20,7 +20,9 @@
 					<a id="btn_del" href="#" class="easyui-linkbutton" >删除</a> 
 				</li>
 				<li>&nbsp;&nbsp;&nbsp;&nbsp;<li>
-				<li>
+				<li style="float: right;">
+					<label>关键字：</label>
+					<input id="keyword" name="keyword" type="text" size="40" style="height:20px;border: 1px solid #ccc" />
 					<a id="btn_query" href="#" class="easyui-linkbutton" >查询</a> 
 				</li>
 			</ul>
@@ -30,6 +32,7 @@
 				singleSelect:true,
 				autoRowHeight:false,
 				pagination:true,
+				fitColumns:true,
 				pageSize:10"
 				url="${pageContext.request.contextPath}/menu/page.do"
 				fitColumns="true"
@@ -70,12 +73,99 @@
 		<a id="btn_submit" href="#" class="easyui-linkbutton" iconCls="icon-ok">保存</a>    
     	<a id="btn_cacel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
-	<script type="text/javascript" src="js/menumng.js"></script>
 	<script type="text/javascript">
+	// 新增
+	$("#btn_add").click(function() {
+		dialogAddShow();
+		clearForm();
+	});
+	// 修改
+	$("#btn_edit").click(function(){
+		if(!checkIsSel()){
+			return false;
+		}
+		dialogEditShow();
+		fillForm();
+	});
+	// 删除
+	$("#btn_del").click(function(){
+		if(!checkIsSel()){
+			return false;
+		}
+		$.messager.confirm('确认','是否删除选择数据?',function(r){   
+		    if (r){
+		       doDel();
+		    }   
+		});  
+	});
+	//取消
+	$("#btn_cacel").click(function() {
+		dialogHide();
+	});
 	// 保存（提交）
 	$("#btn_submit").click(function() {
 		doSubmit();
 	});
+	//查询
+	$("#btn_query").click(function(){
+		$("#grid_menu").datagrid('load',{
+			keyword:$("#keyword").val()
+		});
+	});
+	
+	//对话框显示&隐藏
+	function dialogAddShow(){
+		$("#dialog_menu").dialog({
+			title : '新增菜单',
+			iconCls : 'icon-add'
+		}).dialog('open');
+	}
+	function dialogEditShow(){
+		$("#dialog_menu").dialog({
+			title : '编辑菜单',
+			iconCls : 'icon-edit'
+		}).dialog('open');
+	}
+	function dialogHide(){
+		$("#dialog_menu").dialog("close");
+		$(".validatebox-tip").hide();
+	}
+	function fillForm(){
+		var selRow = $('#grid_menu').datagrid('getSelected');
+		$("#formMenu").form('load',selRow);
+	}
+	function clearForm(){
+		$("#formMenu").form('clear');
+	}
+	function checkIsSel(){
+		var selRow = $('#grid_menu').datagrid('getSelected');
+		if(!selRow){
+			$.messager.alert('错误','没有选中的行');
+			return false;
+		}
+		return true;
+	}
+	//删除
+	function doDel(){
+		var selRow = $('#grid_menu').datagrid('getSelected');
+		$.messager.progress(); // display the progress bar
+		$.post('${pageContext.request.contextPath}/menu/deleteById.do',{menuid:selRow.menuid},function(result){
+			$.messager.progress('close'); // hide progress bar
+			if (result.success){
+				$.messager.show({
+                    title: '提示',  
+                    msg: result.message  
+                }); 
+                $('#grid_menu').datagrid('reload');    // reload the user data  
+            } else {  
+                $.messager.show({
+                    title: '错误',  
+                    msg: result.message  
+                });
+            }
+		});
+	}
+	//提交
 	function doSubmit(){
 		$.messager.progress(); // display the progress bar
 		$('#formMenu').form('submit', {
@@ -90,7 +180,6 @@
 			},
 			success : function(result) {
 				$.messager.progress('close'); // hide progress bar while
-												// submit successfully
 				if (result && result.match("^\{(.+:.+,*){1,}\}$")) {// 若返回的是JSON数据
 					var result = $.parseJSON(result);
 					if (result.success) {

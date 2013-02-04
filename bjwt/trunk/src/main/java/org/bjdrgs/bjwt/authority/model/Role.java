@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.model;
+package org.bjdrgs.bjwt.authority.model;
 
 import java.io.Serializable;
 

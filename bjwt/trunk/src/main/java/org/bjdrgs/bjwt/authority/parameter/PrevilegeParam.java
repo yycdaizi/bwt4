@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.parameter;
+package org.bjdrgs.bjwt.authority.parameter;
 
 import org.bjdrgs.bjwt.core.web.GridParam;
 

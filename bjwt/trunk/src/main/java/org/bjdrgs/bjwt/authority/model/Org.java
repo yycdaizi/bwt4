@@ -44,7 +44,9 @@ public class Org implements Serializable {
 	@Length(max = 0, message = "{common.length.limit}")
 	@Column(name = "orgmanager", nullable = false, length = 0)
 	private Integer orgmanager;
-   
+	
+	@Column(name = "ts")
+	private String ts;
     
 	public Integer getOrgid() {
 		return orgid;
@@ -92,6 +94,14 @@ public class Org implements Serializable {
 
 	public void setOrgmanager(Integer orgmanager) {
 		this.orgmanager = orgmanager;
+	}
+
+	public String getTs() {
+		return ts;
+	}
+
+	public void setTs(String ts) {
+		this.ts = ts;
 	}
    
 }

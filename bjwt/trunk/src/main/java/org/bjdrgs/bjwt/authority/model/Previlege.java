@@ -47,6 +47,8 @@ public class Previlege implements Serializable {
 	@Column(name = "permission", nullable = false, length = 150)
 	private String permission;
    
+	@Column(name = "ts")
+	private String ts;
     
 	public Integer getPrevilegeid() {
 		return previlegeid;
@@ -103,6 +105,15 @@ public class Previlege implements Serializable {
 	public void setPermission(String permission) {
 		this.permission = permission;
 	}
+
+	public String getTs() {
+		return ts;
+	}
+
+	public void setTs(String ts) {
+		this.ts = ts;
+	}
    
+	
 }
 

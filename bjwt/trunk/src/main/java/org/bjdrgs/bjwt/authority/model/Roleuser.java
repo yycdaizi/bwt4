@@ -38,6 +38,8 @@ public class Roleuser implements Serializable {
 	@Column(name = "userid", nullable = false, length = 0)
 	private Integer userid;
    
+	@Column(name = "ts")
+	private String ts;
     
 	public Integer getRoleuserid() {
 		return roleuserid;
@@ -70,6 +72,16 @@ public class Roleuser implements Serializable {
 	public void setUserid(Integer userid) {
 		this.userid = userid;
 	}
+
+	public String getTs() {
+		return ts;
+	}
+
+	public void setTs(String ts) {
+		this.ts = ts;
+	}
+	
+	
    
 }
 

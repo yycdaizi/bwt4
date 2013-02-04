@@ -39,7 +39,9 @@ public class Role implements Serializable {
 	@Length(max = 3000, message = "{common.length.limit}")
 	@Column(name = "note", nullable = false, length = 3000)
 	private String note;
-   
+	
+	@Column(name = "ts")
+	private String ts;
     
 	public Integer getRoleid() {
 		return roleid;
@@ -80,6 +82,15 @@ public class Role implements Serializable {
 	public void setNote(String note) {
 		this.note = note;
 	}
+
+	public String getTs() {
+		return ts;
+	}
+
+	public void setTs(String ts) {
+		this.ts = ts;
+	}
+	
    
 }
 

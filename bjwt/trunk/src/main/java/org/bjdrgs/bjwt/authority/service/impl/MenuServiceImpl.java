@@ -1,4 +1,4 @@
-package org.bjdrgs.bjwt.authority.service.impl;
+﻿package org.bjdrgs.bjwt.authority.service.impl;
 
 import javax.annotation.Resource;
 
@@ -13,21 +13,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@Service("menuService")
+@Service("MenuService")
 public class MenuServiceImpl implements IMenuService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Resource(name = "menuDao")
-	private IMenuDao menuDao;
+	@Resource(name = "MenuDao")
+	private IMenuDao MenuDao;
 
 	@Override
 	public Pagination<Menu> queryMenu(MenuParam param) {
-		return menuDao.query(param);
+		return MenuDao.query(param);
 	}
 
 	@Override
 	public void saveMenu(Menu entity) {
-		menuDao.save(entity);
+		MenuDao.save(entity);
+	}
+
+	@Override
+	public void deleteById(Integer Menuid) {
+		MenuDao.deleteById(Menuid);
 	}
 
 }
+

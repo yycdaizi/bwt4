@@ -1,21 +1,21 @@
-package org.bjdrgs.bjwt.authority.service;
+﻿package org.bjdrgs.bjwt.authority.service;
 
-import org.bjdrgs.bjwt.authority.model.Menu;
-import org.bjdrgs.bjwt.authority.parameter.MenuParam;
+import org.bjdrgs.bjwt.authority.model.Org;
+import org.bjdrgs.bjwt.authority.parameter.OrgParam;
 import org.bjdrgs.bjwt.core.web.Pagination;
 
-public interface IMenuService {
+public interface IOrgService {
 	/**
 	 * 分页查询
 	 * @param param
 	 * @return 分页查询结果
 	 */
-	public Pagination<Menu> queryMenu(MenuParam param);
+	public Pagination<Org> queryOrg(OrgParam param);
 	/**
 	 * 保存（新增或修改）
 	 * @param entity
 	 */
-	public void saveMenu(Menu entity);
+	public void saveOrg(Org entity);
 	
 	/**
 	 * 删除

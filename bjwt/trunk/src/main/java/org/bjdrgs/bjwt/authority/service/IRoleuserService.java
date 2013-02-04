@@ -1,21 +1,21 @@
 ﻿package org.bjdrgs.bjwt.authority.service;
 
-import org.bjdrgs.bjwt.authority.model.User;
-import org.bjdrgs.bjwt.authority.parameter.UserParam;
+import org.bjdrgs.bjwt.authority.model.Roleuser;
+import org.bjdrgs.bjwt.authority.parameter.RoleuserParam;
 import org.bjdrgs.bjwt.core.web.Pagination;
 
-public interface IUserService {
+public interface IRoleuserService {
 	/**
 	 * 分页查询
 	 * @param param
 	 * @return 分页查询结果
 	 */
-	public Pagination<User> queryUser(UserParam param);
+	public Pagination<Roleuser> queryRoleuser(RoleuserParam param);
 	/**
 	 * 保存（新增或修改）
 	 * @param entity
 	 */
-	public void saveUser(User entity);
+	public void saveRoleuser(Roleuser entity);
 	
 	/**
 	 * 删除

@@ -1,13 +1,13 @@
-package org.bjdrgs.bjwt.authority.controller;
+﻿package org.bjdrgs.bjwt.authority.controller;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import org.bjdrgs.bjwt.authority.model.Menu;
-import org.bjdrgs.bjwt.authority.parameter.MenuParam;
-import org.bjdrgs.bjwt.authority.service.IMenuService;
+import org.bjdrgs.bjwt.authority.model.Role;
+import org.bjdrgs.bjwt.authority.parameter.RoleParam;
+import org.bjdrgs.bjwt.authority.service.IRoleService;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
@@ -20,23 +20,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/menu")
-public class MenuController {
+@RequestMapping("/role")
+public class RoleController {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Resource(name = "MenuService")
-	private IMenuService menuService;
+	@Resource(name = "RoleService")
+	private IRoleService roleService;
 	
 	@RequestMapping("/page")
 	@ResponseBody
-	public GridPage<Menu> page(MenuParam param){
-		GridPage<Menu> page =GridPage.valueOf(menuService.queryMenu(param));
+	public GridPage<Role> page(RoleParam param){
+		GridPage<Role> page =GridPage.valueOf(roleService.queryRole(param));
 		return page;
 	}
 	
 	@RequestMapping("/save")
 	@ResponseBody
-	public AjaxResult save(@Valid Menu entity, BindingResult errors) {
+	public AjaxResult save(@Valid Role entity, BindingResult errors) {
 		//TODO 看情况添加数据校验
 		AjaxResult result = new AjaxResult();
 		if(errors.hasErrors()){
@@ -49,7 +49,7 @@ public class MenuController {
 			result.setSuccess(false);
 			result.setMessage(msg.toString());
 		}else{
-			menuService.saveMenu(entity);
+			roleService.saveRole(entity);
 			result.setSuccess(true);
 			result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
 		}
@@ -58,8 +58,8 @@ public class MenuController {
 	
 	@RequestMapping("/deleteById")
 	@ResponseBody
-	public AjaxResult deleteById(Integer menuid){
-		menuService.deleteById(menuid);
+	public AjaxResult deleteById(Integer id){
+		roleService.deleteById(id);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 

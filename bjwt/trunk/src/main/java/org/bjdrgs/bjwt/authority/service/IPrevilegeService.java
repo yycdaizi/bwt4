@@ -1,21 +1,21 @@
 ﻿package org.bjdrgs.bjwt.authority.service;
 
-import org.bjdrgs.bjwt.authority.model.User;
-import org.bjdrgs.bjwt.authority.parameter.UserParam;
+import org.bjdrgs.bjwt.authority.model.Previlege;
+import org.bjdrgs.bjwt.authority.parameter.PrevilegeParam;
 import org.bjdrgs.bjwt.core.web.Pagination;
 
-public interface IUserService {
+public interface IPrevilegeService {
 	/**
 	 * 分页查询
 	 * @param param
 	 * @return 分页查询结果
 	 */
-	public Pagination<User> queryUser(UserParam param);
+	public Pagination<Previlege> queryPrevilege(PrevilegeParam param);
 	/**
 	 * 保存（新增或修改）
 	 * @param entity
 	 */
-	public void saveUser(User entity);
+	public void savePrevilege(Previlege entity);
 	
 	/**
 	 * 删除

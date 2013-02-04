@@ -1,31 +1,29 @@
-package org.bjdrgs.bjwt.authority.dao.impl;
+﻿package org.bjdrgs.bjwt.authority.dao.impl;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bjdrgs.bjwt.authority.dao.IMenuDao;
-import org.bjdrgs.bjwt.authority.model.Menu;
-import org.bjdrgs.bjwt.authority.parameter.MenuParam;
+import org.bjdrgs.bjwt.authority.dao.IUserDao;
+import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.parameter.UserParam;
 import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.springframework.stereotype.Repository;
 
-@Repository("menuDao")
-public class MenDaoImpl extends BaseDaoImpl<Menu> implements IMenuDao {
-
+@Repository("UserDao")
+public class UserDaoImpl extends BaseDaoImpl<User> implements IUserDao {
+	
 	@Override
-	public Pagination<Menu> query(MenuParam param) {
+	public Pagination<User> query(UserParam param) {
 		StringBuilder hql = new StringBuilder();
 		hql.append("from ");
-		hql.append(Menu.class.getName());
+		hql.append(User.class.getName());
 		hql.append(" obj where 1=1");
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		if (StringUtils.isNotEmpty(param.getKeyword())) {
-			hql.append(" and obj.menuname like :menuname");
-			String keyword = "%" + param.getKeyword() + "%";
-			paramMap.put("menuname", keyword);
+			//TODO add keyword query condition
 		}
 
 		if (StringUtils.isNotEmpty(param.getSort())) {
@@ -37,3 +35,4 @@ public class MenDaoImpl extends BaseDaoImpl<Menu> implements IMenuDao {
 	}
 
 }
+

@@ -20,7 +20,7 @@ public class Previlege implements Serializable {
 	@GenericGenerator(name = "increment", strategy = "increment")
 	@Id
 	@GeneratedValue(generator = "increment")
-	@Column(name = "menuid", nullable = false, unique = true)
+	@Column(name = "previlegeid", nullable = false, unique = true)
 	private Integer previlegeid;
 
 	@Length(max = 0, message = "{common.length.limit}")

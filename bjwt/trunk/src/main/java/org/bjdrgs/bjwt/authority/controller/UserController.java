@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.controller;
+package org.bjdrgs.bjwt.authority.controller;
 
 import java.util.List;
 

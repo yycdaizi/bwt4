@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.dao;
+package org.bjdrgs.bjwt.authority.dao;
 
 import org.bjdrgs.bjwt.authority.model.Previlege;
 import org.bjdrgs.bjwt.authority.parameter.PrevilegeParam;

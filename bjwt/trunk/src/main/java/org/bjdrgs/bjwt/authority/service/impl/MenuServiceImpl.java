@@ -1,7 +1,6 @@
-﻿package org.bjdrgs.bjwt.authority.service.impl;
+package org.bjdrgs.bjwt.authority.service.impl;
 
 import javax.annotation.Resource;
-
 import org.bjdrgs.bjwt.authority.dao.IMenuDao;
 import org.bjdrgs.bjwt.authority.model.Menu;
 import org.bjdrgs.bjwt.authority.parameter.MenuParam;

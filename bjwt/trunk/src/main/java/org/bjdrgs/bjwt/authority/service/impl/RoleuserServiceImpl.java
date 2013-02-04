@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.service.impl;
+package org.bjdrgs.bjwt.authority.service.impl;
 
 import javax.annotation.Resource;
 

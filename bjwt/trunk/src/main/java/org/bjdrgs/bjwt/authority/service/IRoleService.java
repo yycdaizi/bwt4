@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.service;
+package org.bjdrgs.bjwt.authority.service;
 
 import org.bjdrgs.bjwt.authority.model.Role;
 import org.bjdrgs.bjwt.authority.parameter.RoleParam;

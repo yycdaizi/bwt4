@@ -1,4 +1,4 @@
-﻿package org.bjdrgs.bjwt.authority.dao.impl;
+package org.bjdrgs.bjwt.authority.dao.impl;
 
 import java.util.HashMap;
 import java.util.Map;

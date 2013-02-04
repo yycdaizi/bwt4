@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2013/1/27 18:04:50                           */
+/* Created on:     2013/2/4 22:37:49                            */
 /*==============================================================*/
 
 
@@ -19,31 +19,28 @@ drop table if exists b_user;
 /*==============================================================*/
 /* Table: b_menu                                                */
 /*==============================================================*/
-CREATE TABLE
-    b_menu
-    (
-        menuid INT NOT NULL AUTO_INCREMENT,
-        menuname VARCHAR(50),
-        menuurl VARCHAR(200),
-        menuicon VARCHAR(200),
-        ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON
-    UPDATE
-        CURRENT_TIMESTAMP,
-        PRIMARY KEY (menuid)
-    )
-    ENGINE=InnoDB DEFAULT CHARSET=utf8;
+create table b_menu
+(
+   menuid               int not null,
+   menuname             varchar(50),
+   menuurl              varchar(200),
+   menuicon             varchar(200),
+   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+   primary key (menuid)
+);
 
 /*==============================================================*/
 /* Table: b_org                                                 */
 /*==============================================================*/
 create table b_org
 (
-   orgid                int not null auto_increment,
+   orgid                int not null,
    parentid             int not null,
    orgcode              varchar(50),
    orgname              varchar(50),
    orgaddr              varchar(500),
    orgmanager           int not null,
+   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    primary key (orgid)
 );
 
@@ -54,13 +51,14 @@ alter table b_org comment '机构';
 /*==============================================================*/
 create table b_previlege
 (
-   previlegeid          int not null auto_increment,
+   previlegeid          int not null,
    orgid                int,
    master               varchar(50),
    mastervalue          int,
    resource             varchar(50),
    resourcevalue        int,
    permission           varchar(50),
+   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    primary key (previlegeid)
 );
 
@@ -71,11 +69,12 @@ alter table b_previlege comment '资源权限分配表';
 /*==============================================================*/
 create table b_role
 (
-   roleid               int not null auto_increment,
+   roleid               int not null,
    orgid                int not null,
    rolecode             varchar(50),
    rolename             varchar(50),
    note                 varchar(1000),
+   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    primary key (roleid)
 );
 
@@ -86,10 +85,11 @@ alter table b_role comment '角色表';
 /*==============================================================*/
 create table b_roleuser
 (
-   roleuserid           int not null auto_increment,
+   roleuserid           int not null,
    orgid                int not null,
    roleid               int not null,
    userid               int not null,
+   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    primary key (roleuserid)
 );
 
@@ -100,7 +100,7 @@ alter table b_roleuser comment '用户角色关联表';
 /*==============================================================*/
 create table b_user
 (
-   userid               int not null auto_increment,
+   userid               int not null,
    orgid                int,
    username             varchar(100),
    password             varchar(100),
@@ -108,6 +108,7 @@ create table b_user
    telphone             varchar(20),
    mobilephone          varchar(20),
    email                varchar(200),
+   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    primary key (userid)
 );
 

@@ -3,13 +3,10 @@ package org.bjdrgs.bjwt.wt4.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -27,7 +24,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.util.AutoPopulatingList;
+import org.springframework.format.annotation.NumberFormat;
 
 /**
  * 病案
@@ -588,162 +585,202 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AEI08;
 	
 	/** 总费用 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "TOTAL_EXPENSE")
 	@JsonProperty private Double ADA01;
 	
 	/** 自付金额 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "SELFPAYMENT_EXPENSE")
 	@JsonProperty private Double ADA0101;
 	
 	/** 诊察（诊疗）费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "EXAMINE_EXPENSE")
 	@JsonProperty private Double ADA11;
 	
 	/** 一般检查费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CHECK_NORMAL_EXPENSE")
 	@JsonProperty private Double ADA21;
 	
 	/** 临床物理治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_CLINICAL_EXPENSE")
 	@JsonProperty private Double ADA22;
 	
 	/** 介入治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_INTRUDE_EXPENSE")
 	@JsonProperty private Double ADA23;
 	
 	/** 特殊治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_SPECIAL_EXPENSE")
 	@JsonProperty private Double ADA24;
 	
 	/** 康复治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_RECOVER_EXPENSE")
 	@JsonProperty private Double ADA25;
 	
 	/** 中医治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_CHINESE_EXPENSE")
 	@JsonProperty private Double ADA26;
 	
 	/** 一般治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_NORMAL_EXPENSE")
 	@JsonProperty private Double ADA27;
 	
 	/** 精神治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_MIND_EXPENSE")
 	@JsonProperty private Double ADA28;
 	
 	/** 接生费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "DELIVER_EXPENSE")
 	@JsonProperty private Double ADA13;
 	
 	/** 麻醉费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "HORUS_EXPENSE")
 	@JsonProperty private Double ADA15;
 	
 	/** 手术费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "OPERATION_EXPENSE")
 	@JsonProperty private Double ADA12;
 	
 	/** 护理治疗费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_TEND_EXPENSE")
 	@JsonProperty private Double ADA29;
 	
 	/** 护理费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "BED_TEND_EXPENSE")
 	@JsonProperty private Double ADA03;
 	
 	/** 核素检查 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CHECK_NUCLEUS_EXPENSE")
 	@JsonProperty private Double ADA30;
 	
 	/** 核素治疗 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_NUCLEUS_EXPENSE")
 	@JsonProperty private Double ADA31;
 	
 	/** 超声费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "ULTRASOUND_EXPENSE")
 	@JsonProperty private Double ADA32;
 	
 	/** 放射费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "RADIATE_EXPENSE")
 	@JsonProperty private Double ADA07;
 	
 	/** 化验费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CHECK_EXPENSE")
 	@JsonProperty private Double ADA08;
 	
 	/** 病理费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "PATHOLOGY_EXPENSE")
 	@JsonProperty private Double ADA33;
 	
 	/** 监护及辅助呼吸费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "AUXILIARY_EXPENSE")
 	@JsonProperty private Double ADA34;
 	
 	/** 治疗用一次性医用材料费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_CURE_EXPENSE")
 	@JsonProperty private Double ADA35;
 	
 	/** 介入用一次性医用材料费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_INTRUDE_EXPENSE")
 	@JsonProperty private Double ADA36;
 	
 	/** 手术用一次性医用材料费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_SURGERY_EXPENSE")
 	@JsonProperty private Double ADA37;
 	
 	/** 检查用一次性医用材料费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_CHECK_EXPENSE")
 	@JsonProperty private Double ADA38;
 	
 	/** 床位费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "BED_EXPENSE")
 	@JsonProperty private Double ADA02;
 	
 	/** 挂号费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "REGISTER_EXPENSE")
 	@JsonProperty private Double ADA39;
 	
 	/** 输氧费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "OXYGEN_EXPENSE")
 	@JsonProperty private Double ADA09;
 	
 	/** 输血费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "TRANSFUSION_EXPENSE")
 	@JsonProperty private Double ADA10;
 	
 	/** 西药费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "WESTERN_MEDICINE_EXPENSE")
 	@JsonProperty private Double ADA04;
 	
 	/** 抗菌药物费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "ANTISEPTIC_MEDICINE_EXPENSE")
 	@JsonProperty private Double ADA40;
 	
 	/** 白蛋白类制品费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_ALBUMIN_EXPENSE")
 	@JsonProperty private Double ADA41;
 	
 	/** 球蛋白类制品费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_GLOBULIN_EXPENSE")
 	@JsonProperty private Double ADA42;
 	
 	/** 凝血因子类制品费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_BLOOD_EXPENSE")
 	@JsonProperty private Double ADA43;
 	
 	/** 细胞因子类制品费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_CELL_EXPENSE")
 	@JsonProperty private Double ADA44;
 	
 	/** 中成药费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CHINESE_MEDICINE_EXPENSE1")
 	@JsonProperty private Double ADA05;
 	
 	/** 中草药费 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "CHINESE_MEDICINE_EXPENSE2")
 	@JsonProperty private Double ADA06;
 	
 	/** 其他费用 */
+	@NumberFormat(pattern="#.00")
 	@Column(name = "OTHER_EXPENSE")
 	@JsonProperty private Double ADA20;
 

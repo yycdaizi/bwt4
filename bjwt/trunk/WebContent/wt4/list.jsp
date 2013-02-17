@@ -85,6 +85,7 @@
 			</thead>
 		</table>
 		<div id="gridMedicalRecord-toolbar" style="height:28px">
+			<a id="medicalRecord-btnExport" href="#" class="easyui-linkbutton" plain="true" style="float:right">导出</a>
 			<a id="medicalRecord-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
 		</div>
 	</div>
@@ -184,6 +185,12 @@ $(function(){
 	$("#medicalRecord-btnAdd").click(function(){
 		MedicalRecordForm.clear();
 		$('#dialogMedicalRecordEdit').dialog('setTitle','新增病案').dialog('open'); 
+	});
+	
+	$("#medicalRecord-btnExport").click(function(){
+		$("#formMedicalRecordQuery").form('load', $('#gridMedicalRecord').datagrid('options').queryParams);
+		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/export.do");
+		$("#formMedicalRecordQuery").submit();
 	});
 });
 </script>

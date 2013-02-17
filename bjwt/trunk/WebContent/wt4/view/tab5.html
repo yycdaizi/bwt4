@@ -178,33 +178,5 @@
 			</table>
 		</fieldset>
 	</form>
-	<form id="medi_case" name="medi_case" action="" method="post">
-		<input id="pk" name="pk" type="hidden" /> <input id="xmlStr"
-			name="xmlStr" type="hidden" />
-	</form>
-	<table class="layout-table">
-		<tr>
-			<td align="right"><a id="btn_submit" href="#"
-				class="easyui-linkbutton">提交</a></td>
-			<td>&nbsp;&nbsp; <a id="btn_export" href="#"
-				class="easyui-linkbutton">导出到本地</a></td>
-		</tr>
-	</table>
-	<script type="text/javascript">
-		$(function() {
-			$("#btn_export").click(function() {
-				var isvalid = checkValid();
-				if (!isvalid) {
-					alert("输入数据有误，请修正！")
-					return false;
-				}
-				var xmlWriter = new CaseXmlWriter();
-				var xmlStr = xmlWriter.generateCase();
-				$("#xmlStr").val(xmlStr);
-				$("#medi_case").attr("action", "DownloadServlet");
-				$("#medi_case").submit();
-			});
-		});
-	</script>
 </body>
 </html>

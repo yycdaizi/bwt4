@@ -1,7 +1,5 @@
 package org.bjdrgs.bjwt.wt4.dao.impl;
 
-import java.io.Serializable;
-
 import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.model.BirthDefect;

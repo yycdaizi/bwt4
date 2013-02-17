@@ -25,7 +25,7 @@ function getValue(root, tagName) {
 	if (nodes.length != 0) {
 		var child = nodes[0].childNodes[0];
 		if(child){			
-			return child.nodeValue;
+			return $.trim(child.nodeValue);
 		}
 	}
 	return null;

@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.wt4.dao.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,12 +18,28 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 
 	@Override
 	public Pagination<MedicalRecord> query(MedicalRecordParam param) {
-		StringBuilder hql = new StringBuilder();
+		StringBuilder hql = new StringBuilder();		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		this.buildQueryHql(param, hql, paramMap);
+		
+		return this.queryForPage(hql.toString(), param.getPage(), param.getRows(), paramMap);
+	}
+
+	@Override
+	public List<MedicalRecord> queryAll(MedicalRecordParam param) {
+		StringBuilder hql = new StringBuilder();		
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		this.buildQueryHql(param, hql, paramMap);
+		return this.query(hql.toString(), paramMap);
+	}
+	
+	private void buildQueryHql(MedicalRecordParam param, StringBuilder hql, Map<String, Object> paramMap){
+		//StringBuilder hql = new StringBuilder();
 		hql.append("from ");
 		hql.append(MedicalRecord.class.getName());
 		hql.append(" obj where 1=1");
 		
-		Map<String, Object> paramMap = new HashMap<String, Object>();
+		//Map<String, Object> paramMap = new HashMap<String, Object>();
 		if(StringUtils.isNotEmpty(param.getBlike_AAA01())){
 			hql.append(" and obj.AAA01 like :AAA01");
 			paramMap.put("AAA01", "%"+param.getBlike_AAA01()+"%");
@@ -51,8 +68,6 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 		if(StringUtils.isNotEmpty(param.getSort())){
 			hql.append(" order by obj."+param.getSort()+" "+param.getOrder());
 		}
-		
-		return this.queryForPage(hql.toString(), param.getPage(), param.getRows(), paramMap);
 	}
 
 }

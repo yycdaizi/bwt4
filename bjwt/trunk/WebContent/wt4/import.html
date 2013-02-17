@@ -36,9 +36,9 @@
 	<script type="text/javascript" src="js/main.js"></script>
 	
 <!-- 
+ -->
       <script type="text/javascript" src="../resourses/jslib/xmloperator/XMLWriter.js"></script>
       <script type="text/javascript" src="js/CaseXmlWriter.js"></script>
- -->
 </head>
 <body>
 	<table id="gridMedicalRecord" style="height:400px" class="easyui-datagrid" title='病案'
@@ -81,13 +81,17 @@
 		</div>
 	</div>
 	<div id="dialogMREdit-buttons" style="text-align: center;">
-		<a id="dialogMREdit-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">确定</a>    
+		<a id="dialogMREdit-btnExport" href="#" class="easyui-linkbutton">导出</a>    
+		<a id="dialogMREdit-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
     	<a id="dialogMREdit-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
 	<div id="dialogImport" class="easyui-dialog" title="导入病案" closed="true" modal="true" iconCls="icon-save" style="width:500px;padding:10px 20px;background: #fafafa;">
 		<label for="importfile" style="width: 30%;float: left">病例文件（*.xml）：</label>
 		<input id="importfile" name="importfile" class="easyui-validatebox" type="file" required="true" style="width: 70%;float: left"/>
 	</div>
+	<form id="exportForm" name="exportForm" action="" method="post">
+		<input id="mrXMl" name="mrXMl" type="hidden" />
+	</form>
 <script type="text/javascript">
 function medicalRecordOperater(value, row, index){
 	var html = [];
@@ -107,6 +111,31 @@ $(function(){
 	for(var i=tabs.length-1;i>=0;i--){
 		$('#mainTabs').tabs("select",tabs[i].panel('options').title);
 	}
+	
+	$('#dialogMREdit-btnExport').click(function(){
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...'
+		}); 
+		if(!MedicalRecordForm.validExpenses()){
+			$.messager.progress('close');
+			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			return false;
+		}
+		if (!MedicalRecordForm.validate()) {
+			$.messager.progress('close');
+			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			return false;
+		}
+		
+		var xmlWriter = new CaseXmlWriter();
+		var xmlStr = xmlWriter.generateCase();
+		//alert(xmlStr);
+		$("#mrXMl").val(xmlStr);
+		$("#exportForm").attr("action", "medicalRecord/download.do");
+		$("#exportForm").submit();
+		$.messager.progress('close');
+	});
 	
 	$('#dialogMREdit-btnSubmit').click(function(){
 		$.messager.progress({

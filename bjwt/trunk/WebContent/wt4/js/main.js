@@ -5,6 +5,10 @@ var MedicalRecordForm = {};
 
 //加载病案数据
 MedicalRecordForm.loadData = function(data){
+	//转经科别 特殊处理（因为输入框需要的值是数组）
+	if(!data["AAD01C"]){
+		data["AAD01C"]='';
+	}
 	$("#formTab1").form("load",data);
 	$("#AAD01C").combobox("setValues",data["AAD01C"].split(","));
 	$("#formTab2").form("load",data);
@@ -83,7 +87,7 @@ MedicalRecordForm.updateMainTabsValidTip = function(title, valid){
 
 //校验总费用
 MedicalRecordForm.validExpenses = function(){
-	var tags = ["ADA0101","ADA11","ADA21","ADA22","ADA23","ADA24","ADA25","ADA26","ADA27","ADA28","ADA13","ADA15","ADA12",
+	var tags = ["ADA11","ADA21","ADA22","ADA23","ADA24","ADA25","ADA26","ADA27","ADA28","ADA13","ADA15","ADA12",
 	            "ADA29","ADA03","ADA30","ADA31","ADA32","ADA07","ADA08","ADA33","ADA34","ADA35","ADA36","ADA37","ADA38","ADA02",
 	            "ADA39","ADA09","ADA10","ADA04","ADA40","ADA41","ADA42","ADA43","ADA44","ADA05","ADA06","ADA20"];
 	var total = parseFloat($("#ADA01").val()||0);

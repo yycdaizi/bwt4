@@ -305,6 +305,10 @@ Surgery.parse = function(node){
 			obj[tag]=getValue(node, tag);
 		}
 	}
+	//若手术级别为空，则默认为 0-操作
+	if(!obj['ACA10C']){
+		obj['ACA10C'] = '0';
+	}
 	return obj;
 };
 //Surgery.clone = function(oldObj){  

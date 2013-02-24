@@ -1,0 +1,13 @@
+/**
+ * 检查gird是否选择行
+ * @param grid -- 表格ID
+ * @returns {Boolean}
+ */
+function checkGirdIsSel(gridId) {
+	var selRow = $('#'+gridId).datagrid('getSelected');
+	if (!selRow) {
+		$.messager.alert('错误', '没有选中的行');
+		return false;
+	}
+	return true;
+}

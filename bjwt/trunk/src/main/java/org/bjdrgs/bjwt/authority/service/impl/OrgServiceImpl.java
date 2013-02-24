@@ -27,6 +27,12 @@ public class OrgServiceImpl implements IOrgService {
 
 	@Override
 	public void saveOrg(Org entity) {
+		if(entity.getParentOrg()!=null && entity.getParentOrg().getOrgid()==null){
+			entity.setParentOrg(null);
+		}
+		if(entity.getOrgmanager()!=null && entity.getOrgmanager().getUserid()==null){
+			entity.setOrgmanager(null);
+		}
 		OrgDao.save(entity);
 	}
 

@@ -1,5 +1,6 @@
 package org.bjdrgs.bjwt.authority.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -7,6 +8,7 @@ import javax.validation.Valid;
 
 import org.bjdrgs.bjwt.authority.model.Org;
 import org.bjdrgs.bjwt.authority.parameter.OrgParam;
+import org.bjdrgs.bjwt.authority.parameter.OrgView;
 import org.bjdrgs.bjwt.authority.service.IOrgService;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
@@ -56,10 +58,14 @@ public class OrgController {
 		return result;
 	}
 	
+	
 	@RequestMapping("/deleteById")
 	@ResponseBody
-	public AjaxResult deleteById(Integer id){
-		orgService.deleteById(id);
+	public AjaxResult deleteById(Integer orgid){
+		if(orgid==null){
+			return new AjaxResult(false,"orgid is null");
+		}
+		orgService.deleteById(orgid);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 

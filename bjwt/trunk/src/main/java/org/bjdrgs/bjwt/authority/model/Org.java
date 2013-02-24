@@ -6,11 +6,18 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "b_org")
@@ -23,10 +30,11 @@ public class Org implements Serializable {
 	@Column(name = "orgid", nullable = false, unique = true)
 	private Integer orgid;
 
-	@NotBlank(message = "{common.text.notBlank}")
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "parentid", nullable = false, length = 0)
-	private Integer parentid;
+	@JsonIgnore
+	@ManyToOne
+	@Cascade({CascadeType.REFRESH})
+	@JoinColumn(name="parentid")
+	private Org parentOrg;
    
 	@Length(max = 150, message = "{common.length.limit}")
 	@Column(name = "orgcode", nullable = false, length = 150)
@@ -40,10 +48,10 @@ public class Org implements Serializable {
 	@Column(name = "orgaddr", nullable = false, length = 1500)
 	private String orgaddr;
    
-	@NotBlank(message = "{common.text.notBlank}")
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "orgmanager", nullable = false, length = 0)
-	private Integer orgmanager;
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="orgmanager")
+	private User orgmanager;
 	
 	@Column(name = "ts")
 	private String ts;
@@ -56,14 +64,14 @@ public class Org implements Serializable {
 		this.orgid = orgid;
 	}
    
-	public Integer getParentid() {
-		return parentid;
+	public Org getParentOrg() {
+		return parentOrg;
 	}
 
-	public void setParentid(Integer parentid) {
-		this.parentid = parentid;
+	public void setParentOrg(Org parentOrg) {
+		this.parentOrg = parentOrg;
 	}
-   
+
 	public String getOrgcode() {
 		return orgcode;
 	}
@@ -87,12 +95,12 @@ public class Org implements Serializable {
 	public void setOrgaddr(String orgaddr) {
 		this.orgaddr = orgaddr;
 	}
-   
-	public Integer getOrgmanager() {
+
+	public User getOrgmanager() {
 		return orgmanager;
 	}
 
-	public void setOrgmanager(Integer orgmanager) {
+	public void setOrgmanager(User orgmanager) {
 		this.orgmanager = orgmanager;
 	}
 
@@ -102,6 +110,19 @@ public class Org implements Serializable {
 
 	public void setTs(String ts) {
 		this.ts = ts;
+	}
+//	供表格使用显示外键的值
+	public Integer getParentOrg_orgid(){
+		return this.getParentOrg()!=null ? getParentOrg().getOrgid():null;
+	}
+	public String getParentOrg_showname() {
+		return this.getParentOrg()!=null ? getParentOrg().getOrgname():null;
+	}
+	public Integer getOrgmanager_userid(){
+		return this.getOrgmanager()!=null?getOrgmanager().getUserid():null;
+	}
+	public String getOrgmanager_showname() {
+		return this.getOrgmanager()!=null?getOrgmanager().getUsername():null;
 	}
    
 }

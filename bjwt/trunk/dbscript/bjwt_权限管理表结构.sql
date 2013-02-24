@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     2013/2/4 22:37:49                            */
+/* Created on:     2013/2/23 18:19:36                           */
 /*==============================================================*/
 
 
@@ -21,7 +21,7 @@ drop table if exists b_user;
 /*==============================================================*/
 create table b_menu
 (
-   menuid               int not null,
+   menuid               int not null auto_increment,
    menuname             varchar(50),
    menuurl              varchar(200),
    menuicon             varchar(200),
@@ -34,12 +34,12 @@ create table b_menu
 /*==============================================================*/
 create table b_org
 (
-   orgid                int not null,
-   parentid             int not null,
+   orgid                int not null auto_increment,
+   parentid             int,
    orgcode              varchar(50),
    orgname              varchar(50),
    orgaddr              varchar(500),
-   orgmanager           int not null,
+   orgmanager           int,
    ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
    primary key (orgid)
 );
@@ -51,7 +51,7 @@ alter table b_org comment '机构';
 /*==============================================================*/
 create table b_previlege
 (
-   previlegeid          int not null,
+   previlegeid          int not null auto_increment,
    orgid                int,
    master               varchar(50),
    mastervalue          int,
@@ -69,8 +69,8 @@ alter table b_previlege comment '资源权限分配表';
 /*==============================================================*/
 create table b_role
 (
-   roleid               int not null,
-   orgid                int not null,
+   roleid               int not null auto_increment,
+   orgid                int,
    rolecode             varchar(50),
    rolename             varchar(50),
    note                 varchar(1000),
@@ -85,8 +85,8 @@ alter table b_role comment '角色表';
 /*==============================================================*/
 create table b_roleuser
 (
-   roleuserid           int not null,
-   orgid                int not null,
+   roleuserid           int not null auto_increment,
+   orgid                int,
    roleid               int not null,
    userid               int not null,
    ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -100,7 +100,7 @@ alter table b_roleuser comment '用户角色关联表';
 /*==============================================================*/
 create table b_user
 (
-   userid               int not null,
+   userid               int not null auto_increment,
    orgid                int,
    username             varchar(100),
    password             varchar(100),

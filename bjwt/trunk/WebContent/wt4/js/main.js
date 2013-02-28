@@ -155,6 +155,41 @@ MedicalRecordForm.validateTab5 = function(){
 	return validform;
 };
 
+//解析病案XML文件
+function parseMedicalRecordXML(path){
+	var xmlDoc = null;
+	try {
+		xmlDoc = XmlUtils.loadXml(path);
+	} catch (e) {
+		$.messager.alert('系统错误','XML文件导入失败！请使用IE浏览器。','error');
+		return;
+	}
+    var cases = xmlDoc.getElementsByTagName("CASE");
+    var recordList = [];
+    for(var i=0; i<cases.length; i++){
+    	var record = MedicalRecord.parse(cases[i]);
+    	recordList.push(record);
+    }
+    return recordList;
+}
+/**
+ * 将病案对象的数组导出为xml字符串
+ * @param {Array[MedicalRecord]} list
+ * @returns {String}
+ */
+function exportMedicalRecordsToXML(list){
+	list = list||[];
+	
+	var xml = '<?xml version="1.0" encoding="UTF-8"?>';
+	xml +='<CASES>';
+	for(var i=0; i<list.length; i++){
+		var doc = MedicalRecord.toXmlDoc(list[i]);
+		xml += XmlUtils.toXmlString(doc);
+	}
+	xml +='</CASES>';
+	return xml;
+}
+
 //创建表格
 jQuery.fn.initGrid = function(){
 	var $grid = $(this);

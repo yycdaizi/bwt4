@@ -1,203 +1,45 @@
 function MedicalRecord() {
 	this.id = null;
-//	this.ZA01C = null;
-//	this.ZA02C = null;
-//	this.ZA03 = null;
-//	this.ZA04 = null;
-//	this.ZB01C = null;
-//	this.ZB02 = null;
-//	this.ZB03 = null;
-//	this.ZB04 = null;
-//	this.ZB05 = null;
-//	this.ZB06 = null;
-//	this.ZB07 = null;
-//	this.ZB08 = null;
-//	this.ZB09 = null;
-	this.AAA01 = null;
-	this.AAA02C = null;
-	this.AAA03 = null;
-	this.AAA04 = null;
-	this.AAA05C = null;
-	this.AAA40 = null;
-	this.AAA42 = null;
-	this.AAA06C = null;
-	this.AAA07 = null;
-	this.AAA08C = null;
-	this.AAA09 = null;
-	this.AAA10 = null;
-	this.AAA11 = null;
-	this.AAA43 = null;
-	this.AAA44 = null;
-	this.AAA45 = null;
-	this.AAA46 = null;
-	this.AAA47 = null;
-	this.AAA13C = null;
-	this.AAA33C = null;
-	this.AAA14C = null;
-	this.AAA48 = null;
-	this.AAA49 = null;
-	this.AAA50 = null;
-	this.AAA16C = null;
-	this.AAA36C = null;
-	this.AAA51 = null;
-	this.AAA17C = null;
-	this.AAA18C = null;
-	this.AAA19 = null;
-	this.AAA20 = null;
-	this.AAA21C = null;
-	this.AAA22 = null;
-	this.AAA23C = null;
-	this.AAA24 = null;
-	this.AAA25 = null;
-	this.AAA26C = null;
-	this.AAA27 = null;
-	this.AAA28 = null;
-	this.AAA29 = null;
-	this.AAB01 = null;
-	this.AAB02C = null;
-	this.AAB03 = null;
-	this.AAB06C = null;
-	this.AAC01 = null;
-	this.AAC02C = null;
-	this.AAC03 = null;
-	this.AAC04 = null;
-	//转经科别代码
-	this.AAD01C = null;
-	this.ABA01C = null;
-	this.ABA01N = null;
-	this.ABC01C = null;
-	this.ABC01N = null;
-	this.ABC03C = null;
+	var tags = [ /*'ZA01C', 'ZA02C', 'ZA03', 'ZA04', 'ZB01C', 'ZB02', 'ZB03',
+			'ZB04', 'ZB05', 'ZB06', 'ZB07', 'ZB08', 'ZB09',*/ 'AAA01', 'AAA02C',
+			'AAA03', 'AAA04', 'AAA05C', 'AAA40', 'AAA42', 'AAA06C', 'AAA07',
+			'AAA08C', 'AAA09', 'AAA10', 'AAA11', 'AAA43', 'AAA44', 'AAA45',
+			'AAA46', 'AAA47', 'AAA13C', 'AAA33C', 'AAA14C', 'AAA48', 'AAA49',
+			'AAA50', 'AAA16C', 'AAA36C', 'AAA51', 'AAA17C', 'AAA18C', 'AAA19',
+			'AAA20', 'AAA21C', 'AAA22', 'AAA23C', 'AAA24', 'AAA25', 'AAA26C',
+			'AAA27', 'AAA28', 'AAA29', 'AAB01', 'AAB02C', 'AAB03', 'AAB06C',
+			'AAC01', 'AAC02C', 'AAC03', 'AAC04', 'AAD01C', 'ABA01C', 'ABA01N',
+			'ABC01C', 'ABC01N', 'ABC03C', /*'ABD01C', 'ABD01N', 'ABD03C',*/
+			'ABF01C', 'ABF01N', 'ABF04', 'ABF02C', 'ABF03C', 'ABG01C',
+			'ABG01N', 'ABH01C', 'ABH0201C', 'ABH0202C', 'ABH0203C', 'ABH03C',
+			/*'ACA01', 'ACA11', 'ACA02', 'ACA03', 'ACA04', 'ACA06C', 'ACA07C',
+			'ACA08', 'ACA10C', 'ACA0901C', 'ACA0901N', 'ACA0902C', 'ACA0903C',*/
+			'AEB02C', 'AEB01', 'AED01C', 'AED02', 'AED03', 'AED04', 'AEE01',
+			'AEE02', 'AEE03', 'AEE11', 'AEE09', 'AEE04', 'AEE05', 'AEE07',
+			'AEE08', 'AEE10', 'AEG01C', 'AEG02C', 'AEG04', 'AEG05', 'AEG06',
+			'AEG07', 'AEG08', 'AEJ01', 'AEJ02', 'AEJ03', 'AEJ04', 'AEJ05',
+			'AEJ06', /*'AEK01C', 'AEK02', 'AEK03',*/ 'AEL01', /*'AEN01', 'AEN02C',
+			'AEN02N',*/ 'AEM01C', 'AEM02', 'AEM03C', 'AEM04', 'AEI01C', 'AEI09',
+			'AEI10', 'AEI08', 'ADA01', 'ADA0101', 'ADA11', 'ADA21', 'ADA22',
+			'ADA23', 'ADA24', 'ADA25', 'ADA26', 'ADA27', 'ADA28', 'ADA13',
+			'ADA15', 'ADA12', 'ADA29', 'ADA03', 'ADA30', 'ADA31', 'ADA32',
+			'ADA07', 'ADA08', 'ADA33', 'ADA34', 'ADA35', 'ADA36', 'ADA37',
+			'ADA38', 'ADA02', 'ADA39', 'ADA09', 'ADA10', 'ADA04', 'ADA40',
+			'ADA41', 'ADA42', 'ADA43', 'ADA44', 'ADA05', 'ADA06', 'ADA20' ];
+
+	for(var i=0; i<tags.length; i++){
+		this[tags[i]] = null;
+	}
 	
 	//出院其他诊断集合
 	this.ABDS = new Array();
-//	ABD01C : null;
-//	ABD01N : null;
-//	ABD03C : null;
-	
-	this.ABF01C = null;
-	this.ABF01N = null;
-	this.ABF04 = null;
-	this.ABF02C = null;
-	this.ABF03C = null;
-	this.ABG01C = null;
-	this.ABG01N = null;
-	this.ABH01C = null;
-	this.ABH0201C = null;
-	this.ABH0202C = null;
-	this.ABH0203C = null;
-	this.ABH03C = null;
-	
 	//手术情况集合
 	this.ACAS = new Array();
 	this.ACAS.push(new Surgery());
-//	this.ACA01 = null;
-//	this.ACA11 = null;
-//	this.ACA02 = null;
-//	this.ACA03 = null;
-//	this.ACA04 = null;
-//	this.ACA06C = null;
-//	this.ACA07C = null;
-//	this.ACA08 = null;
-//	this.ACA10C = null;
-	
-//	this.ACA0901C = null;
-//	this.ACA0901N = null;
-//	this.ACA0902C = null;
-//	this.ACA0903C = null;
-	
-	this.AEB02C = null;
-	this.AEB01 = null;
-	this.AED01C = null;
-	this.AED02 = null;
-	this.AED03 = null;
-	this.AED04 = null;
-	this.AEE01 = null;
-	this.AEE02 = null;
-	this.AEE03 = null;
-	this.AEE11 = null;
-	this.AEE09 = null;
-	this.AEE04 = null;
-	this.AEE05 = null;
-	this.AEE07 = null;
-	this.AEE08 = null;
-	this.AEE10 = null;
-	this.AEG01C = null;
-	this.AEG02C = null;
-	this.AEG04 = null;
-	this.AEG05 = null;
-	this.AEG06 = null;
-	this.AEG07 = null;
-	this.AEG08 = null;
-	this.AEJ01 = null;
-	this.AEJ02 = null;
-	this.AEJ03 = null;
-	this.AEJ04 = null;
-	this.AEJ05 = null;
-	this.AEJ06 = null;
-	
 	//重症监护集合
 	this.AEKS = new Array();
-//	this.AEK01C = null;
-//	this.AEK02 = null;
-//	this.AEK03 = null;
-	
-	this.AEL01 = null;
-	
 	//新生儿情况集合
 	this.AENS = new Array();
-//	this.AEN01 = null;
-//	this.AEN02C = null;
-//	this.AEN02N = null;
-	
-	this.AEM01C = null;
-	this.AEM02 = null;
-	this.AEM03C = null;
-	this.AEM04 = null;
-	this.AEI01C = null;
-	this.AEI09 = null;
-	this.AEI10 = null;
-	this.AEI08 = null;
-	this.ADA01 = null;
-	this.ADA0101 = null;
-	this.ADA11 = null;
-	this.ADA21 = null;
-	this.ADA22 = null;
-	this.ADA23 = null;
-	this.ADA24 = null;
-	this.ADA25 = null;
-	this.ADA26 = null;
-	this.ADA27 = null;
-	this.ADA28 = null;
-	this.ADA13 = null;
-	this.ADA15 = null;
-	this.ADA12 = null;
-	this.ADA29 = null;
-	this.ADA03 = null;
-	this.ADA30 = null;
-	this.ADA31 = null;
-	this.ADA32 = null;
-	this.ADA07 = null;
-	this.ADA08 = null;
-	this.ADA33 = null;
-	this.ADA34 = null;
-	this.ADA35 = null;
-	this.ADA36 = null;
-	this.ADA37 = null;
-	this.ADA38 = null;
-	this.ADA02 = null;
-	this.ADA39 = null;
-	this.ADA09 = null;
-	this.ADA10 = null;
-	this.ADA04 = null;
-	this.ADA40 = null;
-	this.ADA41 = null;
-	this.ADA42 = null;
-	this.ADA43 = null;
-	this.ADA44 = null;
-	this.ADA05 = null;
-	this.ADA06 = null;
-	this.ADA20 = null;
 }
 
 MedicalRecord.parse = function (node){
@@ -206,49 +48,74 @@ MedicalRecord.parse = function (node){
 		switch(tag){
 		//出院其他诊断集合
 		case 'ABDS':
-			var tagNodes = node.getElementsByTagName(tag);
-			if(tagNodes.length!=0){
-				var childNodes = tagNodes[0].childNodes;
-				for(var i=0; i<childNodes.length;i++){
-					obj[tag][i]=Diagnose.parse(childNodes[i]);
+			obj[tag] = getNodeValues(node, tag, Diagnose);
+			break;
+		//手术情况集合
+		case 'ACAS':
+			obj[tag] = getNodeValues(node, tag, Surgery);
+			break;
+		//重症监护集合
+		case 'AEKS':
+			obj[tag] = getNodeValues(node, tag, ICU);
+			break;
+		//新生儿情况集合
+		case 'AENS':
+			obj[tag] = getNodeValues(node, tag, Disabled);
+			break;
+		default:
+			obj[tag]=getNodeValue(node, tag);
+		}
+	}
+	return obj;
+};
+MedicalRecord.toXmlDoc = function(obj){
+	var doc = XmlUtils.loadXmlString(XmlTemplate.MedicalRecord);
+	var xmlNode = $(doc);
+	for (var tag in obj){
+		var node=xmlNode.find(tag).first();
+		switch(tag){
+		//出院其他诊断集合
+		case 'ABDS':
+			var list = obj[tag];
+			if(list){
+				for(var i=0;i<list.length;i++){
+					node.append($(Diagnose.toXmlDoc(list[i])).children());
 				}
 			}
 			break;
 		//手术情况集合
 		case 'ACAS':
-			var tagNodes = node.getElementsByTagName(tag);
-			if(tagNodes.length!=0){
-				var childNodes = tagNodes[0].childNodes;
-				for(var i=0; i<childNodes.length;i++){
-					obj[tag][i]=Surgery.parse(childNodes[i]);
+			var list = obj[tag];
+			if(list){
+				for(var i=0;i<list.length;i++){
+					node.append($(Surgery.toXmlDoc(list[i])).children());
 				}
 			}
 			break;
 		//重症监护集合
 		case 'AEKS':
-			var tagNodes = node.getElementsByTagName(tag);
-			if(tagNodes.length!=0){
-				var childNodes = tagNodes[0].childNodes;
-				for(var i=0; i<childNodes.length;i++){
-					obj[tag][i]=ICU.parse(childNodes[i]);
+			var list = obj[tag];
+			if(list){
+				for(var i=0;i<list.length;i++){
+					node.append($(ICU.toXmlDoc(list[i])).children());
 				}
 			}
 			break;
 		//新生儿情况集合
 		case 'AENS':
-			var tagNodes = node.getElementsByTagName(tag);
-			if(tagNodes.length!=0){
-				var childNodes = tagNodes[0].childNodes;
-				for(var i=0; i<childNodes.length;i++){
-					obj[tag][i]=Disabled.parse(childNodes[i]);
+			var list = obj[tag];
+			if(list){
+				for(var i=0;i<list.length;i++){
+					node.append($(Disabled.toXmlDoc(list[i])).children());
 				}
 			}
 			break;
 		default:
-			obj[tag]=getValue(node, tag);
+			node.text(obj[tag]);
 		}
 	}
-	return obj;
+	removeEmptyNode(doc);
+	return doc;
 };
 
 function Diagnose(){
@@ -259,9 +126,19 @@ function Diagnose(){
 Diagnose.parse = function(node){
 	var obj = new Diagnose();
 	for(var tag in obj){
-		obj[tag]=getValue(node, tag);
+		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
+};
+Diagnose.toXmlDoc = function(obj){
+	var doc = XmlUtils.loadXmlString(XmlTemplate.Diagnose);
+	var xmlNode = $(doc);
+	for (var tag in obj){
+		var node=xmlNode.find(tag).first();
+		node.text(obj[tag]);
+	}
+	removeEmptyNode(doc);
+	return doc;
 };
 
 function Operation(){
@@ -273,9 +150,19 @@ function Operation(){
 Operation.parse = function(node){
 	var obj = new Operation();
 	for(var tag in obj){
-		obj[tag]=getValue(node, tag);
+		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
+};
+Operation.toXmlDoc = function(obj){
+	var doc = XmlUtils.loadXmlString(XmlTemplate.Operation);
+	var xmlNode = $(doc);
+	for (var tag in obj){
+		var node=xmlNode.find(tag).first();
+		node.text(obj[tag]);
+	}
+	removeEmptyNode(doc);
+	return doc;
 };
 function Surgery(){
 	this.ACA01 = null;
@@ -294,15 +181,9 @@ Surgery.parse = function(node){
 	var obj = new Surgery();
 	for(var tag in obj){
 		if('ACA09S' == tag){
-			var tagNodes = node.getElementsByTagName(tag);
-			if(tagNodes.length!=0){
-				var childNodes = tagNodes[0].childNodes;
-				for(var i=0; i<childNodes.length;i++){
-					obj[tag][i]=Operation.parse(childNodes[i]);
-				}
-			}
+			obj[tag] = getNodeValues(node, tag, Operation);
 		}else{
-			obj[tag]=getValue(node, tag);
+			obj[tag]=getNodeValue(node, tag);
 		}
 	}
 	//若手术级别为空，则默认为 0-操作
@@ -311,24 +192,25 @@ Surgery.parse = function(node){
 	}
 	return obj;
 };
-//Surgery.clone = function(oldObj){  
-//  var obj = new Surgery();
-//	for(var tag in obj){
-//		if('ACA09S' == tag){
-//			var tagNodes = node.getElementsByTagName(tag);
-//			if(tagNodes.length!=0){
-//				var childNodes = tagNodes[0].childNodes;
-//				for(var i=0; i<childNodes.length;i++){
-//					obj[tag][i]=Operation.parse(childNodes[i]);
-//				}
-//			}
-//		}else{
-//			obj[tag]=getValue(node, tag);
-//		}
-//	}
-//	return obj;
-//}
-
+Surgery.toXmlDoc = function(obj){
+	var doc = XmlUtils.loadXmlString(XmlTemplate.Surgery);
+	var xmlNode = $(doc);
+	for (var tag in obj){
+		var node=xmlNode.find(tag).first();
+		if('ACA09S' == tag){
+			var list = obj[tag];
+			if(list){
+				for(var i=0;i<list.length;i++){
+					node.append($(Operation.toXmlDoc(list[i])).children());
+				}
+			}
+		}else{
+			node.text(obj[tag]);
+		}
+	}
+	removeEmptyNode(doc);
+	return doc;
+};
 function ICU(){
 	this.AEK01C = null;
 	this.AEK02 = null;
@@ -337,9 +219,19 @@ function ICU(){
 ICU.parse = function(node){
 	var obj = new ICU();
 	for(var tag in obj){
-		obj[tag]=getValue(node, tag);
+		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
+};
+ICU.toXmlDoc = function(obj){
+	var doc = XmlUtils.loadXmlString(XmlTemplate.ICU);
+	var xmlNode = $(doc);
+	for (var tag in obj){
+		var node=xmlNode.find(tag).first();
+		node.text(obj[tag]);
+	}
+	removeEmptyNode(doc);
+	return doc;
 };
 function Disabled(){
 	this.AEN01 = null;
@@ -349,7 +241,37 @@ function Disabled(){
 Disabled.parse = function(node){
 	var obj = new Disabled();
 	for(var tag in obj){
-		obj[tag]=getValue(node, tag);
+		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
 };
+Disabled.toXmlDoc = function(obj){
+	var doc = XmlUtils.loadXmlString(XmlTemplate.Disabled);
+	var xmlNode = $(doc);
+	for (var tag in obj){
+		var node=xmlNode.find(tag).first();
+		node.text(obj[tag]);
+	}
+	removeEmptyNode(doc);
+	return doc;
+};
+
+function getNodeValue(root, tag){
+	var value = $(root).find(tag).first().text();
+	return $.trim(value);
+}
+function getNodeValues(root, tag, model){
+	var res = [];
+	$(root).find(tag).first().children().each(function(){
+		res.push(model.parse(this));
+	});
+	return res;
+}
+function removeEmptyNode(root){
+	$(root).children().each(function(){
+		removeEmptyNode(this);
+	});
+	if(!$.trim($(root).text())){
+		$(root).remove();
+	}
+}

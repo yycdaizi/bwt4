@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.dao.IDiagnoseDao;
@@ -29,6 +30,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
+import org.dom4j.Text;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,7 +185,21 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 			}
 		}
 		//TODO 去除空节点
+		removeEmptyNode(document.getRootElement());
 		return document;
+	}
+	
+	private void removeEmptyNode(Element element){
+		if(element==null){
+			return;
+		}
+		for (Object child : element.elements()) {
+			removeEmptyNode((Element) child);
+		}
+		String content = element.getStringValue();
+		if(StringUtils.isBlank(content)){
+			element.detach();
+		}
 	}
 
 	@Override
@@ -197,7 +213,10 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 		Element root = document.addElement("CASES");
 		
 		for (MedicalRecord medicalRecord : entities) {
-			root.add(this.toXML(medicalRecord).getRootElement());			
+			Document node = toXML(medicalRecord);
+			if(node.getRootElement()!=null){
+				root.add(node.getRootElement());	
+			}
 		}
 		return document.asXML();
 	}

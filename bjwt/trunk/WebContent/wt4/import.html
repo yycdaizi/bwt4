@@ -17,9 +17,9 @@
     <script type="text/javascript" src="../resourses/jslib/My97DatePicker/WdatePicker.js"></script>
 	<script type="text/javascript" src="../resourses/jslib/date/Date.min.js"></script>
       
+	<script type="text/javascript" src="../resourses/jslib/xmloperator/XmlUtils.js"></script>
 	<script type="text/javascript" src="../resourses/jscommon/expand.js"></script>
 	<script type="text/javascript" src="../resourses/jscommon/jquery.customParam.js"></script>
-	<script type="text/javascript" src="js/loadXML.js"></script>
 	
 	<script type="text/javascript" src="data/dics/czData.js"></script>
 	<script type="text/javascript" src="data/dics/zdData.js"></script>
@@ -30,15 +30,17 @@
 	<script type="text/javascript" src="data/dics/dic-bool.js"></script>
 	<script type="text/javascript" src="data/dics/dic-ICU.js"></script>
 
+	<script type="text/javascript" src="js/XmlTemplate.js"></script>
 	<script type="text/javascript" src="js/model.js"></script>
 	
 	<script type="text/javascript" src="js/surgery.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
 	
 <!-- 
- -->
+	<script type="text/javascript" src="js/loadXML.js"></script>
       <script type="text/javascript" src="../resourses/jslib/xmloperator/XMLWriter.js"></script>
       <script type="text/javascript" src="js/CaseXmlWriter.js"></script>
+ -->
 </head>
 <body>
 	<table id="gridMedicalRecord" style="height:400px" class="easyui-datagrid" title='病案'
@@ -113,6 +115,7 @@ $(function(){
 	}
 	
 	$('#dialogMREdit-btnExport').click(function(){
+		/*
 		$.messager.progress({
 			title:'保存病案',
 			msg:'请稍候...'
@@ -127,9 +130,10 @@ $(function(){
 			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
 			return false;
 		}
+		*/
+		var record = MedicalRecordForm.getData();
+		var xmlStr = exportMedicalRecordsToXML([record]);
 		
-		var xmlWriter = new CaseXmlWriter();
-		var xmlStr = xmlWriter.generateCase();
 		//alert(xmlStr);
 		$("#mrXMl").val(xmlStr);
 		$("#exportForm").attr("action", "medicalRecord/download.do");

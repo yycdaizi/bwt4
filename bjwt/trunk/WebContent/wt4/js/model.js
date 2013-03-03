@@ -45,6 +45,10 @@ function MedicalRecord() {
 MedicalRecord.parse = function (node){
 	var obj = new MedicalRecord();
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		switch(tag){
 		//出院其他诊断集合
 		case 'ABDS':
@@ -72,6 +76,10 @@ MedicalRecord.toXmlDoc = function(obj){
 	var doc = XmlUtils.loadXmlString(XmlTemplate.MedicalRecord);
 	var xmlNode = $(doc);
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		var node=xmlNode.find(tag).first();
 		switch(tag){
 		//出院其他诊断集合
@@ -126,6 +134,10 @@ function Diagnose(){
 Diagnose.parse = function(node){
 	var obj = new Diagnose();
 	for(var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
@@ -134,6 +146,10 @@ Diagnose.toXmlDoc = function(obj){
 	var doc = XmlUtils.loadXmlString(XmlTemplate.Diagnose);
 	var xmlNode = $(doc);
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		var node=xmlNode.find(tag).first();
 		node.text(obj[tag]);
 	}
@@ -150,6 +166,10 @@ function Operation(){
 Operation.parse = function(node){
 	var obj = new Operation();
 	for(var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
@@ -158,6 +178,10 @@ Operation.toXmlDoc = function(obj){
 	var doc = XmlUtils.loadXmlString(XmlTemplate.Operation);
 	var xmlNode = $(doc);
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		var node=xmlNode.find(tag).first();
 		node.text(obj[tag]);
 	}
@@ -180,6 +204,10 @@ function Surgery(){
 Surgery.parse = function(node){
 	var obj = new Surgery();
 	for(var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		if('ACA09S' == tag){
 			obj[tag] = getNodeValues(node, tag, Operation);
 		}else{
@@ -196,6 +224,10 @@ Surgery.toXmlDoc = function(obj){
 	var doc = XmlUtils.loadXmlString(XmlTemplate.Surgery);
 	var xmlNode = $(doc);
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		var node=xmlNode.find(tag).first();
 		if('ACA09S' == tag){
 			var list = obj[tag];
@@ -219,6 +251,10 @@ function ICU(){
 ICU.parse = function(node){
 	var obj = new ICU();
 	for(var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
@@ -227,6 +263,10 @@ ICU.toXmlDoc = function(obj){
 	var doc = XmlUtils.loadXmlString(XmlTemplate.ICU);
 	var xmlNode = $(doc);
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		var node=xmlNode.find(tag).first();
 		node.text(obj[tag]);
 	}
@@ -241,6 +281,10 @@ function Disabled(){
 Disabled.parse = function(node){
 	var obj = new Disabled();
 	for(var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		obj[tag]=getNodeValue(node, tag);
 	}
 	return obj;
@@ -249,6 +293,10 @@ Disabled.toXmlDoc = function(obj){
 	var doc = XmlUtils.loadXmlString(XmlTemplate.Disabled);
 	var xmlNode = $(doc);
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		var node=xmlNode.find(tag).first();
 		node.text(obj[tag]);
 	}
@@ -267,6 +315,10 @@ function getNodeValues(root, tag, model){
 	});
 	return res;
 }
+/**
+ * 删除xml中的空节点
+ * @param root xml元素节点
+ */
 function removeEmptyNode(root){
 	$(root).children().each(function(){
 		removeEmptyNode(this);

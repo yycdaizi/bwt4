@@ -30,6 +30,10 @@ MedicalRecordForm.loadData = function(data){
 MedicalRecordForm.getData = function(){
 	var obj = new MedicalRecord();
 	for (var tag in obj){
+		//只遍历自身属性
+		if(!obj.hasOwnProperty(tag)){
+			continue;
+		}
 		switch(tag){
 		//手术情况集合
 		case 'ACAS':

@@ -115,7 +115,6 @@ $(function(){
 	}
 	
 	$('#dialogMREdit-btnExport').click(function(){
-		/*
 		$.messager.progress({
 			title:'保存病案',
 			msg:'请稍候...'
@@ -130,7 +129,7 @@ $(function(){
 			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
 			return false;
 		}
-		*/
+		
 		var record = MedicalRecordForm.getData();
 		var xmlStr = exportMedicalRecordsToXML([record]);
 		

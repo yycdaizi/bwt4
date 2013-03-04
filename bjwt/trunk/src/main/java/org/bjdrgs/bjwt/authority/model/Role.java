@@ -28,7 +28,6 @@ public class Role implements Serializable {
 	@Column(name = "roleid", nullable = false, unique = true)
 	private Integer roleid;
 
-	@JsonIgnore
 	@ManyToOne
 	@Cascade({ CascadeType.REFRESH })
 	@JoinColumn(name = "orgid")

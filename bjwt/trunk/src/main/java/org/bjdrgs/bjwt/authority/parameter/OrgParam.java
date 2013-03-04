@@ -4,6 +4,10 @@ import org.bjdrgs.bjwt.core.web.GridParam;
 
 public class OrgParam extends GridParam {
 	private String keyword;
+	/**
+	 * combogrid
+	 */
+	private String q;
 
 	/**
 	 * @return the keyword
@@ -19,6 +23,13 @@ public class OrgParam extends GridParam {
 	public void setKeyword(String keyword) {
 		this.keyword = keyword;
 	}
+
+	public String getQ() {
+		return q;
+	}
+
+	public void setQ(String q) {
+		this.q = q;
+	}
+
 }
-
-

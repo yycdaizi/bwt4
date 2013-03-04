@@ -6,29 +6,9 @@
 		<jsp:include page="/include.jsp"></jsp:include>
 		<link href="css/basic.css" rel="stylesheet" type="text/css" />
 		<link href="css/content.css" rel="stylesheet" type="text/css" />
+		<link href="css/jquery.refbox.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="js/formutils.js"></script>
-		<style type="text/css">
-			.refbox{
-   				border-style: solid;
-    			border-width: 1px;
-    			display: inline-block;
-    			margin: 0;
-    			padding: 0;
-    			white-space: nowrap;
-    			border-color: #ccc
-			}
-			.refbox-text{
-			}
-			.refbox-button{
-				background: url("images/refbox_button.png") no-repeat scroll center center transparent;
-				cursor: pointer;
-    			display: inline-block;
-   				height: 20px;
-    			opacity: 0.6;
-    			vertical-align: top;
-    			width: 16px;
-			}
-		</style>
+		<script type="text/javascript" src="js/jquery.refbox.js"></script>
 	</head>
 	<body>
 		<div id="topations">
@@ -77,10 +57,9 @@
 		</table>
 		</div>
 		<!-- 新增对话框 -->
-		<div id="dialog_org" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:240px;padding:10px 20px">
+		<div id="dialog_org" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:240px;left:200;top:100;padding:10px 20px">
 		<form id="formorg" method="post" class="fform">
 			<input name="orgid" type="hidden" />
-			<input id="pid" name="parentOrg.orgid" type="hidden" />
 			<div class="fitem">    
 	            <label>机构编码：</label>  
 	            <input name="orgcode" class="easyui-validatebox" required="true" validType="maxLength[30]">    
@@ -91,48 +70,12 @@
 	        </div>
 	        <div class="fitem">
 	            <label>父机构：</label>
-				<span class="refbox" style="width: 200px; height: 20px;">
-					<input type="text" id="orgref_showname" class="refbox-text" style="width: 180px; height: 20px; line-height: 20px;">
-					<span>
-						<span id="btn_orgref" class="refbox-button" ></span>
-						<script type="text/javascript">
-							$(function() {
-								$("#btn_orgref").click(function(){
-									$('#org_ref').dialog({  
-									    title: '选择机构',  
-									    width: 440,  
-									    closed: true,  
-									    cache: false, 
-									    href: '${pageContext.request.contextPath}/ref/orgref.jsp',  
-									    modal: true,
-									    buttons:[{
-											text:'确定',
-											handler:function(){
-												if( !checkGirdIsSel("grid_ref") ) return false;
-												var selRow = $('#grid_ref').datagrid('getSelected');
-												$("#pid").val(selRow.orgid);
-												$("#orgref_showname").val(selRow.orgname);
-												$('#org_ref').dialog("close");
-											}
-										},{
-											text:'取消',
-											handler:function(){
-												$('#org_ref').dialog("close");
-											}
-										},{
-											text:'清空',
-											handler:function(){
-												$("#pid").val('');
-												$("#orgref_showname").val('');
-												$('#org_ref').dialog("close");
-											}
-										}]
-									}).dialog('open'); 
-								});
-							});
-						</script>
-					</span>
-				</span>
+	            <span id="parentOrg"></span>
+				<script type="text/javascript">
+	            $(function(){
+	            	$("#parentOrg").jRefBox({grid_href:'${pageContext.request.contextPath}/ref/orgref.jsp'});
+	            });
+	            </script> 
 	        </div>
 	        <div class="fitem">    
 	            <label>所在地址：</label>  
@@ -140,49 +83,19 @@
 	        </div>
 	        <div class="fitem">
 	            <label>机构负责人：</label>
-				<span class="refbox" style="width: 200px; height: 20px;">
-					<input type="text" id="userref_showname" class="refbox-text" style="width: 180px; height: 20px; line-height: 20px;">
-					<input type="hidden" id="userref_id" name="orgmanager.userid" />
-					<span>
-						<span id="btn_ref" class="refbox-button" ></span>
-						<script type="text/javascript">
-							$(function() {
-								$("#btn_ref").click(function(){
-									$('#user_ref').dialog({  
-									    title: '选择用户',  
-									    width: 420,  
-									    closed: true,  
-									    cache: false, 
-									    href: '${pageContext.request.contextPath}/ref/userref.jsp',  
-									    modal: true,
-									    buttons:[{
-											text:'确定',
-											handler:function(){
-												if( !checkGirdIsSel("grid_ref") ) return false;
-												var selRow = $('#grid_ref').datagrid('getSelected');
-												$("#userref_id").val(selRow.userid);
-												$("#userref_showname").val(selRow.username);
-												$('#user_ref').dialog("close");
-											}
-										},{
-											text:'取消',
-											handler:function(){
-												$('#user_ref').dialog("close");
-											}
-										},{
-											text:'清空',
-											handler:function(){
-												$("#userref_id").val("");
-												$("#userref_showname").val("");
-												$('#user_ref').dialog("close");
-											}
-										}]
-									}).dialog('open'); 
-								});
-							});
-						</script>
-					</span>
-				</span>
+				<span id="managerUser"></span>
+				<script type="text/javascript">
+	            $(function(){
+	            	$("#managerUser").jRefBox({
+	            		grid_href:'${pageContext.request.contextPath}/ref/userref.jsp',
+	            		valuename: 'orgmanager.userid',
+	                    grid_id: 'ref_grid_user',
+	                    grid_valuefield: 'userid',
+	                    grid_displayfield: 'username',
+	                    dialog_id: 'ref_dialog_user'
+	            	});
+	            });
+	            </script> 
 	        </div>
 		</form>
 	</div>
@@ -190,10 +103,11 @@
 		<a id="btn_submit" href="#" class="easyui-linkbutton" iconCls="icon-ok">保存</a>    
     	<a id="btn_cacel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
-	<div id="org_ref"></div>
-	<div id="user_ref"></div>
+	<div id="ref_dialog_user"></div>
+	<div id="ref_dialog_org"></div>
 	<!-- 脚本 -->
 	<script type="text/javascript">
+	$(function(){
 	// 新增
 	$("#btn_add").click(function() {
 		var data = $("#grid_org").datagrid('getData');
@@ -233,7 +147,7 @@
 			keyword:$("#keyword").val()
 		});
 	});
-	
+	});
 	//对话框显示&隐藏
 	function dialogAddShow(){
 		$("#dialog_org").dialog({

@@ -6,6 +6,9 @@
 		<jsp:include page="/include.jsp"></jsp:include>
 		<link href="css/basic.css" rel="stylesheet" type="text/css" />
 		<link href="css/content.css" rel="stylesheet" type="text/css" />
+		<link href="css/jquery.refbox.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="js/formutils.js"></script>
+		<script type="text/javascript" src="js/jquery.refbox.js"></script>
 	</head>
 	<body>
 		<div id="topations">
@@ -42,7 +45,7 @@
 		<thead>
 			<tr>
 				<th data-options="field:'roleid',align:'center',width:30,sortable:true">编号</th>
-				<th	data-options="field:'orgid',width:120">所属机构</th>
+				<th	data-options="field:'org_orgname',width:120">所属机构</th>
 				<th data-options="field:'rolecode',width:120">角色编号</th>
 				<th data-options="field:'rolename',width:200">角色名称</th>
 				<th	data-options="field:'ts',width:120">更新时间</th>
@@ -52,20 +55,36 @@
 		</table>
 		</div>
 		<!-- 新增对话框 -->
-		<div id="dialog_role" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:200px;padding:10px 20px">
+		<div id="dialog_role" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:250px;left:200;top:100;padding:10px 20px">
 		<form id="form_role" method="post" class="fform">
 			<input name="roleid" type="hidden" />
+			<div class="fitem">    
+	            <label>角色编码：</label>  
+	            <input name="rolecode" class="easyui-validatebox" required="true" validType="maxLength[30]">    
+	        </div>
 			<div class="fitem">    
 	            <label>角色名称：</label>  
 	            <input name="rolename" class="easyui-validatebox" required="true" validType="maxLength[30]">    
 	        </div>
-	        <div class="fitem">    
-	            <label>角色路径：</label>    
-	            <input name="roleurl" class="easyui-validatebox" required="true" validType="maxLength[30]"> 
+	        <div class="fitem">
+	            <label>所属机构：</label>
+	            <span id="ownOrg"></span>
+				<script type="text/javascript">
+	            $(function(){
+	            	$("#ownOrg").jRefBox({
+	            		valuename: 'org.orgid',
+	            		grid_href:'${pageContext.request.contextPath}/ref/orgref.jsp',
+	                    grid_id: 'ref_grid_org',
+	                    grid_valuefield: 'orgid',
+	                    grid_displayfield: 'orgname',
+	                    dialog_id: 'ref_dialog_org'
+	            	});
+	            });
+	            </script> 
 	        </div>
 	        <div class="fitem">    
-	            <label>角色图标：</label>  
-	            <input name="roleicon" class="easyui-validatebox"  validType="maxLength[30]">    
+	            <label>备注：</label>
+	            <textarea name="note" class="easyui-validatebox" validType="maxLength[500]"></textarea>
 	        </div>
 		</form>
 	</div>
@@ -73,7 +92,9 @@
 		<a id="btn_submit" href="#" class="easyui-linkbutton" iconCls="icon-ok">保存</a>    
     	<a id="btn_cacel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
+	<div id="ref_dialog_org"></div>
 	<script type="text/javascript">
+	$(function(){
 	// 新增
 	$("#btn_add").click(function() {
 		dialogAddShow();
@@ -112,8 +133,8 @@
 			keyword:$("#keyword").val()
 		});
 	});
-	
-	//对话框显示&隐藏
+	})
+	//对话框显示or隐藏
 	function dialogAddShow(){
 		$("#dialog_role").dialog({
 			title : '新增角色',
@@ -133,6 +154,9 @@
 	function fillForm(){
 		var selRow = $('#grid_role').datagrid('getSelected');
 		$("#form_role").form('load',selRow);
+		var val = selRow.org_orgid;
+		var showVal = selRow.org_orgname;
+		setValForRefbox("#ownOrg",val,showVal);
 	}
 	function clearForm(){
 		$("#form_role").form('clear');

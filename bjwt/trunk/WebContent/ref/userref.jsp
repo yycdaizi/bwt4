@@ -3,7 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <body>
-	<table id="grid_ref" class="easyui-datagrid" style="width:400px;height:200px"
+	<table id="ref_grid_user" class="easyui-datagrid" style="width:420px;height:308px"
 			url="${pageContext.request.contextPath}/user/page.do"
 			iconCls="icon-search" toolbar="#tb"
 			rownumbers="true" pagination="true" 

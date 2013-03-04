@@ -23,7 +23,10 @@ public class OrgDaoImpl extends BaseDaoImpl<Org> implements IOrgDao {
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		if (StringUtils.isNotEmpty(param.getKeyword())) {
-			//TODO add keyword query condition
+			hql.append(" and obj.orgcode like :orgcode or obj.orgname like :orgname");
+			String keyword = "%" + param.getKeyword() + "%";
+			paramMap.put("orgcode", keyword);
+			paramMap.put("orgname", keyword);
 		}
 
 		if (StringUtils.isNotEmpty(param.getSort())) {

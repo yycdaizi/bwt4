@@ -22,6 +22,16 @@ public class OrgServiceImpl implements IOrgService {
 
 	@Override
 	public Pagination<Org> queryOrg(OrgParam param) {
+		String keywords = "";
+		if(param.getKeyword()!=null){
+			keywords += param.getKeyword();
+		}
+		if(param.getQ()!=null){
+			keywords+=param.getQ();
+		}
+		if(keywords!=null && keywords.length()>0){
+			param.setKeyword(keywords);
+		}
 		return OrgDao.query(param);
 	}
 

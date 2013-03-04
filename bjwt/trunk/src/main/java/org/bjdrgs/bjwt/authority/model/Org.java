@@ -48,7 +48,6 @@ public class Org implements Serializable {
 	@Column(name = "orgaddr", nullable = false, length = 1500)
 	private String orgaddr;
    
-	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="orgmanager")
 	private User orgmanager;

@@ -58,8 +58,8 @@ public class UserController {
 	
 	@RequestMapping("/deleteById")
 	@ResponseBody
-	public AjaxResult deleteById(Integer id){
-		userService.deleteById(id);
+	public AjaxResult deleteById(Integer userid){
+		userService.deleteById(userid);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 

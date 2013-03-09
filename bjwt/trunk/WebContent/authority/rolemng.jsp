@@ -8,7 +8,6 @@
 		<link href="css/content.css" rel="stylesheet" type="text/css" />
 		<link href="css/jquery.refbox.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="js/formutils.js"></script>
-		<script type="text/javascript" src="js/jquery.refbox.js"></script>
 	</head>
 	<body>
 		<div id="topations">
@@ -41,6 +40,7 @@
 				fitColumns="true"
 				sortName="roleid" 
         		sortOrder="asc"
+        		toolbar="#topations"
 				>
 		<thead>
 			<tr>
@@ -68,19 +68,24 @@
 	        </div>
 	        <div class="fitem">
 	            <label>所属机构：</label>
-	            <span id="ownOrg"></span>
+	            <input id="cg_ownorg" name="org.orgid" style="width:200px;"></input>
 				<script type="text/javascript">
 	            $(function(){
-	            	$("#ownOrg").jRefBox({
-	            		valuename: 'org.orgid',
-	            		grid_href:'${pageContext.request.contextPath}/ref/orgref.jsp',
-	                    grid_id: 'ref_grid_org',
-	                    grid_valuefield: 'orgid',
-	                    grid_displayfield: 'orgname',
-	                    dialog_id: 'ref_dialog_org'
-	            	});
+	            	$('#cg_ownorg').combogrid({  
+	                    panelWidth:400,  
+	                    url: '${pageContext.request.contextPath}/org/page.do',  
+	                    idField:'orgid',  
+	                    textField:'orgname', 
+	                    mode:'remote',
+	                    fitColumns:true,
+	                    columns:[[  
+	                        {field:'orgid',title:'主键',width:60},  
+	                        {field:'orgcode',title:'编码',width:80},  
+	                        {field:'orgname',title:'名称',width:120}
+	                    ]]
+	                }); 
 	            });
-	            </script> 
+	            </script>
 	        </div>
 	        <div class="fitem">    
 	            <label>备注：</label>
@@ -97,6 +102,7 @@
 	$(function(){
 	// 新增
 	$("#btn_add").click(function() {
+		var data = $("#grid_role").datagrid('getData');
 		dialogAddShow();
 		clearForm();
 	});
@@ -106,6 +112,7 @@
 			return false;
 		}
 		dialogEditShow();
+		clearForm();
 		fillForm();
 	});
 	// 删除
@@ -154,9 +161,9 @@
 	function fillForm(){
 		var selRow = $('#grid_role').datagrid('getSelected');
 		$("#form_role").form('load',selRow);
-		var val = selRow.org_orgid;
-		var showVal = selRow.org_orgname;
-		setValForRefbox("#ownOrg",val,showVal);
+		if(selRow.org){
+			$('#cg_ownorg').combogrid('setValue', selRow.org.orgid);
+		}
 	}
 	function clearForm(){
 		$("#form_role").form('clear');
@@ -223,7 +230,7 @@
 				} else {
 					$.messager.show({
 						title : '错误',
-						msg : '页面找不到404'
+						msg : '执行失败，请查看日志'
 					});
 				}
 

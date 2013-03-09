@@ -8,11 +8,6 @@
 		<link href="css/content.css" rel="stylesheet" type="text/css" />
 		<link href="css/jquery.refbox.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="js/formutils.js"></script>
-		<script type="text/javascript">
-		function formatOrg(val,row){
-			return val.orgname;
-		}
-		</script>
 	</head>
 	<body>
 		<div id="topations">
@@ -35,46 +30,74 @@
 			</ul>
 		</div>
 		<div style="width: 100%;height: 100%;">
-		<table id="grid_user" class="easyui-datagrid" style="height:400px" data-options="
+		<table id="grid_roleuser" class="easyui-datagrid" style="height:400px" data-options="
 				singleSelect:true,
 				autoRowHeight:false,
 				pagination:true,
 				fitColumns:true,
 				pageSize:10"
-				url="${pageContext.request.contextPath}/user/page.do"
+				url="${pageContext.request.contextPath}/roleuser/page.do"
 				fitColumns="true"
-				sortName="userid" 
-        		sortOrder="asc"
+				sortName="ts"
+        		sortOrder="desc"
         		toolbar="#topations"
 				>
 		<thead>
 			<tr>
-				<th data-options="field:'userid',align:'center',width:30,sortable:true">编号</th>
-				<th	data-options="field:'org_orgname',width:120">所属机构</th>
-				<th data-options="field:'username',width:200"> 用户名</th>
-				<th data-options="field:'sex',width:100">性别</th>
-				<th data-options="field:'telphone',width:200"> 电话号码</th>
-				<th data-options="field:'mobilephone',width:200"> 手机号码</th>
-				<th data-options="field:'email',width:200"> Email地址</th>
+				<th data-options="field:'roleuserid',align:'center',width:30,sortable:true">编号</th>
+				<th	data-options="field:'org',width:120" formatter="formatOrg">所属机构</th>
+				<th data-options="field:'user',width:200" formatter="formatUser">用户名称</th>
+				<th data-options="field:'role',width:200" formatter="formatRole">角色名称</th>
 				<th	data-options="field:'ts',width:120">更新时间</th>
 			</tr>
 		</thead>
 		</table>
 		</div>
 		<!-- 新增对话框 -->
-		<div id="dialog_user" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:280px;left:200;top:100;padding:10px 20px">
-		<form id="form_user" method="post" class="fform">
-			<input name="userid" type="hidden" />
+		<div id="dialog_roleuser" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:250px;left:200;top:100;padding:10px 20px">
+		<form id="form_roleuser" method="post" class="fform">
+			<input name="roleuserid" type="hidden" />
 			<div class="fitem">    
-	            <label> 用户名：</label>  
-	            <input name="username" class="easyui-validatebox" required="true" validType="maxLength[30]">    
+	            <label>用户：</label>
+	            <input id="cg_ownuser" name="user.userid" style="width:200px;"></input>
+	            <script type="text/javascript">
+	            $(function(){
+	            	$('#cg_ownuser').combogrid({  
+	                    panelWidth:400,  
+	                    url: '${pageContext.request.contextPath}/user/page.do',  
+	                    idField:'userid',  
+	                    textField:'username', 
+	                    mode:'remote',
+	                    fitColumns:true,
+	                    columns:[[  
+	                        {field:'userid',title:'主键',width:80},  
+	                        {field:'username',title:'名称',width:200}
+	                    ]]
+	                }); 
+	            });
+	            </script>
 	        </div>
-	        <!-- 
-	        <div class="fitem">    
-	            <label> 密码：</label>  
-	            <input name="password" type="password" value="123456" class="easyui-validatebox" required="true" validType="maxLength[30]">    
+			<div class="fitem">    
+	            <label>分配角色：</label>
+	            <input id="cg_ownrole" name="role.roleid" style="width:200px;"></input>
+	            <script type="text/javascript">
+	            $(function(){
+	            	$('#cg_ownrole').combogrid({  
+	                    panelWidth:400,  
+	                    url: '${pageContext.request.contextPath}/role/page.do',  
+	                    idField:'roleid',  
+	                    textField:'rolename', 
+	                    mode:'remote',
+	                    fitColumns:true,
+	                    columns:[[  
+	                        {field:'roleid',title:'主键',width:60},  
+	                        {field:'rolecode',title:'编码',width:80},  
+	                        {field:'rolename',title:'名称',width:120}
+	                    ]]
+	                }); 
+	            });
+	            </script>
 	        </div>
-	        -->
 	        <div class="fitem">
 	            <label>所属机构：</label>
 	            <input id="cg_ownorg" name="org.orgid" style="width:200px;"></input>
@@ -96,26 +119,6 @@
 	            });
 	            </script>
 	        </div>
-	        <div class="fitem">    
-	            <label> 性别：</label>
-	            <select id="cc" class="easyui-combobox" name="sex" style="width:200px;">  
-    				<option value="0">未知</option>  
-    				<option value="1">男</option>
-    				<option value="2">女</option>
-				</select> 
-	        </div>
-	        <div class="fitem">    
-	            <label> 电话号码：</label>  
-	            <input name="telphone" class="easyui-validatebox" validType="maxLength[20]">    
-	        </div>
-	        <div class="fitem">    
-	            <label> 手机号码：</label>  
-	            <input name="mobilephone" class="easyui-validatebox"  validType="maxLength[20]">    
-	        </div>
-	        <div class="fitem">    
-	            <label> Email：</label>  
-	            <input name="email" class="easyui-validatebox"  validType="email">
-	        </div>
 		</form>
 	</div>
 	<div id="formSub-buttons" style="text-align: center;">
@@ -127,16 +130,17 @@
 	$(function(){
 	// 新增
 	$("#btn_add").click(function() {
+		var data = $("#grid_roleuser").datagrid('getData');
 		dialogAddShow();
 		clearForm();
 	});
 	// 修改
 	$("#btn_edit").click(function(){
-		clearForm();
 		if(!checkIsSel()){
 			return false;
 		}
 		dialogEditShow();
+		clearForm();
 		fillForm();
 	});
 	// 删除
@@ -160,39 +164,46 @@
 	});
 	//查询
 	$("#btn_query").click(function(){
-		$("#grid_user").datagrid('load',{
+		$("#grid_roleuser").datagrid('load',{
 			keyword:$("#keyword").val()
 		});
 	});
 	})
 	//对话框显示or隐藏
 	function dialogAddShow(){
-		$("#dialog_user").dialog({
-			title : '新增 用户',
+		$("#dialog_roleuser").dialog({
+			title : '新增角色',
 			iconCls : 'icon-add'
 		}).dialog('open');
 	}
 	function dialogEditShow(){
-		$("#dialog_user").dialog({
-			title : '编辑 用户',
+		$("#dialog_roleuser").dialog({
+			title : '编辑角色',
 			iconCls : 'icon-edit'
 		}).dialog('open');
 	}
 	function dialogHide(){
-		$("#dialog_user").dialog("close");
+		$("#dialog_roleuser").dialog("close");
 		$(".validatebox-tip").hide();
 	}
 	function fillForm(){
-		var selRow = $('#grid_user').datagrid('getSelected');
-		$("#form_user").form('load',selRow);
-		if(selRow.org)
+		var selRow = $('#grid_roleuser').datagrid('getSelected');
+		$("#form_roleuser").form('load',selRow);
+		if(selRow.user){
+			$("#cg_ownuser").combogrid('setValue', selRow.user.userid);
+		}
+		if(selRow.role){
+			$("#cg_ownrole").combogrid('setValue', selRow.role.roleid);
+		}
+		if(selRow.org){
 			$('#cg_ownorg').combogrid('setValue', selRow.org.orgid);
+		}
 	}
 	function clearForm(){
-		$("#form_user").form('clear');
+		$("#form_roleuser").form('clear');
 	}
 	function checkIsSel(){
-		var selRow = $('#grid_user').datagrid('getSelected');
+		var selRow = $('#grid_roleuser').datagrid('getSelected');
 		if(!selRow){
 			$.messager.alert('错误','没有选中的行');
 			return false;
@@ -201,16 +212,16 @@
 	}
 	//删除
 	function doDel(){
-		var selRow = $('#grid_user').datagrid('getSelected');
+		var selRow = $('#grid_roleuser').datagrid('getSelected');
 		$.messager.progress(); // display the progress bar
-		$.post('${pageContext.request.contextPath}/user/deleteById.do',{userid:selRow.userid},function(result){
+		$.post('${pageContext.request.contextPath}/roleuser/deleteById.do',{roleuserid:selRow.roleuserid},function(result){
 			$.messager.progress('close'); // hide progress bar
 			if (result.success){
 				$.messager.show({
                     title: '提示',  
                     msg: result.message  
                 }); 
-                $('#grid_user').datagrid('reload');    // reload the user data  
+                $('#grid_roleuser').datagrid('reload');    // reload the user data  
             } else {  
                 $.messager.show({
                     title: '错误',  
@@ -222,8 +233,8 @@
 	//提交
 	function doSubmit(){
 		$.messager.progress(); // display the progress bar
-		$('#form_user').form('submit', {
-			url : "${pageContext.request.contextPath}/user/save.do",
+		$('#form_roleuser').form('submit', {
+			url : "${pageContext.request.contextPath}/roleuser/save.do",
 			onSubmit : function() {
 				var isValid = $(this).form('validate');
 				if (!isValid) {
@@ -241,8 +252,8 @@
 							title : '提示',
 							msg : result.message
 						});
-						$('#dialog_user').dialog('close'); // close the dialog
-						$('#grid_user').datagrid('reload'); // reload the user
+						$('#dialog_roleuser').dialog('close'); // close the dialog
+						$('#grid_roleuser').datagrid('reload'); // reload the user
 															// data
 					} else {
 						$.messager.show({

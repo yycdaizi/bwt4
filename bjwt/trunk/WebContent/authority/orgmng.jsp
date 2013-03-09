@@ -6,9 +6,7 @@
 		<jsp:include page="/include.jsp"></jsp:include>
 		<link href="css/basic.css" rel="stylesheet" type="text/css" />
 		<link href="css/content.css" rel="stylesheet" type="text/css" />
-		<link href="css/jquery.refbox.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="js/formutils.js"></script>
-		<script type="text/javascript" src="js/jquery.refbox.js"></script>
 	</head>
 	<body>
 		<div id="topations">
@@ -39,8 +37,8 @@
 				pageSize:10"
 				url="${pageContext.request.contextPath}/org/page.do"
 				fitColumns="true"
-				sortName="orgid" 
-        		sortOrder="asc"
+				sortName="ts" 
+        		sortOrder="desc"
         		toolbar="#topations"
 				>
 		<thead>
@@ -70,12 +68,24 @@
 	        </div>
 	        <div class="fitem">
 	            <label>父机构：</label>
-	            <span id="parentOrg"></span>
+	            <input id="cg_porg" name="parentOrg.orgid" style="width:200px;"></input>
 				<script type="text/javascript">
 	            $(function(){
-	            	$("#parentOrg").jRefBox({grid_href:'${pageContext.request.contextPath}/ref/orgref.jsp'});
+	            	$('#cg_porg').combogrid({  
+	                    panelWidth:400,  
+	                    url: '${pageContext.request.contextPath}/org/page.do',  
+	                    idField:'orgid',  
+	                    textField:'orgname', 
+	                    mode:'remote',
+	                    fitColumns:true,
+	                    columns:[[  
+	                        {field:'orgid',title:'主键',width:60},  
+	                        {field:'orgcode',title:'编码',width:80},  
+	                        {field:'orgname',title:'名称',width:120}
+	                    ]]
+	                }); 
 	            });
-	            </script> 
+	            </script>
 	        </div>
 	        <div class="fitem">    
 	            <label>所在地址：</label>  
@@ -83,19 +93,23 @@
 	        </div>
 	        <div class="fitem">
 	            <label>机构负责人：</label>
-				<span id="managerUser"></span>
+	            <input id="cg_manager" name="orgmanager.userid" style="width:200px;"></input>
 				<script type="text/javascript">
 	            $(function(){
-	            	$("#managerUser").jRefBox({
-	            		grid_href:'${pageContext.request.contextPath}/ref/userref.jsp',
-	            		valuename: 'orgmanager.userid',
-	                    grid_id: 'ref_grid_user',
-	                    grid_valuefield: 'userid',
-	                    grid_displayfield: 'username',
-	                    dialog_id: 'ref_dialog_user'
-	            	});
+	            	$('#cg_manager').combogrid({  
+	                    panelWidth:280,
+	                    url: '${pageContext.request.contextPath}/user/page.do',  
+	                    idField:'userid',  
+	                    textField:'username', 
+	                    mode:'remote',
+	                    fitColumns:true,
+	                    columns:[[  
+	                        {field:'userid',title:'主键',width:80},  
+	                        {field:'username',title:'名称',width:200}
+	                    ]]
+	                }); 
 	            });
-	            </script> 
+	            </script>
 	        </div>
 		</form>
 	</div>
@@ -120,6 +134,7 @@
 			return false;
 		}
 		dialogEditShow();
+		clearForm();
 		fillForm();
 	});
 	// 删除
@@ -168,8 +183,10 @@
 	function fillForm(){
 		var selRow = $('#grid_org').datagrid('getSelected');
 		$("#formorg").form('load',selRow);
-		$("#pid").val(selRow.parentOrg_orgid);
-		$("#orgref_showname").val(selRow.parentOrg_showname);
+		if(selRow.parentOrg_orgid)
+			$('#cg_porg').combogrid('setValue', selRow.parentOrg_orgid);
+		if(selRow.orgmanager)
+			$('#cg_manager').combogrid('setValue', selRow.orgmanager.userid);
 	}
 	function clearForm(){
 		$("#formorg").form('clear');
@@ -236,7 +253,7 @@
 				} else {
 					$.messager.show({
 						title : '错误',
-						msg : '页面找不到404'
+						msg : '执行失败，请查看日志'
 					});
 				}
 

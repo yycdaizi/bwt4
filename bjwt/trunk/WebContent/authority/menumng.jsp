@@ -38,6 +38,7 @@
 				fitColumns="true"
 				sortName="menuid" 
         		sortOrder="asc"
+        		toolbar="#topations"
 				>
 		<thead>
 			<tr>
@@ -52,7 +53,7 @@
 		</table>
 		</div>
 		<!-- 新增对话框 -->
-		<div id="dialog_menu" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:200px;padding:10px 20px">
+		<div id="dialog_menu" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:200px;left:200px;top:100px;padding:10px 20px">
 		<form id="formMenu" method="post" class="fform">
 			<input name="menuid" type="hidden" />
 			<div class="fitem">    
@@ -199,7 +200,7 @@
 				} else {
 					$.messager.show({
 						title : '错误',
-						msg : '页面找不到404'
+						msg : '执行失败，请查看日志'
 					});
 				}
 

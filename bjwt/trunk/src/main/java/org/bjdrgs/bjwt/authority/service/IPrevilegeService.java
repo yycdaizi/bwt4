@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.authority.service;
 
 import org.bjdrgs.bjwt.authority.model.Previlege;
+import org.bjdrgs.bjwt.authority.model.PrevilegeView;
 import org.bjdrgs.bjwt.authority.parameter.PrevilegeParam;
 import org.bjdrgs.bjwt.core.web.Pagination;
 
@@ -22,4 +23,6 @@ public interface IPrevilegeService {
 	 * @param id
 	 */
 	public void deleteById(Integer id);
+	
+	public Pagination<PrevilegeView> queryPrevilegeView(PrevilegeParam param);
 }

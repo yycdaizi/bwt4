@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.bjdrgs.bjwt.authority.model.Previlege;
+import org.bjdrgs.bjwt.authority.model.PrevilegeView;
 import org.bjdrgs.bjwt.authority.parameter.PrevilegeParam;
 import org.bjdrgs.bjwt.authority.service.IPrevilegeService;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
@@ -29,14 +30,14 @@ public class PrevilegeController {
 	
 	@RequestMapping("/page")
 	@ResponseBody
-	public GridPage<Previlege> page(PrevilegeParam param){
-		GridPage<Previlege> page =GridPage.valueOf(previlegeService.queryPrevilege(param));
+	public GridPage<PrevilegeView> page(PrevilegeParam param){
+		GridPage<PrevilegeView> page = GridPage.valueOf(previlegeService.queryPrevilegeView(param));
 		return page;
 	}
 	
 	@RequestMapping("/save")
 	@ResponseBody
-	public AjaxResult save(@Valid Previlege entity, BindingResult errors) {
+	public AjaxResult save(Previlege entity, BindingResult errors) {
 		//TODO 看情况添加数据校验
 		AjaxResult result = new AjaxResult();
 		if(errors.hasErrors()){
@@ -58,8 +59,8 @@ public class PrevilegeController {
 	
 	@RequestMapping("/deleteById")
 	@ResponseBody
-	public AjaxResult deleteById(Integer id){
-		previlegeService.deleteById(id);
+	public AjaxResult deleteById(Integer previlegeid){
+		previlegeService.deleteById(previlegeid);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 

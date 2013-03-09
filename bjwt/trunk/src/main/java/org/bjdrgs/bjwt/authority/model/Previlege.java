@@ -6,8 +6,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -23,28 +27,27 @@ public class Previlege implements Serializable {
 	@Column(name = "previlegeid", nullable = false, unique = true)
 	private Integer previlegeid;
 
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "orgid", nullable = false, length = 0)
-	private Integer orgid;
+	@ManyToOne
+	@Cascade({ CascadeType.REFRESH })
+	@JoinColumn(name = "orgid")
+	private Org org;
    
 	@Length(max = 150, message = "{common.length.limit}")
-	@Column(name = "master", nullable = false, length = 150)
+	@Column(name = "master", nullable = true, length = 150)
 	private String master;
    
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "mastervalue", nullable = false, length = 0)
+	@Column(name = "mastervalue", nullable = true, length = 20)
 	private Integer mastervalue;
    
 	@Length(max = 150, message = "{common.length.limit}")
-	@Column(name = "resource", nullable = false, length = 150)
+	@Column(name = "resource", nullable = true, length = 150)
 	private String resource;
    
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "resourcevalue", nullable = false, length = 0)
+	@Column(name = "resourcevalue",nullable=true, length = 20)
 	private Integer resourcevalue;
    
 	@Length(max = 150, message = "{common.length.limit}")
-	@Column(name = "permission", nullable = false, length = 150)
+	@Column(name = "permission",nullable=true, length = 150)
 	private String permission;
    
 	@Column(name = "ts")
@@ -58,14 +61,15 @@ public class Previlege implements Serializable {
 		this.previlegeid = previlegeid;
 	}
    
-	public Integer getOrgid() {
-		return orgid;
+   
+	public Org getOrg() {
+		return org;
 	}
 
-	public void setOrgid(Integer orgid) {
-		this.orgid = orgid;
+	public void setOrg(Org org) {
+		this.org = org;
 	}
-   
+
 	public String getMaster() {
 		return master;
 	}

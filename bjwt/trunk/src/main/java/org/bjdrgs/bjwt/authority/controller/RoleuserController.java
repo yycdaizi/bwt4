@@ -58,8 +58,8 @@ public class RoleuserController {
 	
 	@RequestMapping("/deleteById")
 	@ResponseBody
-	public AjaxResult deleteById(Integer id){
-		roleuserService.deleteById(id);
+	public AjaxResult deleteById(Integer roleuserid){
+		roleuserService.deleteById(roleuserid);
 		return new AjaxResult(true, SpringContextUtils.getMessage("sys.delete.success"));
 	}
 

@@ -13,4 +13,13 @@ public final class ContentUtils {
 		}
 		return null;
 	}
+	
+	public static String parsePermission(String permission){
+		if("1".equals(permission)){
+			return "启用";
+		}else if("0".equals(permission)){
+			return "锁定";
+		}
+		return "其他";
+	}
 }

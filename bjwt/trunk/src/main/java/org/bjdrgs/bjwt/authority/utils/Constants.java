@@ -10,5 +10,9 @@ public class Constants {
 	 * 系统管理员root
 	 */
 	public static final String ROOTUSER_NAME = "root";
-	
+	/**
+	 * 预置密码
+	 */
+	public static final String DEFAULT_PASSWORD = "123456";
+
 }

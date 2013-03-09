@@ -22,4 +22,12 @@ public interface IUserService {
 	 * @param id
 	 */
 	public void deleteById(Integer id);
+	
+	/**
+	 * 根据用户名和密码查找用户
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public User findUserByUP(String username,String password);
 }

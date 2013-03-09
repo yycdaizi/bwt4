@@ -1,5 +1,7 @@
 package org.bjdrgs.bjwt.authority.dao;
 
+import java.util.List;
+
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.parameter.UserParam;
 import org.bjdrgs.bjwt.core.dao.IBaseDao;
@@ -12,5 +14,13 @@ public interface IUserDao extends IBaseDao<User> {
 	 * @return 分页对象
 	 */
 	public Pagination<User> query(UserParam param);
+	
+	/**
+	 * 根据用户名和密码查找用户
+	 * @param username
+	 * @param password
+	 * @return
+	 */
+	public List<User> findUserByUP(String username,String password);
 
 }

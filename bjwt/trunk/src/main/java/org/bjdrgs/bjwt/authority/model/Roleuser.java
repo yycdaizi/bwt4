@@ -6,11 +6,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "b_roleuser")
@@ -23,20 +25,20 @@ public class Roleuser implements Serializable {
 	@Column(name = "roleuserid", nullable = false, unique = true)
 	private Integer roleuserid;
 
-	@NotBlank(message = "{common.text.notBlank}")
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "orgid", nullable = false, length = 0)
-	private Integer orgid;
+	@ManyToOne
+	@Cascade({ CascadeType.REFRESH })
+	@JoinColumn(name = "orgid")
+	private Org org;
    
-	@NotBlank(message = "{common.text.notBlank}")
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "roleid", nullable = false, length = 0)
-	private Integer roleid;
+	@ManyToOne
+	@Cascade({ CascadeType.REFRESH })
+	@JoinColumn(name = "roleid")
+	private Role role;
    
-	@NotBlank(message = "{common.text.notBlank}")
-	@Length(max = 0, message = "{common.length.limit}")
-	@Column(name = "userid", nullable = false, length = 0)
-	private Integer userid;
+	@ManyToOne
+	@Cascade({ CascadeType.REFRESH })
+	@JoinColumn(name = "userid")
+	private User user;
    
 	@Column(name = "ts")
 	private String ts;
@@ -49,28 +51,28 @@ public class Roleuser implements Serializable {
 		this.roleuserid = roleuserid;
 	}
    
-	public Integer getOrgid() {
-		return orgid;
+	public Org getOrg() {
+		return org;
 	}
 
-	public void setOrgid(Integer orgid) {
-		this.orgid = orgid;
-	}
-   
-	public Integer getRoleid() {
-		return roleid;
+	public void setOrg(Org org) {
+		this.org = org;
 	}
 
-	public void setRoleid(Integer roleid) {
-		this.roleid = roleid;
-	}
-   
-	public Integer getUserid() {
-		return userid;
+	public Role getRole() {
+		return role;
 	}
 
-	public void setUserid(Integer userid) {
-		this.userid = userid;
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public String getTs() {
@@ -80,8 +82,5 @@ public class Roleuser implements Serializable {
 	public void setTs(String ts) {
 		this.ts = ts;
 	}
-	
-	
-   
 }
 

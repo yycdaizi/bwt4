@@ -1,3 +1,4 @@
+
 /**
  * 检查gird是否选择行
  * @param grid -- 表格ID
@@ -12,16 +13,22 @@ function checkGirdIsSel(gridId) {
 	return true;
 }
 
-/**
- * 给refbox赋值
- * @param node -- id or '#id'
- * @param val -- 值
- * @param showVal -- 显示值
- */
-function setValForRefbox(node,val,showVal){
-	var jqNode = (typeof node == 'string' ? $(node) : node);
-	var valNode = jqNode.find('input.vaulefield');
-	var showNode = jqNode.find('input.refbox-text');
-	valNode.val(val);
-	showNode.val(showVal);
+//格式化
+function formatOrg(val,row){
+	return val.orgname;
+}
+function formatUser(val,row){
+	return val.username;
+}
+function formatUserId(val,row){
+	return val.userid;
+}
+function formatRole(val,row){
+	return val.rolename;
+}
+function formatRoleId(val,row){
+	return val.roleid;
+}
+function formatMenu(val,row){
+	return val.menuname;
 }

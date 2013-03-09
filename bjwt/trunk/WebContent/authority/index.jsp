@@ -71,7 +71,13 @@ $(function() {
 			</li>
 			<li>
 			<div>
-			<a href="javascript:void(0)" rel="permissionmng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">权限管理</span>
+			<a href="javascript:void(0)" rel="roleusermng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">用户角色分配</span>
+			</a>
+			</div>
+			</li>
+			<li>
+			<div>
+			<a href="javascript:void(0)" rel="roleprevilegemng.jsp" ><span class="icon icon-nav" >&nbsp;</span><span class="nav">角色权限分配</span>
 			</a>
 			</div>
 			</li>

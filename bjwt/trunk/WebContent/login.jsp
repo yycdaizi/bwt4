@@ -15,7 +15,7 @@
         <form id="loginForm" method="post">
             <div style="padding:5px 0;">
                 <label for="login">帐号:</label>
-                <input type="text" name="login" style="width:260px;"></input>
+                <input type="text" name="username" style="width:260px;"></input>
             </div>
             <div style="padding:5px 0;">
                 <label for="password">密码:</label>
@@ -40,27 +40,35 @@ document.onkeydown = function(e){
     }
 }
 $(function(){
-    $("input[name='login']").focus();
+    $("input[name='username']").focus();
 });
 function cleardata(){
     $('#loginForm').form('clear');
 }
 function login(){
-     if($("input[name='login']").val()=="" || $("input[name='password']").val()==""){
+     if($("input[name='username']").val()=="" || $("input[name='password']").val()==""){
          $("#showMsg").html("用户名或密码为空，请输入");
-         $("input[name='login']").focus();
+         $("input[name='username']").focus();
     }else{
             //ajax异步提交  
            $.ajax({            
                   type:"POST",   //post提交方式默认是get
-                  url:"login.action", 
+                  url:"${pageContext.request.contextPath}/user/login.do",
                   data:$("#loginForm").serialize(),   //序列化               
                   error:function(request) {      // 设置表单提交出错                 
                       $("#showMsg").html(request);  //登录错误提示信息
                   },
-                  success:function(data) {
-                      document.location = "index.action";
-                  }            
+                  success:function(result) {
+				  	var result = $.parseJSON(result);
+				  	if(result.success){
+						 document.location = "${pageContext.request.contextPath}/index.jsp";
+					}else{
+						$.messager.show({
+							title : '错误',
+							msg : result.message
+						});
+					}
+                  }
             });       
         } 
 }

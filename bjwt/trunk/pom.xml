@@ -11,6 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<spring.framework.version>3.1.2.RELEASE</spring.framework.version>
+		<org.apache.shiro-version>1.2.1</org.apache.shiro-version>
 		<logback.version>1.0.7</logback.version>
 	</properties>
 	<dependencies>
@@ -134,6 +135,22 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
+		</dependency>
+		<!-- SHIRO Security Stuff -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>${org.apache.shiro-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${org.apache.shiro-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>${org.apache.shiro-version}</version>
 		</dependency>
 	</dependencies>
 	

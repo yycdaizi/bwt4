@@ -8,6 +8,8 @@
 			http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
 			">
 	<import resource="classpath:spring-jdbc.xml"/>
+	<!-- Security Configuration / Apache Shiro -->
+	<import resource="classpath:shiro-context.xml" />
 	<context:annotation-config />
 	<context:component-scan base-package="org.bjdrgs.bjwt"/>
 	

@@ -1,0 +1,11 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
+dic.zhongLiuFenQi = [
+{"value":"","text":""},
+{"value":"0","text":"0 - 0期"},
+{"value":"1","text":"1 - Ⅰ期"},
+{"value":"2","text":"2 - Ⅱ期 "},
+{"value":"3","text":"3 - Ⅲ期 "},
+{"value":"4","text":"4 - Ⅳ期"}
+]

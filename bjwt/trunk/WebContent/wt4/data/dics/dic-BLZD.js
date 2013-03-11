@@ -1,5 +1,8 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
 //指标-病理诊断编码(M码)
-var Dic_BLZD=[
+dic.BLZD=[
 	{code:"M800000/0",name:"良性肿瘤",pym:"lxzl"},
 	{code:"M800000/1",name:"良性或恶性未肯定肿瘤",pym:"lxhexwkdzl"},
 	{code:"M800000/3",name:"恶性肿瘤",pym:"exzl"},

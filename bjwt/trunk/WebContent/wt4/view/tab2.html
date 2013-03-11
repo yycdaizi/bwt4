@@ -9,7 +9,7 @@
 	<form id="formTab2">
 		<script type="text/javascript">
 			$(function() {
-				$("#ABA01C").autocomplete(zdData, {
+				$("#ABA01C").autocomplete(dic.ICD10, {
 					autoFill : false,
 					matchContains : true,
 					formatItem : function(item) {
@@ -26,7 +26,7 @@
 					$("#ABA01N").val(item.name);
 					$("#ABA01N").validatebox("validate");
 				});
-				$("#ABA01N").autocomplete(zdData, {
+				$("#ABA01N").autocomplete(dic.ICD10, {
 					autoFill : false,
 					matchContains : true,
 					formatItem : function(item) {
@@ -58,7 +58,7 @@
 					<tr>
 						<td align="right"><label for="ABA01C">门(急)诊诊断编码(ICD-10)：</label></td>
 						<td><input id="ABA01C" name="ABA01C" type="text"
-							class="easyui-validatebox" validType="fixedin[zdData,'code']" />
+							class="easyui-validatebox" validType="fixedin[dic.ICD10,'code']" />
 						</td>
 						<td></td>
 						<td></td>
@@ -67,14 +67,14 @@
 						<td align="right"><label for="ABA01N">门（急）诊诊断名称：</label></td>
 						<td colspan="3"><input id="ABA01N" name="ABA01N" type="text"
 							class="easyui-validatebox longtext"
-							validType="fixedin[zdData,'name']" /></td>
+							validType="fixedin[dic.ICD10,'name']" /></td>
 					</tr>
 				</tbody>
 			</table>
 		</fieldset>
 		<script type="text/javascript">
 			$(function() {
-				$("#ABC01C").autocomplete(zdData, {
+				$("#ABC01C").autocomplete(dic.ICD10, {
 					//mustMatch: true,
 					autoFill : false,
 					matchContains : true,
@@ -116,7 +116,7 @@
 						$("#ABG01C,#ABG01N").validatebox("validate");
 					}
 				});
-				$("#ABC01N").autocomplete(zdData, {
+				$("#ABC01N").autocomplete(dic.ICD10, {
 					//mustMatch: true,
 					autoFill : false,
 					matchContains : true,
@@ -174,7 +174,7 @@
 						<td align="right"><label for="ABC01C">出院时主要诊断编码(ICD-10)：</label></td>
 						<td><input id="ABC01C" name="ABC01C" type="text"
 							class="easyui-validatebox" required="true"
-							validType="fixedin[zdData,'code']" /></td>
+							validType="fixedin[dic.ICD10,'code']" /></td>
 						<td></td>
 						<td></td>
 					</tr>
@@ -182,12 +182,12 @@
 						<td align="right"><label for="ABC01N">出院主要诊断名称：</label></td>
 						<td colspan="3"><input id="ABC01N" name="ABC01N" type="text"
 							class="easyui-validatebox longtext"
-							validType="fixedin[zdData,'name']" required="true" /></td>
+							validType="fixedin[dic.ICD10,'name']" required="true" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="ABC03C">入院病情：</label></td>
 						<td><input id="ABC03C" name="ABC03C" type="text"
-							class="easyui-combobox" url="data/dic-RuYuanBingQing.json"
+							class="easyui-combobox" data-options="data:dic.ruYuanBingQing"
 							panelHeight="auto" required="true"
 							validType="comboboxfixed['ABC03C']" /></td>
 						<td></td>
@@ -217,9 +217,9 @@
 				el.validatebox("validate");
 			}
 			function rybq_Formatter(value) {
-				for ( var i = 0; i < dic_rybq.length; i++) {
-					if (dic_rybq[i].value == value)
-						return dic_rybq[i].text;
+				for ( var i = 0; i < dic.ruYuanBingQing.length; i++) {
+					if (dic.ruYuanBingQing[i].value == value)
+						return dic.ruYuanBingQing[i].text;
 				}
 				return value;
 			}
@@ -231,14 +231,14 @@
 				<thead>
 					<tr>
 						<th field="ABD01C" width="200" align="center"
-							editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01C_resultHandler,required:true,validType:'fixedin[zdData,\'code\']'}}">
+							editor="{type:'autocompletebox',options:{source:dic.ICD10,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01C_resultHandler,required:true,validType:'fixedin[dic.ICD10,\'code\']'}}">
 							出院时其他诊断编码(ICD-10)</th>
 						<th field="ABD01N" width="400" align="center"
-							editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01N_resultHandler,required:true,validType:'fixedin[zdData,\'name\']'}}">
+							editor="{type:'autocompletebox',options:{source:dic.ICD10,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ABD01N_resultHandler,required:true,validType:'fixedin[dic.ICD10,\'name\']'}}">
 							出院其他诊断名称</th>
 						<th field="ABD03C" width="100" align="center"
 							formatter="rybq_Formatter"
-							editor="{type:'combobox',options:{required:true,data:dic_rybq,panelHeight:'auto',editable:false}}">
+							editor="{type:'combobox',options:{required:true,data:dic.ruYuanBingQing,panelHeight:'auto',editable:false}}">
 							入院病情</th>
 					</tr>
 				</thead>
@@ -246,7 +246,7 @@
 		</fieldset>
 		<script type="text/javascript">
 		$(function() {
-			$("#ABF01C").autocomplete(Dic_BLZD, {
+			$("#ABF01C").autocomplete(dic.BLZD, {
 				autoFill : false,
 				matchContains : true,
 				formatItem : function(item) {
@@ -263,7 +263,7 @@
 				$("#ABF01N").val(item.name);
 				$("#ABF01N").validatebox("validate");
 			});
-			$("#ABF01N").autocomplete(Dic_BLZD, {
+			$("#ABF01N").autocomplete(dic.BLZD, {
 				autoFill : false,
 				matchContains : true,
 				formatItem : function(item) {
@@ -295,7 +295,7 @@
 					<tr>
 						<td align="right"><label for="ABF01C">病理诊断编码(M码)：</label></td>
 						<td><input id="ABF01C" name="ABF01C" type="text"
-							class="easyui-validatebox" validType="fixedin[Dic_BLZD,'code']" />
+							class="easyui-validatebox" validType="fixedin[dic.BLZD,'code']" />
 						</td>
 						<td></td>
 						<td></td>
@@ -304,7 +304,7 @@
 						<td align="right"><label for="ABF01N">病理诊断名称：</label></td>
 						<td colspan="3"><input id="ABF01N" name="ABF01N" type="text"
 							class="easyui-validatebox longtext"
-							validType="fixedin[Dic_BLZD,'name']" /></td>
+							validType="fixedin[dic.BLZD,'name']" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="ABF04">病理号：</label></td>
@@ -312,13 +312,13 @@
 							class="easyui-validatebox" validType="length[0,50]" /></td>
 						<td align="right"><label for="ABF02C">最高诊断依据代码：</label></td>
 						<td><input id="ABF02C" name="ABF02C" type="text"
-							class="easyui-combobox" url="data/dic-diagnostic-evidence.json"
+							class="easyui-combobox" data-options="data:dic.diagnosticEvidence"
 							validType="comboboxfixed['ABF02C']" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="ABF03C">分化程度编码：</label></td>
 						<td><input id="ABF03C" name="ABF03C" type="text"
-							class="easyui-combobox" url="data/dic-FenHuaChengDu.json"
+							class="easyui-combobox" data-options="data:dic.fenHuaChengDu"
 							validType="comboboxfixed['ABF03C']" /></td>
 						<td></td>
 						<td></td>
@@ -339,7 +339,7 @@
 					<tr>
 						<td align="right"><label for="ABG01C">损伤和中毒外部原因编码(ICD-10)：</label></td>
 						<td><input id="ABG01C" name="ABG01C" type="text"
-							class="easyui-validatebox" validType="fixedin[zdData,'code']" />
+							class="easyui-validatebox" validType="fixedin[dic.ICD10,'code']" />
 						</td>
 						<td></td>
 						<td></td>
@@ -348,14 +348,14 @@
 						<td align="right"><label for="ABG01N">损伤和中毒外部原因名称：</label></td>
 						<td colspan="3"><input id="ABG01N" name="ABG01N" type="text"
 							class="easyui-validatebox longtext"
-							validType="fixedin[zdData,'name']" /></td>
+							validType="fixedin[dic.ICD10,'name']" /></td>
 					</tr>
 				</tbody>
 			</table>
 		</fieldset>
 		<script type="text/javascript">
 		$(function(){
-			$("#ABG01C").autocomplete(zdData, {
+			$("#ABG01C").autocomplete(dic.ICD10, {
 				autoFill: false,
 				matchContains:true,
 				formatItem: function(item){
@@ -372,7 +372,7 @@
 				$("#ABG01N").val(item.name);
 				$("#ABG01N").validatebox("validate");
 			});
-			$("#ABG01N").autocomplete(zdData, {
+			$("#ABG01N").autocomplete(dic.ICD10, {
 				autoFill: false,
 				matchContains:true,
 				formatItem: function(item){
@@ -404,27 +404,27 @@
 					<tr>
 						<td align="right"><label for="ABH01C">肿瘤分期是否不详：</label></td>
 						<td><input id="ABH01C" name="ABH01C" type="text"
-							class="easyui-combobox" url="data/dic-bool.json"
+							class="easyui-combobox" data-options="data:dic.bool"
 							panelHeight="auto" validType="comboboxfixed['ABH01C']" /></td>
 						<td align="right"><label for="ABH0201C">肿瘤分期 T：</label></td>
 						<td><input id="ABH0201C" name="ABH0201C" type="text"
-							class="easyui-combobox" url="data/dic-TNM-T.json"
+							class="easyui-combobox" data-options="data:dic.TNM_T"
 							panelHeight="auto" validType="comboboxfixed['ABH0201C']" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="ABH0202C">肿瘤分期 N：</label></td>
 						<td><input id="ABH0202C" name="ABH0202C" type="text"
-							class="easyui-combobox" url="data/dic-TNM-N.json"
+							class="easyui-combobox" data-options="data:dic.TNM_N"
 							panelHeight="auto" validType="comboboxfixed['ABH0202C']" /></td>
 						<td align="right"><label for="ABH0203C">肿瘤分期 M：</label></td>
 						<td><input id="ABH0203C" name="ABH0203C" type="text"
-							class="easyui-combobox" url="data/dic-TNM-M.json"
+							class="easyui-combobox" data-options="data:dic.TNM_M"
 							panelHeight="auto" validType="comboboxfixed['ABH0203C']" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="ABH03C">0～Ⅳ肿瘤分期：</label></td>
 						<td><input id="ABH03C" name="ABH03C" type="text"
-							class="easyui-combobox" url="data/dic-ZhongLiuFenQi.json"
+							class="easyui-combobox" data-options="data:dic.zhongLiuFenQi"
 							panelHeight="auto" validType="comboboxfixed['ABH03C']" /></td>
 						<td></td>
 						<td></td>

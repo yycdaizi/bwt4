@@ -1,0 +1,11 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
+dic.TNM_N = [
+{"value":"","text":""},
+{"value":"0","text":"0 - N0期"},
+{"value":"1","text":"1 - N1期"},
+{"value":"2","text":"2 - N2期"},
+{"value":"3","text":"3 - N3期"},
+{"value":"9","text":"9 - 无法评估区域淋巴结有无转移"}
+]

@@ -1,5 +1,8 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
 //重症监护室代码
-var dic_ICU = [
+dic.ICU = [
 {"value":"","text":""},
 {"value":"01","text":"CCU - 心脏监护室"},
 {"value":"02","text":"RICU - 呼吸监护室"},

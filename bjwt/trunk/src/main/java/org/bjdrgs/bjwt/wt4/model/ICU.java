@@ -11,9 +11,12 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.bjdrgs.bjwt.core.format.DateTimeDeserializer;
 import org.bjdrgs.bjwt.core.format.DateTimeSerializer;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -22,6 +25,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  * @author ying
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
 @Table(name="b_wt4_icu")
 public class ICU implements Serializable {
@@ -51,6 +55,7 @@ public class ICU implements Serializable {
 	 * 监护室进入日期时间 
 	 */
 	@JsonProperty
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -61,6 +66,7 @@ public class ICU implements Serializable {
 	 * 监护室退出日期时间 
 	 */
 	@JsonProperty
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)

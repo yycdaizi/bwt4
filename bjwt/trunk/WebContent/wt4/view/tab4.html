@@ -52,7 +52,7 @@
 					<tr>
 						<td align="right"><label for="AEB02C"> 有无药物过敏: </label></td>
 						<td><input id="AEB02C" name="AEB02C" type="text"
-							class="easyui-combobox" url="data/dic-HaveOrNot.json"
+							class="easyui-combobox" data-options="data:dic.haveOrNot"
 							panelHeight="auto" required="true"
 							validType="comboboxfixed['AEB02C']" /></td>
 						<td></td>
@@ -61,7 +61,7 @@
 					<tr>
 						<td align="right"><label for="AEB01"> 过敏药物: </label></td>
 						<td colspan="3"><input class="easyui-validatebox longtext"
-							type="text" id="AEB01" name="AEB01" validType="length[1,200]" />
+							type="text" id="AEB01" name="AEB01" validType="length[0,200]" />
 						</td>
 					</tr>
 				</tbody>
@@ -79,16 +79,16 @@
 				<tr>
 					<td align="right"><label for="AED01C"> 病案质量代码: </label></td>
 					<td><input type="text" id="AED01C" name="AED01C"
-						class="easyui-combobox" url="data/dic-BinAnZhiLiang.json"
+						class="easyui-combobox" data-options="data:dic.binAnZhiLiang"
 						panelHeight="auto" validType="comboboxfixed['AED01C']" /></td>
 					<td align="right"><label for="AED02"> 质控医师姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AED02"
-						name="AED02" validType="length[1,20]" /></td>
+						name="AED02" validType="length[0,20]" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="AED03"> 质控护士姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AED03"
-						name="AED03" validType="length[1,20]" /></td>
+						name="AED03" validType="length[0,20]" /></td>
 					<td align="right"><label for="AED04"> 病案质量检查日期: </label></td>
 					<td><input class="easyui-validatebox my97-date" type="text"
 						id="AED04" name="AED04" /></td>
@@ -108,11 +108,11 @@
 				<tr>
 					<td align="right"><label for="AEG01C"> 血型代码: </label></td>
 					<td><input type="text" id="AEG01C" name="AEG01C"
-						class="easyui-combobox" url="data/dic-BloodType.json"
+						class="easyui-combobox" data-options="data:dic.bloodType"
 						panelHeight="auto" validType="comboboxfixed['AEG01C']" /></td>
 					<td align="right"><label for="AEG02C"> Rh 代码: </label></td>
 					<td><input type="text" id="AEG02C" name="AEG02C"
-						class="easyui-combobox" url="data/dic-Rh.json" panelHeight="auto"
+						class="easyui-combobox" data-options="data:dic.Rh" panelHeight="auto"
 						validType="comboboxfixed['AEG02C']" /></td>
 				</tr>
 				<tr>
@@ -211,9 +211,9 @@
 				$('#AEKS').initGrid();
 			});
 			function ICU_Formatter(value) {
-				for ( var i = 0; i < dic_ICU.length; i++) {
-					if (dic_ICU[i].value == value)
-						return dic_ICU[i].text;
+				for ( var i = 0; i < dic.ICU.length; i++) {
+					if (dic.ICU[i].value == value)
+						return dic.ICU[i].text;
 				}
 				return value;
 			}
@@ -226,7 +226,7 @@
 					<tr>
 						<th field="AEK01C" width="200" align="center"
 							formatter="ICU_Formatter"
-							editor="{type:'combobox',options:{data:dic_ICU,panelHeight:'auto',required:true,editable:false}}">
+							editor="{type:'combobox',options:{data:dic.ICU,panelHeight:'auto',required:true,editable:false}}">
 							重症监护室代码</th>
 						<th field="AEK02" width="200" align="center"
 							editor="{type:'my97datetimebox',options:{my97:{dateFmt:'yyyy-MM-dd HH:mm:ss'},required:true}}">
@@ -285,10 +285,10 @@
 							editor="{type:'numberbox',options:{required:true,min:1,max:9999}}">
 							新生儿出生体重(克)</th>
 						<th field="AEN02C" width="200" align="center"
-							editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler,validType:'fixedin[zdData,\'code\']'}}">
+							editor="{type:'autocompletebox',options:{source:dic.ICD10,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02C_resultHandler,validType:'fixedin[dic.ICD10,\'code\']'}}">
 							新生儿出生缺陷诊断编码(ICD-10)</th>
 						<th field="AEN02N" width="400" align="center"
-							editor="{type:'autocompletebox',options:{source:zdData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler,validType:'fixedin[zdData,\'name\']'}}">
+							editor="{type:'autocompletebox',options:{source:dic.ICD10,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:AEN02N_resultHandler,validType:'fixedin[dic.ICD10,\'name\']'}}">
 							新生儿出生缺陷诊断名称</th>
 					</tr>
 				</thead>
@@ -306,7 +306,7 @@
 				<tr>
 					<td align="right"><label for="AEM01C"> 离院方式代码: </label></td>
 					<td><input type="text" id="AEM01C" name="AEM01C"
-						class="easyui-combobox" url="data/dic-LiYuanFangShi.json"
+						class="easyui-combobox" data-options="data:dic.liYuanFangShi"
 						panelHeight="auto" required="true"
 						validType="comboboxfixed['AEM01C']" /></td>
 					<td></td>
@@ -323,7 +323,7 @@
 					<td align="right"><label for="AEM03C"> 是否有出院31日内再住院计划:
 					</label></td>
 					<td><input type="text" id="AEM03C" name="AEM03C"
-						class="easyui-combobox" url="data/dic-bool.json"
+						class="easyui-combobox" data-options="data:dic.bool"
 						panelHeight="auto" required="true"
 						validType="comboboxfixed['AEM03C']" /></td>
 					<td></td>
@@ -332,7 +332,7 @@
 				<tr>
 					<td align="right"><label for="AEM04"> 31日内再住院目的: </label></td>
 					<td colspan="3"><textarea class="easyui-validatebox"
-							id="AEM04" name="AEM04" validType="length[0,500]" /></td>
+							id="AEM04" name="AEM04" validType="length[0,500]"></textarea></td>
 				</tr>
 			</table>
 		</fieldset>
@@ -348,7 +348,7 @@
 				<tr>
 					<td align="right"><label for="AEI01C"> 是否尸检代码: </label></td>
 					<td><input type="text" id="AEI01C" name="AEI01C"
-						class="easyui-combobox" url="data/dic-bool.json"
+						class="easyui-combobox" data-options="data:dic.bool"
 						panelHeight="auto" validType="comboboxfixed['AEI01C']" /></td>
 					<td align="right"><label for="AEI09"> 日常生活能力评定量得分（入院）:
 					</label></td>

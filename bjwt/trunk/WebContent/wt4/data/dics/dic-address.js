@@ -1,4 +1,7 @@
-var address=[ {
+if(!window["dic"]){
+	window["dic"] = {};
+}
+dic.address=[ {
 	text : "北京市",
 	pym : "BJS",
 	children : [ {
@@ -10070,4 +10073,4 @@ var address=[ {
 }, {
 	text : "外籍",
 	pym : "WJ"
-}]
+}];

@@ -15,7 +15,7 @@ import org.hibernate.criterion.DetachedCriteria;
  * @author ying
  * @date 2013-01-20
  */
-public interface IBaseDao<T> {
+public interface IBaseDao<T extends Serializable> {
 
 	// 默认每页记录数
 	public static final int PAGE_SIZE = 20;

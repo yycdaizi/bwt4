@@ -62,6 +62,13 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 	
 	@Resource(name="surgeryDao")
 	private ISurgeryDao surgeryDao;
+
+	@Override
+	public void save(MedicalRecord[] entities) {
+		for (MedicalRecord medicalRecord : entities) {
+			this.save(medicalRecord);
+		}
+	}	
 	
 	@Override
 	public void save(MedicalRecord entity) {
@@ -225,4 +232,5 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 	public List<MedicalRecord> queryAll(MedicalRecordParam param) {
 		return medicalRecordDao.queryAll(param);
 	}
+
 }

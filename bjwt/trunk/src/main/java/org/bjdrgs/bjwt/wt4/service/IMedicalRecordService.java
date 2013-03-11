@@ -13,6 +13,8 @@ public interface IMedicalRecordService {
 	String TEMPLATE_FOLDER = "/org/bjdrgs/bjwt/wt4/template";
 	
 	void save(MedicalRecord entity);
+	
+	void save(MedicalRecord[] entities);
 
 	Pagination<MedicalRecord> query(MedicalRecordParam param);
 	

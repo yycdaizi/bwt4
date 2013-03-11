@@ -24,6 +24,7 @@
 			<legend> 患者信息 </legend>
 			<script type="text/javascript">
 				$(function() {
+					//年龄天数小于28天时，新生儿体重必填
 					$("#AAA40").blur(function() {
 						$(this).numberbox('fix');
 						var val = $(this).val();
@@ -75,16 +76,16 @@
 						<td align="right"><label for="AAA28">病案号：</label></td>
 						<td><input id="AAA28" name="AAA28" type="text"
 							class="easyui-validatebox" required="true"
-							validType="length[1,20]" /></td>
+							validType="length[0,20]" /></td>
 						<td align="right"><label for="AAA01">姓名：</label></td>
 						<td><input id="AAA01" name="AAA01" type="text"
 							class="easyui-validatebox" required="true"
-							validType="length[1,50]" /></td>
+							validType="length[0,50]" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="AAA02C">性别代码：</label></td>
 						<td><input id="AAA02C" name="AAA02C" type="text"
-							class="easyui-combobox" url="data/dic-sex.json"
+							class="easyui-combobox" data-options="data:dic.sex"
 							panelHeight="auto" required="true"
 							validType="comboboxfixed['AAA02C']" /></td>
 						<td align="right"><label for="AAA03">出生日期：</label></td>
@@ -97,7 +98,7 @@
 							class="easyui-numberbox" min="0" max="999" disabled="true" /></td>
 						<td align="right"><label for="AAA05C">国籍代码：</label></td>
 						<td><input id="AAA05C" name="AAA05C" type="text"
-							class="easyui-combobox" url="data/dic-country.json"
+							class="easyui-combobox" data-options="data:dic.country"
 							panelHeight="auto" validType="comboboxfixed['AAA05C']" /></td>
 					</tr>
 					<tr>
@@ -111,7 +112,7 @@
 					<tr>
 						<td align="right"><label for="AAA06C">民族代码：</label></td>
 						<td><input id="AAA06C" name="AAA06C" type="text"
-							class="easyui-combobox" url="data/dic-nation.json"
+							class="easyui-combobox" data-options="data:dic.nation"
 							validType="comboboxfixed['AAA06C']" /></td>
 						<td align="right"><label for="AAA07">身份证号：</label></td>
 						<td><input id="AAA07" name="AAA07" type="text"
@@ -120,18 +121,18 @@
 					<tr>
 						<td align="right"><label for="AAA08C">婚姻状况代码：</label></td>
 						<td><input id="AAA08C" name="AAA08C" type="text"
-							class="easyui-combobox" url="data/dic-marital-status.json"
+							class="easyui-combobox" data-options="data:dic.maritalStaus"
 							panelHeight="auto" required="true"
 							validType="comboboxfixed['AAA08C']" /></td>
 						<td align="right"><label for="AAA16C">现住址区县编码（居住半年以上）：</label></td>
 						<td><input id="AAA16C" name="AAA16C" type="text"
-							class="easyui-combobox" url="data/dic-area.json" required="true"
+							class="easyui-combobox" data-options="data:dic.area" required="true"
 							validType="comboboxfixed['AAA16C']" /></td>
 					</tr>
 					<tr>
 						<td align="right"><label for="AAA18C">职业代码：</label></td>
 						<td><input id="AAA18C" name="AAA18C" type="text"
-							class="easyui-combobox" url="data/dic-profession.json"
+							class="easyui-combobox" data-options="data:dic.profession"
 							required="true" validType="comboboxfixed['AAA18C']" /></td>
 						<td></td>
 						<td></td>
@@ -156,7 +157,7 @@
 							class="easyui-validatebox" validType="length[0,20]" /></td>
 						<td align="right"><label for="AAA23C">联系人关系代码：</label></td>
 						<td><input id="AAA23C" name="AAA23C" type="text"
-							class="easyui-combobox" url="data/dic-relationship.json"
+							class="easyui-combobox" data-options="data:dic.relationship"
 							validType="comboboxfixed['AAA23C']" /></td>
 					</tr>
 					<tr>
@@ -171,7 +172,7 @@
 							class="easyui-validatebox" validType="length[0,20]" /></td>
 						<td align="right"><label for="AAA26C">医疗付费方式代码：</label></td>
 						<td><input id="AAA26C" name="AAA26C" type="text"
-							class="easyui-combobox" url="data/dic-payment-method.json"
+							class="easyui-combobox" data-options="data:dic.paymentMethod"
 							required="true" validType="comboboxfixed['AAA26C']" /></td>
 					</tr>
 					<tr>
@@ -195,7 +196,7 @@
 			$(function(){
 				$("#AAA09").combobox({
 					valueField:"text",
-					data:address,
+					data:dic.address,
 					filter: addressFilter,
 					onSelect: function(record){
 						$("#AAA10").combobox("loadData",record.children||[]);
@@ -254,7 +255,7 @@
 				$(function(){
 					$("#AAA43").combobox({
 						valueField:"text",
-						data:address,
+						data:dic.address,
 						filter: addressFilter,
 						onSelect: function(record){
 							$("#AAA44").combobox("loadData",record.children||[]);
@@ -289,7 +290,7 @@
 				</fieldset>
 				<script type="text/javascript">
 				$(function(){
-           			$("input.autocomplete_streat_code").autocomplete(Dic_Streat, {
+           			$("input.autocomplete_streat_code").autocomplete(dic.streat, {
                			//mustMatch: true,
                			autoFill: false,
 						matchContains: true,
@@ -302,7 +303,7 @@
           			});
            			$("#AAA45").combobox({
 						valueField:"text",
-						data:address,
+						data:dic.address,
 						filter: addressFilter,
 						onSelect: function(record){
 							$("#AAA46").combobox("loadData",record.children||[]);
@@ -354,12 +355,12 @@
 						<tr>
 							<td align="right"><label for="AAA13C">区县编码：</label></td>
 							<td><input style="width: 200px;" id="AAA13C" name="AAA13C"
-								type="text" class="easyui-combobox" url="data/dic-area.json"
+								type="text" class="easyui-combobox" data-options="data:dic.area"
 								validType="comboboxfixed['AAA13C']" /></td>
 							<td align="right"><label for="AAA33C">街道乡镇代码：</label></td>
 							<td><input style="width: 200px;" id="AAA33C" name="AAA33C"
 								class="easyui-validatebox autocomplete_streat_code" type="text"
-								validType="fixedin[Dic_Streat,'code']" /></td>
+								validType="fixedin[dic.streat,'code']" /></td>
 							<td align="right"><label for="AAA14C">邮政编码：</label></td>
 							<td><input style="width: 200px;" id="AAA14C" name="AAA14C"
 								type="text" class="easyui-numberbox" min="100000" max="999999" />
@@ -392,7 +393,7 @@
 							<td align="right"><label for="AAA36C">街道乡镇代码：</label></td>
 							<td><input style="width: 200px;" id="AAA36C" name="AAA36C"
 								type="text" class="easyui-validatebox autocomplete_streat_code"
-								validType="fixedin[Dic_Streat,'code']" /></td>
+								validType="fixedin[dic.streat,'code']" /></td>
 							<td align="right"><label for="AAA51">电话：</label></td>
 							<td><input style="width: 200px;" id="AAA51" name="AAA51"
 								type="text" class="easyui-validatebox" validType="length[0,20]" />
@@ -448,7 +449,7 @@
 							validType="datebefore['#AAC01','出院时间']" /></td>
 						<td align="right"><label for="AAB02C">入院科别代码：</label></td>
 						<td><input id="AAB02C" name="AAB02C" type="text"
-							class="easyui-combobox" url="data/dic-medical-subject.json"
+							class="easyui-combobox" data-options="data:dic.medicalSubject"
 							required="true" validType="comboboxfixed['AAB02C']" /></td>
 					</tr>
 					<tr>
@@ -457,7 +458,7 @@
 							class="easyui-validatebox" validType="length[0,20]" /></td>
 						<td align="right"><label for="AAB06C">入院途径：</label></td>
 						<td><input id="AAB06C" name="AAB06C" type="text"
-							class="easyui-combobox" url="data/dic-RuYuanTuJing.json"
+							class="easyui-combobox" data-options="data:dic.ruYuanTuJing"
 							panelHeight="auto" required="true"
 							validType="comboboxfixed['AAB06C']" /></td>
 					</tr>
@@ -481,7 +482,7 @@
 							validType="dateafter['#AAB01','入院时间']" /></td>
 						<td align="right"><label for="AAC02C">出院科别代码：</label></td>
 						<td><input id="AAC02C" name="AAC02C" type="text"
-							class="easyui-combobox" url="data/dic-medical-subject.json"
+							class="easyui-combobox" data-options="data:dic.medicalSubject"
 							required="true" validType="comboboxfixed['AAC02C']" /></td>
 					</tr>
 					<tr>
@@ -504,7 +505,7 @@
 						<td align="right" style="width: 20%"><label for="AAD01C">转经科别代码：</label></td>
 						<td style="width: 80%"><input id="AAD01C" name="AAD01C"
 							type="text" class="easyui-combobox"
-							url="data/dic-medical-subject.json" multiple="true"
+							data-options="data:dic.medicalSubject" multiple="true"
 							style="width: 600px" validType="comboboxfixed['AAD01C']" /></td>
 					</tr>
 				</tbody>
@@ -522,43 +523,43 @@
 				<tr>
 					<td align="right"><label for="AEE01"> 科主任姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE01"
-						name="AEE01" validType="length[1,20]" /></td>
+						name="AEE01" validType="length[0,20]" /></td>
 					<td align="right"><label for="AEE02"> 主(副主)任医师姓名: </label></td>
 					<td><input class="easyui-combobox" type="text" id="AEE02" url="../dicdata/dicType/getDicData.do?type=doctor"
-						name="AEE02" required="true" validType="length[1,20]" /></td>
+						name="AEE02" required="true" validType="length[0,20]" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="AEE03"> 主治医师姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE03"
-						name="AEE03" required="true" validType="length[1,20]" /></td>
+						name="AEE03" required="true" validType="length[0,20]" /></td>
 					<td align="right"><label for="AEE11"> 主诊医师执业证书编码: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE11"
-						name="AEE11" validType="length[1,16]" /></td>
+						name="AEE11" validType="length[0,16]" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="AEE09"> 主诊医师姓名（主管医师姓名）:
 					</label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE09"
-						name="AEE09" validType="length[1,20]" /></td>
+						name="AEE09" validType="length[0,20]" /></td>
 					<td align="right"><label for="AEE04"> 住院医师姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE04"
-						name="AEE04" validType="length[1,20]" /></td>
+						name="AEE04" validType="length[0,20]" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="AEE05"> 进修医师姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE05"
-						name="AEE05" validType="length[1,20]" /></td>
+						name="AEE05" validType="length[0,20]" /></td>
 					<td align="right"><label for="AEE07"> 实习医师姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE07"
-						name="AEE07" validType="length[1,20]" /></td>
+						name="AEE07" validType="length[0,20]" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="AEE08"> 编码员姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE08"
-						name="AEE08" validType="length[1,20]" /></td>
+						name="AEE08" validType="length[0,20]" /></td>
 					<td align="right"><label for="AEE10"> 责任护士姓名: </label></td>
 					<td><input class="easyui-validatebox" type="text" id="AEE10"
-						name="AEE10" validType="length[1,20]" /></td>
+						name="AEE10" validType="length[0,20]" /></td>
 				</tr>
 			</table>
 		</fieldset>

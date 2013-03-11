@@ -15,10 +15,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.bjdrgs.bjwt.core.format.DateDeserializer;
 import org.bjdrgs.bjwt.core.format.DateSerializer;
+import org.bjdrgs.bjwt.core.format.DateTimeDeserializer;
 import org.bjdrgs.bjwt.core.format.DateTimeSerializer;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
@@ -31,6 +35,7 @@ import org.springframework.format.annotation.NumberFormat;
  * @author ying
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
 @Table(name="b_wt4")
 public class MedicalRecord implements Serializable {
@@ -69,6 +74,7 @@ public class MedicalRecord implements Serializable {
 	//@JoinColumn(name="b_wt4_id")
 	private List<ICU> AEKS = new ArrayList<ICU>();
 	
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -78,6 +84,7 @@ public class MedicalRecord implements Serializable {
 	@Column(name="createdby")
 	private Integer createdBy;
 	
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -132,6 +139,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String ZB05;
 	
 	/** 填报日期 */
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -165,6 +173,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAA02C;
 	
 	/** 出生日期 */
+	@JsonDeserialize(using=DateDeserializer.class)
 	@JsonSerialize(using= DateSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)
@@ -320,6 +329,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private Integer AAA29;
 	
 	/** 入院时间（时） */
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -339,6 +349,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAB06C;
 	
 	/** 出院时间（时） */
+	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	@Temporal(TemporalType.TIMESTAMP)
@@ -450,6 +461,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AED03;
 	
 	/** 病案质量检查日期 */
+	@JsonDeserialize(using=DateDeserializer.class)
 	@JsonSerialize(using= DateSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	@Temporal(TemporalType.DATE)

@@ -22,7 +22,7 @@
 			var el = $(target).parent().parent().parent().parent().parent()
 					.parent().next().find("input");
 			el.val(item.name);
-			el.validatebox("va200005lidate");
+			el.validatebox("validate");
 		}
 		function ACA0901N_resultHandler(event, item) {
 			item = item || {};
@@ -33,9 +33,9 @@
 			el.validatebox("validate");
 		}
 		function bool_Formatter(value) {
-			for ( var i = 0; i < dic_bool.length; i++) {
-				if (dic_bool[i].value == value)
-					return dic_bool[i].text;
+			for ( var i = 0; i < dic.bool.length; i++) {
+				if (dic.bool[i].value == value)
+					return dic.bool[i].text;
 			}
 			return value;
 		}
@@ -74,7 +74,7 @@
 							<td align="right"><label for="ACA02">术者（手术操作医师姓名）：</label></td>
 							<td><input id="ACA02" name="ACA02" type="text"
 								class="easyui-validatebox" required="true"
-								validType="length[1,20]" /></td>
+								validType="length[0,20]" /></td>
 							<td align="right"><label for="ACA03">Ⅰ助姓名：</label></td>
 							<td><input id="ACA03" name="ACA03" type="text"
 								class="easyui-validatebox" validType="length[0,20]" /></td>
@@ -85,13 +85,13 @@
 								class="easyui-validatebox" validType="length[0,20]" /></td>
 							<td align="right"><label for="ACA06C">麻醉方式代码：</label></td>
 							<td><input id="ACA06C" name="ACA06C" type="text"
-								class="easyui-combobox" url="data/dic-MaZuiFangShi.json"
+								class="easyui-combobox" data-options="data:dic.maZuiFangShi"
 								validType="comboboxfixed['ACA06C']" /></td>
 						</tr>
 						<tr>
 							<td align="right"><label for="ACA07C">切口愈合等级代码：</label></td>
 							<td><input id="ACA07C" name="ACA07C" type="text"
-								class="easyui-combobox" url="data/dic-QieKouYuHe.json"
+								class="easyui-combobox" data-options="data:dic.qieKouYuHe"
 								validType="comboboxfixed['ACA07C']" /></td>
 							<td align="right"><label for="ACA08">麻醉医师姓名：</label></td>
 							<td><input id="ACA08" name="ACA08" type="text"
@@ -100,7 +100,7 @@
 						<tr>
 							<td align="right"><label for="ACA10C">手术级别代码：</label></td>
 							<td><input id="ACA10C" name="ACA10C" type="text"
-								class="easyui-combobox" url="data/dic-SurgeryLevel.json"
+								class="easyui-combobox" data-options="data:dic.surgeryLevel"
 								panelHeight="auto" required="true"
 								validType="comboboxfixed['ACA10C']" /></td>
 							<td></td>
@@ -117,18 +117,18 @@
 				<thead>
 					<tr>
 						<th field="ACA0901C" width="200" align="center"
-							editor="{type:'autocompletebox',options:{source:czData,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901C_resultHandler,required:true,validType:'fixedin[czData,\'code\']'}}">
+							editor="{type:'autocompletebox',options:{source:dic.ICD9,autoFill : false,matchContains: true,formatItem: function(item){return item.code+'('+item.name+')';},formatResult:function(item,i,max){return item.code;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901C_resultHandler,required:true,validType:'fixedin[dic.ICD9,\'code\']'}}">
 							手术及操作编码</th>
 						<th field="ACA0901N" width="400" align="center"
-							editor="{type:'autocompletebox',options:{source:czData,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901N_resultHandler,required:true,validType:'fixedin[czData,\'name\']'}}">
+							editor="{type:'autocompletebox',options:{source:dic.ICD9,autoFill : false,matchContains: true,formatItem: function(item){return item.name+'('+item.code+')';},formatResult:function(item,i,max){return item.name;},formatMatch:function(row,i,max){return row.code+row.name+row.pym},resultHandler:ACA0901N_resultHandler,required:true,validType:'fixedin[dic.ICD9,\'name\']'}}">
 							手术及操作名称</th>
 						<th field="ACA0902C" width="100" align="center"
 							formatter="bool_Formatter"
-							editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}">
+							editor="{type:'combobox',options:{required:true,data:dic.bool,panelHeight:'auto',editable:false}}">
 							是否主要术式</th>
 						<th field="ACA0903C" width="130" align="center"
 							formatter="bool_Formatter"
-							editor="{type:'combobox',options:{required:true,data:dic_bool,panelHeight:'auto',editable:false}}">
+							editor="{type:'combobox',options:{required:true,data:dic.bool,panelHeight:'auto',editable:false}}">
 							是否主要手术或操作</th>
 					</tr>
 				</thead>

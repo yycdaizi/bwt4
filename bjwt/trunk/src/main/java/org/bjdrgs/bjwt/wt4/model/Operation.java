@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.hibernate.annotations.GenericGenerator;
 /**
@@ -16,6 +17,7 @@ import org.hibernate.annotations.GenericGenerator;
  * @author ying
  *
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
 @Table(name="b_wt4_operation")
 public class Operation implements Serializable {

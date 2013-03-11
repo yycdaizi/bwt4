@@ -16,50 +16,42 @@
     
     <script type="text/javascript" src="../resourses/jslib/My97DatePicker/WdatePicker.js"></script>
 	<script type="text/javascript" src="../resourses/jslib/date/Date.min.js"></script>
-      
-	<script type="text/javascript" src="../resourses/jslib/xmloperator/XmlUtils.js"></script>
+	<script type="text/javascript" src="../resourses/jslib/json/json2.js"></script>
+    
+    <script type="text/javascript" src="../resourses/jslib/xmloperator/XmlUtils.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/oop.js"></script>
+    <script type="text/javascript" src="../resourses/jscommon/ModelValidator.js"></script>
 	<script type="text/javascript" src="../resourses/jscommon/expand.js"></script>
 	<script type="text/javascript" src="../resourses/jscommon/jquery.customParam.js"></script>
 	
-	<script type="text/javascript" src="data/dics/czData.js"></script>
-	<script type="text/javascript" src="data/dics/zdData.js"></script>
-	<script type="text/javascript" src="data/dics/dic-address.js"></script>
-	<script type="text/javascript" src="data/dics/dic-streat.js"></script>
-	<script type="text/javascript" src="data/dics/dic-blzd.js"></script>
-	<script type="text/javascript" src="data/dics/dic-rybq.js"></script>
-	<script type="text/javascript" src="data/dics/dic-bool.js"></script>
-	<script type="text/javascript" src="data/dics/dic-ICU.js"></script>
-
-	<script type="text/javascript" src="js/XmlTemplate.js"></script>
+	<script type="text/javascript" src="data/dics/dic.js"></script>
 	<script type="text/javascript" src="js/model.js"></script>
 	
 	<script type="text/javascript" src="js/surgery.js"></script>
 	<script type="text/javascript" src="js/main.js"></script>
-	
-<!-- 
-	<script type="text/javascript" src="js/loadXML.js"></script>
-      <script type="text/javascript" src="../resourses/jslib/xmloperator/XMLWriter.js"></script>
-      <script type="text/javascript" src="js/CaseXmlWriter.js"></script>
- -->
 </head>
 <body>
 	<table id="gridMedicalRecord" style="height:400px" class="easyui-datagrid" title='病案'
-		autoRowHeight="false" singleSelect="true"
+		autoRowHeight="false" singleSelect="false"
 		pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
         sortOrder="desc" toolbar="#gridMedicalRecord-toolbar">
 		<thead>
 			<tr>
+				<th data-options="field:'check',checkbox:true"></th>
 				<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
 				<th data-options="field:'AAA01',width:200">姓名</th>
 				<th data-options="field:'AAB02C',width:200">入院科别</th>
 				<th data-options="field:'AAC01',width:200">出院时间</th>
 				<th data-options="field:'AEM01C',width:200">离院方式</th>
 				<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+				<th data-options="field:'valid',width:80,formatter:showState">状态</th>
 				<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
 			</tr>
 		</thead>
 	</table>
 	<div id="gridMedicalRecord-toolbar" style="height:28px">
+		<a id="medicalRecord-btnSaveChecked" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-save" style="float:right">批量保存</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="medicalRecord-btnImport" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">导入</a>
 		<div class="datagrid-btn-separator" style="float:right"></div>
 		<a id="medicalRecord-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
@@ -95,6 +87,13 @@
 		<input id="mrXMl" name="mrXMl" type="hidden" />
 	</form>
 <script type="text/javascript">
+function showState(value, row, index){
+	if(value&&value.length>0){
+		return "<span style='color:red'>验证出错</span>";
+	}else{
+		return "验证通过";
+	}
+}
 function medicalRecordOperater(value, row, index){
 	var html = [];
 	html.push($.operateButton('icon-edit','修改','updateMedicalRecord('+index+')'));
@@ -165,22 +164,33 @@ $(function(){
 		});
 		*/
 		var record = MedicalRecordForm.getData();
-		$.post('medicalRecord/save.do',$.customParam(record),function(result){
-			if (result.success){  
-            	$.messager.show({  
-                    title: '提示',  
-                    msg: result.message  
-                }); 
-                //TODO 删除表格中的已保存的记录
-                var index = $('#dialogMedicalRecordEdit').data('dataIndex');
-                if(index||index==0){
-                	$('#gridMedicalRecord').datagrid('deleteRow',index);
-                }
-            	$('#dialogMedicalRecordEdit').dialog('close');
-            } else {  
-            	$.messager.alert('错误',result.message,'error');   
-            }
-			$.messager.progress('close');
+		$.ajax({
+			type: "POST",
+			url : 'medicalRecord/save.do',
+			async : true,
+			contentType : 'application/json;utf-8',
+			dataType : 'json',
+			data : JSON.stringify([record]),
+			success : function(result){
+				if (result.success){  
+	            	$.messager.show({  
+	                    title: '提示',  
+	                    msg: result.message  
+	                }); 
+	                //TODO 删除表格中的已保存的记录
+	                var index = $('#dialogMedicalRecordEdit').data('dataIndex');
+	                if(index||index==0){
+	                	$('#gridMedicalRecord').datagrid('deleteRow',index);
+	                }
+	            	$('#dialogMedicalRecordEdit').dialog('close');
+	            } else {  
+	            	$.messager.alert('错误',result.message,'error');   
+	            }
+				$.messager.progress('close');
+			},
+			error : function (XMLHttpRequest, textStatus, errorThrown) {
+				$.messager.alert('错误','对不起，出错啦！','error');
+			}
 		});
 	});
 	
@@ -197,6 +207,54 @@ $(function(){
 	$("#medicalRecord-btnImport").click(function(){
 		$('#dialogImport').dialog('open');
 	});
+	$("#medicalRecord-btnSaveChecked").click(function(){
+		var rows = $('#gridMedicalRecord').datagrid("getChecked");
+		if(rows.length==0){
+			$.messager.alert('提示','请至少选择一条记录！','info');
+			return;
+		}
+		var valid = true;
+		for(var i=0,len=rows.length;i<len;i++){
+			rows[i].valid = MedicalRecord.validate(rows[i]);
+			if(rows[i].valid.length>0){
+				valid = false;
+			}
+		}
+		if(!valid){
+			$.messager.alert('错误','部分记录未验证通过，请修改后再保存！','error');
+			// TODO 刷新表格
+			return;
+		}
+		
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...'
+		});
+		$.ajax({
+			type: "POST",
+			url : 'medicalRecord/save.do',
+			async : true,
+			contentType : 'application/json;utf-8',
+			dataType : 'json',
+			data : JSON.stringify(rows),
+			success : function(result){
+				if (result.success){  
+	            	$.messager.show({  
+	                    title: '提示',  
+	                    msg: result.message  
+	                }); 
+	                //TODO 删除表格中的已保存的记录
+	            } else {  
+	            	$.messager.alert('错误',result.message,'error');   
+	            }
+				$.messager.progress('close');
+			},
+			error : function (XMLHttpRequest, textStatus, errorThrown) {
+				$.messager.alert('错误','对不起，出错啦！','error');
+			}
+		});
+	});
+	
 	$('#dialogImport').dialog({
 		buttons:[{
 			iconCls:'icon-ok',

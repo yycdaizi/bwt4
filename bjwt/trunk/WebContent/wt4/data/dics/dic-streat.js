@@ -1,5 +1,8 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
 //指标-街道乡镇代码
-var Dic_Streat=[	{code:"110101001000",name:"东华门街道办事处",pym:""},
+dic.streat=[{code:"110101001000",name:"东华门街道办事处",pym:""},
 	{code:"110101001001",name:"多福巷社区居委会",pym:""},
 	{code:"110101001002",name:"银闸社区居委会",pym:""},
 	{code:"110101001005",name:"东厂社区居委会",pym:""},

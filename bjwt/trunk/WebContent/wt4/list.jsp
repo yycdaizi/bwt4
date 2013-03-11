@@ -10,18 +10,11 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/autocomplete/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/My97DatePicker/WdatePicker.js"></script>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/dataset.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/js/loadXML.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/xmloperator/XmlUtils.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/oop.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/ModelValidator.js"></script>
 
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/czData.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/zdData.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic-address.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic-streat.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic-blzd.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic-rybq.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic-bool.js"></script>
-<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic-ICU.js"></script>
-
+<script type="text/javascript" src="${pageContext.request.contextPath}/wt4/data/dics/dic.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/wt4/js/model.js"></script>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/wt4/js/surgery.js"></script>
@@ -48,10 +41,10 @@
 				<tr>
 					<td align="right"><label for="eq_AAB02C">入院科别：</label></td>
 					<td><input id="eq_AAB02C" name="eq_AAB02C" type="text"	class="easyui-combobox" validType="comboboxfixed['eq_AAB02C']"
-							 url="${pageContext.request.contextPath}/wt4/data/dic-medical-subject.json"/></td>
+							 data-options="data:dic.medicalSubject"/></td>
 					<td align="right"><label for="eq_AEM01C">离院方式：</label></td>
 					<td><input name="eq_AEM01C" type="text"	class="easyui-combobox" editable="false" 
-							panelHeight="auto" url="${pageContext.request.contextPath}/wt4/data/dic-LiYuanFangShi.json"/></td>
+							panelHeight="auto" data-options="data:dic.liYuanFangShi"/></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="ge_AAC01">出院时间晚于：</label></td>
@@ -163,18 +156,29 @@ $(function(){
 		});
 		*/
 		var record = MedicalRecordForm.getData();
-		$.post("${pageContext.request.contextPath}/wt4/medicalRecord/save.do",$.customParam(record),function(result){
-			if (result.success){  
-            	$.messager.show({  
-                    title: '提示',  
-                    msg: result.message  
-                }); 
-            	$('#gridMedicalRecord').datagrid('reload');
-            	$('#dialogMedicalRecordEdit').dialog('close');
-            } else {  
-            	$.messager.alert('错误',result.message,'error');   
-            }
-			$.messager.progress('close');
+		$.ajax({
+			type: "POST",
+			url : '${pageContext.request.contextPath}/wt4/medicalRecord/save.do',
+			async : true,
+			contentType : 'application/json;utf-8',
+			dataType : 'json',
+			data : JSON.stringify([record]),
+			success : function(result){
+				if (result.success){  
+	            	$.messager.show({  
+	                    title: '提示',  
+	                    msg: result.message  
+	                }); 
+	            	$('#gridMedicalRecord').datagrid('reload');
+	            	$('#dialogMedicalRecordEdit').dialog('close');
+	            } else {  
+	            	$.messager.alert('错误',result.message,'error');   
+	            }
+				$.messager.progress('close');
+			},
+			error : function (XMLHttpRequest, textStatus, errorThrown) {
+				$.messager.alert('错误','对不起，出错啦！','error');
+			}
 		});
 	});
 	

@@ -17,6 +17,7 @@ import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -46,9 +47,9 @@ public class MedicalRecordController {
 	
 	@RequestMapping("/save")
 	@ResponseBody
-	public AjaxResult save(MedicalRecord entity) {
+	public AjaxResult save(@RequestBody MedicalRecord[] entities) {
 		AjaxResult result = new AjaxResult();
-		medicalRecordService.save(entity);
+		medicalRecordService.save(entities);
 		result.setSuccess(true);
 		result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
 		return result;

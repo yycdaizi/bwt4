@@ -15,7 +15,6 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 @Entity
 @Table(name = "b_user")
@@ -34,7 +33,7 @@ public class User implements Serializable {
 	private Org org;
 
 	@Length(max = 300, message = "{common.length.limit}")
-	@Column(name = "username", nullable = false, length = 300)
+	@Column(name = "username", nullable = false, length = 300,unique = true)
 	private String username;
 
 	@Length(max = 300, message = "{common.length.limit}")
@@ -56,6 +55,9 @@ public class User implements Serializable {
 	@Length(max = 600, message = "{common.length.limit}")
 	@Column(name = "email", nullable = true, length = 600)
 	private String email;
+	
+	@Column(name = "locked", nullable = true,length=1)
+	private Integer locked;
 
 	@Column(name = "ts")
 	private String ts;
@@ -122,6 +124,14 @@ public class User implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public Integer getLocked() {
+		return locked;
+	}
+
+	public void setLocked(Integer locked) {
+		this.locked = locked;
 	}
 
 	public String getTs() {

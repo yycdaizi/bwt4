@@ -7,7 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotBlank;
@@ -36,8 +38,13 @@ public class Menu implements Serializable {
 	@Column(name = "menuicon", length = 60)
 	private String menuicon;
 	
+	@Column(name = "parentid")
+	private Integer parentid;
+	
 	@Column(name = "ts")
 	private String ts;
+	
+	
 
 	public Integer getMenuid() {
 		return menuid;
@@ -79,5 +86,23 @@ public class Menu implements Serializable {
 		this.ts = ts;
 	}
 	
+	public Integer getParentid() {
+		return parentid;
+	}
+
+	public void setParentid(Integer parentid) {
+		this.parentid = parentid;
+	}
+	
+	@Transient
+	private String state = Constants.EASYUI_TREE_OPEN;;
+	//tree Grid State
+	public String getState(){
+		return state;
+	}
+	
+	public void setState(String state){
+		this.state = state;
+	}
 
 }

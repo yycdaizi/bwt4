@@ -5,7 +5,10 @@ package org.bjdrgs.bjwt.core.web;
  *
  */
 public class AjaxResult {
-
+	/**
+	 * 具体状态标识
+	 */
+	private String status;
 	private boolean success;
 	private String message;
 	
@@ -31,5 +34,13 @@ public class AjaxResult {
 	}
 	public void setMessage(String message) {
 		this.message = message;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 }

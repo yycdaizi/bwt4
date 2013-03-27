@@ -3,6 +3,9 @@ package org.bjdrgs.bjwt.authority.parameter;
 import org.bjdrgs.bjwt.core.web.GridParam;
 
 public class OrgParam extends GridParam {
+	//tree grid
+	private Integer id;
+	
 	private String keyword;
 	/**
 	 * combogrid
@@ -32,4 +35,11 @@ public class OrgParam extends GridParam {
 		this.q = q;
 	}
 
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 }

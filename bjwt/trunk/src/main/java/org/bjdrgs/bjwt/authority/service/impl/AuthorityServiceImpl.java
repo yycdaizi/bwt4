@@ -1,7 +1,5 @@
 package org.bjdrgs.bjwt.authority.service.impl;
 
-import javax.annotation.Resource;
-
 import org.bjdrgs.bjwt.authority.dao.IAuthorityDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

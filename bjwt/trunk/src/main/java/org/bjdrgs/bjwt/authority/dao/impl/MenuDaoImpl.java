@@ -22,6 +22,10 @@ public class MenuDaoImpl extends BaseDaoImpl<Menu> implements IMenuDao {
 		hql.append(" obj where 1=1");
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
+		if(param.getId() != null){
+			hql.append(" and obj.parentid = :id");
+			paramMap.put("id", param.getId());
+		}
 		if (StringUtils.isNotEmpty(param.getKeyword())) {
 			hql.append(" and obj.menuname like :menuname");
 			String keyword = "%" + param.getKeyword() + "%";

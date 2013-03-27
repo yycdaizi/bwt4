@@ -29,9 +29,13 @@ public class MenuController {
 	
 	@RequestMapping("/page")
 	@ResponseBody
-	public GridPage<Menu> page(MenuParam param){
-		GridPage<Menu> page =GridPage.valueOf(menuService.queryMenu(param));
-		return page;
+	public Object page(MenuParam param){
+		GridPage<Menu> page = GridPage.valueOf(menuService.queryMenu(param));
+		if(param.getId()==null || param.getId()==0){
+			return page;
+		}else{
+			return page.getRows();
+		}
 	}
 	
 	@RequestMapping("/save")

@@ -1,11 +1,14 @@
 package org.bjdrgs.bjwt.authority.service.impl;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.bjdrgs.bjwt.authority.dao.IOrgDao;
 import org.bjdrgs.bjwt.authority.model.Org;
 import org.bjdrgs.bjwt.authority.parameter.OrgParam;
 import org.bjdrgs.bjwt.authority.service.IOrgService;
+import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +21,7 @@ public class OrgServiceImpl implements IOrgService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Resource(name = "OrgDao")
-	private IOrgDao OrgDao;
+	private IOrgDao orgDao;
 
 	@Override
 	public Pagination<Org> queryOrg(OrgParam param) {
@@ -32,7 +35,24 @@ public class OrgServiceImpl implements IOrgService {
 		if(keywords!=null && keywords.length()>0){
 			param.setKeyword(keywords);
 		}
-		return OrgDao.query(param);
+		Pagination<Org> orgPag = orgDao.query(param);
+		//treegrid判断是否有子机构
+		if(param.getId()!=null){
+			List<Org> orgList = orgPag.getResult();
+			if(orgList!=null && orgList.size()>0){
+				for(Org org : orgList){
+					handleOrgState(org);
+				}
+			}
+		}
+		return orgPag;
+	}
+
+	private void handleOrgState(Org org) {
+		Org hasSubOrg = orgDao.getByUnique("parentid", org.getOrgid());
+		if(hasSubOrg!=null){
+			org.setState(Constants.EASYUI_TREE_CLOSED);
+		}
 	}
 
 	@Override
@@ -43,12 +63,12 @@ public class OrgServiceImpl implements IOrgService {
 		if(entity.getOrgmanager()!=null && entity.getOrgmanager().getUserid()==null){
 			entity.setOrgmanager(null);
 		}
-		OrgDao.save(entity);
+		orgDao.save(entity);
 	}
 
 	@Override
 	public void deleteById(Integer Orgid) {
-		OrgDao.deleteById(Orgid);
+		orgDao.deleteById(Orgid);
 	}
 
 }

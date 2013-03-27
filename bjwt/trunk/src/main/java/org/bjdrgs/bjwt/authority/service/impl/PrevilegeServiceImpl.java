@@ -26,8 +26,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ch.qos.logback.core.db.dialect.MsSQLDialect;
-
 @Transactional
 @Service("PrevilegeService")
 public class PrevilegeServiceImpl implements IPrevilegeService {

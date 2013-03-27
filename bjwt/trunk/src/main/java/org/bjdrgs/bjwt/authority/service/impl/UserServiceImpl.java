@@ -66,6 +66,7 @@ public class UserServiceImpl implements IUserService {
 	 * @return
 	 */
 	public User findUserByUP(String username,String password){
+		password = CipherUtil.generatePassword(password);
 		List<User> userList = UserDao.findUserByUP(username, password);
 		if(userList!=null && userList.size() == 1){
 			return userList.get(0);
@@ -75,5 +76,10 @@ public class UserServiceImpl implements IUserService {
 			logger.error("存在多个一个用户");
 		}
 		return null;
+	}
+	
+	@Override
+	public User findUserByName(String username) {
+		return UserDao.getByUnique("username", username);
 	}
 }

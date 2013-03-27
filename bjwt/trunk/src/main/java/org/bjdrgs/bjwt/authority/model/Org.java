@@ -9,15 +9,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
+import javax.persistence.Transient;
 
+import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "b_org")
@@ -122,6 +121,17 @@ public class Org implements Serializable {
 	}
 	public String getOrgmanager_showname() {
 		return this.getOrgmanager()!=null?getOrgmanager().getUsername():null;
+	}
+	//tree grid state
+	@Transient
+	private String state = Constants.EASYUI_TREE_OPEN;
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
 	}
    
 }

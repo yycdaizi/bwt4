@@ -30,4 +30,10 @@ public interface IUserService {
 	 * @return
 	 */
 	public User findUserByUP(String username,String password);
+	/**
+	 * 根据用户名称查找用户
+	 * @param username
+	 * @return
+	 */
+	public User findUserByName(String username);
 }

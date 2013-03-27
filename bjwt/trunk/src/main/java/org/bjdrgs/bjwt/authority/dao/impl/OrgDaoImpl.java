@@ -28,7 +28,14 @@ public class OrgDaoImpl extends BaseDaoImpl<Org> implements IOrgDao {
 			paramMap.put("orgcode", keyword);
 			paramMap.put("orgname", keyword);
 		}
-
+		if(param.getId()!=null){
+			if(param.getId()==0){
+				hql.append(" and obj.parentOrg.orgid is null");
+			}else{
+				hql.append(" and obj.parentOrg.orgid = :parentid");
+				paramMap.put("parentid", param.getId());
+			}
+		}
 		if (StringUtils.isNotEmpty(param.getSort())) {
 			hql.append(" order by obj." + param.getSort() + " "
 					+ param.getOrder());

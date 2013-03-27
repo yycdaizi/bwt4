@@ -14,5 +14,20 @@ public class Constants {
 	 * 预置密码
 	 */
 	public static final String DEFAULT_PASSWORD = "123456";
+	
+	/**
+	 * 验证码key
+	 */
+	public static final String KEY_CHECKCODE = "key_checkcode";
+	
+	/**
+	 * current Userkey
+	 */
+	public static final String KEY_CURUSER = "key_curuser";
+	
+	
+	public static final String EASYUI_TREE_CLOSED = "closed";
+	
+	public static final String EASYUI_TREE_OPEN = "open";
 
 }

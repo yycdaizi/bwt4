@@ -29,9 +29,13 @@ public class OrgController {
 	
 	@RequestMapping("/page")
 	@ResponseBody
-	public GridPage<Org> page(OrgParam param){
+	public Object page(OrgParam param){
 		GridPage<Org> page =GridPage.valueOf(orgService.queryOrg(param));
-		return page;
+		if(param.getId()==null || param.getId()==0){
+			return page;
+		}else{
+			return page.getRows();
+		}
 	}
 	
 	@RequestMapping("/save")

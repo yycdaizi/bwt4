@@ -28,28 +28,32 @@
 			</ul>
 		</div>
 		<div style="width: 100%;height: 100%;">
-		<table id="grid_menu" class="easyui-treegrid" style="height:400px" data-options="
-				url: '${pageContext.request.contextPath}/menu/page.do',
+		<table id="grid_menu" class="easyui-datagrid" style="height:400px" data-options="
 				singleSelect:true,
-                rownumbers: true,  
-                pagination: true,  
-                idField: 'menuid',  
-                treeField: 'menuname'"
-                toolbar="#topations"
-                fitColumns="true"
+				autoRowHeight:false,
+				pagination:true,
+				fitColumns:true,
+				pageSize:10"
+				url="${pageContext.request.contextPath}/menu/page.do"
+				fitColumns="true"
+				sortName="menuid" 
+        		sortOrder="asc"
+        		toolbar="#topations"
 				>
 		<thead>
 			<tr>
-				<th data-options="field:'menuname',width:260">菜单名称</th>
+				<th data-options="field:'menuid',align:'center',width:30,sortable:true">编号</th>
+				<th data-options="field:'menuname',width:120">菜单名称</th>
 				<th data-options="field:'menuurl',width:200">菜单路径</th>
 				<th	data-options="field:'menuicon',width:120">菜单图标</th>
 				<th	data-options="field:'ts',width:120">更新时间</th>
+				<th	data-options="field:'operate',width:150">操作</th>
 			</tr>
 		</thead>
 		</table>
 		</div>
 		<!-- 新增对话框 -->
-		<div id="dialog_menu" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:220px;left:200px;top:100px;padding:10px 20px">
+		<div id="dialog_menu" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:200px;left:200px;top:100px;padding:10px 20px">
 		<form id="formMenu" method="post" class="fform">
 			<input name="menuid" type="hidden" />
 			<div class="fitem">    
@@ -63,27 +67,6 @@
 	        <div class="fitem">    
 	            <label>菜单图标：</label>  
 	            <input name="menuicon" class="easyui-validatebox"  validType="maxLength[30]">    
-	        </div>
-	        <div class="fitem">    
-	            <label>父菜单：</label>  
-	            <input id="cg_pmenu" name="parentid" style="width:200px;"></input>
-				<script type="text/javascript">
-	            $(function(){
-	            	$('#cg_pmenu').combogrid({  
-	                    panelWidth:400,  
-	                    url: '${pageContext.request.contextPath}/menu/page.do?query_all=true',  
-	                    idField:'menuid',  
-	                    textField:'menuname', 
-	                    mode:'remote',
-	                    fitColumns:true,
-	                    columns:[[  
-	                        {field:'menuid',title:'主键',width:60},  
-	                        {field:'menuname',title:'名称',width:120},
-	                        {field:'menuurl',title:'路径',width:120}
-	                    ]]
-	                });
-	            });
-	            </script>
 	        </div>
 		</form>
 	</div>
@@ -206,7 +189,7 @@
 							msg : result.message
 						});
 						$('#dialog_menu').dialog('close'); // close the dialog
-						$('#grid_menu').treegrid('reload'); // reload the user
+						$('#grid_menu').datagrid('reload'); // reload the user
 															// data
 					} else {
 						$.messager.show({

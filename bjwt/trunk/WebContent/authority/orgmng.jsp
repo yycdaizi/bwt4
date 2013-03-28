@@ -29,23 +29,26 @@
 			</ul>
 		</div>
 		<div style="width: 100%;height: 100%;">
-		<table id="grid_org" class="easyui-datagrid" style="height:360px" data-options="
+		<table id="grid_org" class="easyui-treegrid" style="height:360px" data-options="
 				singleSelect:true,
-				autoRowHeight:false,
 				pagination:true,
-				fitColumns:true,
-				pageSize:10"
+				pageSize:10,
+				idField: 'orgid',  
+                treeField: 'orgname',
+				onBeforeLoad: function(row,param){  
+                    if (!row) { 
+                        param.id = 0;
+                    }
+                }"
 				url="${pageContext.request.contextPath}/org/page.do"
 				fitColumns="true"
-				sortName="ts" 
-        		sortOrder="desc"
         		toolbar="#topations"
 				>
 		<thead>
 			<tr>
 				<th data-options="field:'orgid',align:'center',width:30,sortable:true">编号</th>
+				<th data-options="field:'orgname',width:180">机构名称</th>
 				<th data-options="field:'orgcode',width:120">机构编码</th>
-				<th data-options="field:'orgname',width:120">机构名称</th>
 				<th data-options="field:'parentOrg_showname',width:120">父机构</th>
 				<th data-options="field:'orgaddr',width:200">所在地址</th>
 				<th	data-options="field:'orgmanager_showname',width:120">机构负责人</th>
@@ -124,7 +127,7 @@
 	$(function(){
 	// 新增
 	$("#btn_add").click(function() {
-		var data = $("#grid_org").datagrid('getData');
+		var data = $("#grid_org").treegrid('getData');
 		dialogAddShow();
 		clearForm();
 	});
@@ -210,7 +213,7 @@
                     title: '提示',  
                     msg: result.message  
                 }); 
-                $('#grid_org').datagrid('reload');    // reload the user data  
+                $('#grid_org').treegrid('reload');    // reload the user data  
             } else {  
                 $.messager.show({
                     title: '错误',  

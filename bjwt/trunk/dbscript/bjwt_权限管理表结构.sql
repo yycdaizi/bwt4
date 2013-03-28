@@ -2,115 +2,101 @@
 /* DBMS name:      MySQL 5.0                                    */
 /* Created on:     2013/2/23 18:19:36                           */
 /*==============================================================*/
-
-
-drop table if exists b_menu;
-
-drop table if exists b_org;
-
-drop table if exists b_previlege;
-
-drop table if exists b_role;
-
-drop table if exists b_roleuser;
-
-drop table if exists b_user;
-
 /*==============================================================*/
 /* Table: b_menu                                                */
 /*==============================================================*/
-create table b_menu
-(
-   menuid               int not null auto_increment,
-   menuname             varchar(50),
-   menuurl              varchar(200),
-   menuicon             varchar(200),
-   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key (menuid)
-);
+
+DROP TABLE IF EXISTS `b_menu`;
+CREATE TABLE IF NOT EXISTS `b_menu` (
+  `menuid` int(11) NOT NULL AUTO_INCREMENT,
+  `menuname` varchar(50) DEFAULT NULL,
+  `menuurl` varchar(200) DEFAULT NULL,
+  `menuicon` varchar(200) DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `parentid` int(11) DEFAULT NULL,
+  PRIMARY KEY (`menuid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10 ;
+
 
 /*==============================================================*/
 /* Table: b_org                                                 */
 /*==============================================================*/
-create table b_org
-(
-   orgid                int not null auto_increment,
-   parentid             int,
-   orgcode              varchar(50),
-   orgname              varchar(50),
-   orgaddr              varchar(500),
-   orgmanager           int,
-   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key (orgid)
-);
 
-alter table b_org comment 'ª˙ππ';
+DROP TABLE IF EXISTS `b_org`;
+CREATE TABLE IF NOT EXISTS `b_org` (
+  `orgid` int(11) NOT NULL AUTO_INCREMENT,
+  `parentid` int(11) DEFAULT NULL,
+  `orgcode` varchar(50) DEFAULT NULL,
+  `orgname` varchar(50) DEFAULT NULL,
+  `orgaddr` varchar(500) DEFAULT NULL,
+  `orgmanager` int(11) DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`orgid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Êú∫ÊûÑ' AUTO_INCREMENT=15 ;
+
 
 /*==============================================================*/
 /* Table: b_previlege                                           */
 /*==============================================================*/
-create table b_previlege
-(
-   previlegeid          int not null auto_increment,
-   orgid                int,
-   master               varchar(50),
-   mastervalue          int,
-   resource             varchar(50),
-   resourcevalue        int,
-   permission           varchar(50),
-   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key (previlegeid)
-);
+DROP TABLE IF EXISTS `b_previlege`;
+CREATE TABLE IF NOT EXISTS `b_previlege` (
+  `previlegeid` int(11) NOT NULL AUTO_INCREMENT,
+  `orgid` int(11) DEFAULT NULL,
+  `master` varchar(50) DEFAULT NULL,
+  `mastervalue` int(11) DEFAULT NULL,
+  `resource` varchar(50) DEFAULT NULL,
+  `resourcevalue` int(11) DEFAULT NULL,
+  `permission` varchar(50) DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`previlegeid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='ÊùÉÈôêË°®' AUTO_INCREMENT=4 ;
 
-alter table b_previlege comment '◊ ‘¥»®œﬁ∑÷≈‰±Ì';
 
 /*==============================================================*/
 /* Table: b_role                                                */
 /*==============================================================*/
-create table b_role
-(
-   roleid               int not null auto_increment,
-   orgid                int,
-   rolecode             varchar(50),
-   rolename             varchar(50),
-   note                 varchar(1000),
-   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key (roleid)
-);
+DROP TABLE IF EXISTS `b_role`;
+CREATE TABLE IF NOT EXISTS `b_role` (
+  `roleid` int(11) NOT NULL AUTO_INCREMENT,
+  `orgid` int(11) DEFAULT NULL,
+  `rolecode` varchar(50) DEFAULT NULL,
+  `rolename` varchar(50) DEFAULT NULL,
+  `note` varchar(1000) DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`roleid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='ËßíËâ≤'  AUTO_INCREMENT=8 ;
 
-alter table b_role comment 'Ω«…´±Ì';
 
 /*==============================================================*/
 /* Table: b_roleuser                                            */
 /*==============================================================*/
-create table b_roleuser
-(
-   roleuserid           int not null auto_increment,
-   orgid                int,
-   roleid               int not null,
-   userid               int not null,
-   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key (roleuserid)
-);
-
-alter table b_roleuser comment '”√ªßΩ«…´πÿ¡™±Ì';
+DROP TABLE IF EXISTS `b_roleuser`;
+CREATE TABLE IF NOT EXISTS `b_roleuser` (
+  `roleuserid` int(11) NOT NULL AUTO_INCREMENT,
+  `orgid` int(11) DEFAULT NULL,
+  `roleid` int(11) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`roleuserid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Áî®Êà∑ËßíËâ≤ÂÖ≥ËÅî' AUTO_INCREMENT=3 ;
 
 /*==============================================================*/
 /* Table: b_user                                                */
 /*==============================================================*/
-create table b_user
-(
-   userid               int not null auto_increment,
-   orgid                int,
-   username             varchar(100),
-   password             varchar(100),
-   sex                  char(1),
-   telphone             varchar(20),
-   mobilephone          varchar(20),
-   email                varchar(200),
-   ts                   timestamp default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-   primary key (userid)
-);
 
-alter table b_user comment '”√ªß±Ì';
+DROP TABLE IF EXISTS `b_user`;
+CREATE TABLE IF NOT EXISTS `b_user` (
+  `userid` int(11) NOT NULL AUTO_INCREMENT,
+  `orgid` int(11) DEFAULT NULL,
+  `username` varchar(100) DEFAULT NULL,
+  `password` varchar(100) DEFAULT NULL,
+  `sex` char(1) DEFAULT NULL,
+  `telphone` varchar(20) DEFAULT NULL,
+  `mobilephone` varchar(20) DEFAULT NULL,
+  `email` varchar(200) DEFAULT NULL,
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `locked` int(1) DEFAULT NULL,
+  PRIMARY KEY (`userid`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Áî®Êà∑Ë°®' AUTO_INCREMENT=8 ;
+
 

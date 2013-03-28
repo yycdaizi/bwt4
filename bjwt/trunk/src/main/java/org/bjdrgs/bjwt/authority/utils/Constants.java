@@ -21,7 +21,7 @@ public class Constants {
 	public static final String KEY_CHECKCODE = "key_checkcode";
 	
 	/**
-	 * current Userkey
+	 * current Userkey=>User
 	 */
 	public static final String KEY_CURUSER = "key_curuser";
 	

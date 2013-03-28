@@ -37,7 +37,8 @@ public class HqlAuthorityRealm extends AuthorizingRealm {
         if(Constants.ROOTUSER_NAME.equals(username)){
         	User user = userService.findUserByName(username);
         	if(user.getPassword()==null || user.getPassword().length() == 0){
-        		info = new SimpleAuthenticationInfo(user.getUsername(), user.getPassword(), getName());
+        		user.setPassword("");
+        		info = new SimpleAuthenticationInfo(user, user.getPassword(), getName());
         		return info;
         	}
         }

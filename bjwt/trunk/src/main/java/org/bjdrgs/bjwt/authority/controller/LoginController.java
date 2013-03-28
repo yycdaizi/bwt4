@@ -76,13 +76,13 @@ public class LoginController {
 		AjaxResult result = new AjaxResult();
 		UsernamePasswordToken token = new UsernamePasswordToken(username,
 				password);
-		//token.setRememberMe(true);
+		token.setRememberMe(true);
 		Subject curUser = SecurityUtils.getSubject();
 		try {
 			curUser.login(token);
 			result.setSuccess(true);
 			Session session = curUser.getSession();
-			session.setAttribute(Constants.KEY_CURUSER, curUser);
+			session.setAttribute(Constants.KEY_CURUSER, curUser.getPrincipal());
 		} catch (AuthenticationException ae) {
 			result.setMessage("用户名或密码错误");
 			result.setSuccess(false);

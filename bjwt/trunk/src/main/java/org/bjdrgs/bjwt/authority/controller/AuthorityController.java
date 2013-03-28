@@ -1,10 +1,17 @@
 package org.bjdrgs.bjwt.authority.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.bjdrgs.bjwt.authority.model.MenuTree;
+import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IAuthorityService;
-import org.bjdrgs.bjwt.core.web.AjaxResult;
+import org.bjdrgs.bjwt.authority.utils.Constants;
+import org.bjdrgs.bjwt.core.exception.BusinessLogicException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/authority")
 public class AuthorityController {
 
-//	@Resource(name = "authorityService")
+	@Resource(name = "authorityService")
 	private IAuthorityService authorityService;
 
 	@RequestMapping("/index")
@@ -24,12 +31,14 @@ public class AuthorityController {
 
 	@RequestMapping("/menu")
 	@ResponseBody
-	public AjaxResult menu(HttpServletRequest request) {
-		// User user = (User)
-		// request.getSession().getAttribute(USER_INFO_SESSION);
-		// return getUserMenu(user);
-		return null;
-
+	public Object menu(HttpServletRequest request) {
+		Subject curUser = SecurityUtils.getSubject();
+		User userInfo = (User) curUser.getSession().getAttribute(Constants.KEY_CURUSER);
+		if(userInfo==null){
+			throw new BusinessLogicException("用户没有登录，却进入了系统");
+		}
+		List<MenuTree> authedMenuTree = authorityService.getAuthedMenuTree(userInfo);
+		return authedMenuTree;
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.bjdrgs.bjwt.authority.utils.Constants;
+import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
@@ -93,7 +94,8 @@ public class Org implements Serializable {
 	public void setOrgaddr(String orgaddr) {
 		this.orgaddr = orgaddr;
 	}
-
+	
+	@JsonBackReference
 	public User getOrgmanager() {
 		return orgmanager;
 	}

@@ -1,4 +1,38 @@
 @CHARSET "UTF-8";
+/*通用风格*/
+* {
+	font-size: 12px;
+	font-family: Tahoma, Verdana, 微软雅黑, 新宋体
+}
+
+body {
+	background: #D2E0F2;
+}
+
+a {
+	color: #eee;
+	text-decoration: none;
+}
+
+a:hover {
+	color: Red;
+	text-decoration: underline;
+}
+
+/*north 顶部样式*/
+#north_main {
+	overflow: hidden;
+	height: 30px;
+	background: url(img/layout-browser-hd-bg.gif) #7f99be repeat-x center 50%;
+	line-height: 20px;
+	color: #fff;
+}
+
+#north_main .head {
+	float: right; 
+	padding-right: 20px;
+	padding-top: 5px;
+}
 
 /*弹出窗口中的表单样式*/
 .fform {
@@ -21,24 +55,27 @@
 .fitem label {
 	display: inline-block;
 	width: 80px;
-	text-align:right;
+	text-align: right;
 }
+
 .fitem input {
-	width:200px;
+	width: 200px;
 }
+
 .fitem textarea {
-	width:200px;
+	width: 200px;
 	height: 60px;
 }
 
 /*表格行中的操作按钮样式*/
-span.operate-btn span.operate-icon{
+span.operate-btn span.operate-icon {
 	display: inline-block;
 	background-position: left center;
-	padding-left:18px;
+	padding-left: 18px;
 	margin: 0px 2px;
 }
-span.operate-btn{
+
+span.operate-btn {
 	background: none repeat scroll 0 0 transparent;
 	background-position: right 0;
 	font-size: 12px;
@@ -47,20 +84,22 @@ span.operate-btn{
 	cursor: pointer;
 	/*height: 16px;*/
 	outline: medium none;
-    /*border: 1px solid white;*/
-    padding:1px;
-    text-decoration: none;
+	/*border: 1px solid white;*/
+	padding: 1px;
+	text-decoration: none;
 }
+
 span.operate-btn:hover {
-    background: none repeat scroll 0 0 #DAF2FF;
-    border: 1px solid #B7D2FF;
-    padding:0px;
-    border-radius: 3px 3px 3px 3px;
-    color: #000000;
+	background: none repeat scroll 0 0 #DAF2FF;
+	border: 1px solid #B7D2FF;
+	padding: 0px;
+	border-radius: 3px 3px 3px 3px;
+	color: #000000;
 }
+
 span.operate-btn-separator {
-    border-left: 1px solid #CCCCCC;
-    border-right: 1px solid #FFFFFF;
-    margin: 0px 5px;
-    height: 16px;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #FFFFFF;
+	margin: 0px 5px;
+	height: 16px;
 }

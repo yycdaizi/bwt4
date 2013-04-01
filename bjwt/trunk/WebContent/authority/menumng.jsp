@@ -92,6 +92,7 @@
     	<a id="btn_cacel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
 	<script type="text/javascript">
+	$(function(){
 	// 新增
 	$("#btn_add").click(function() {
 		dialogAddShow();
@@ -129,6 +130,7 @@
 		$("#grid_menu").datagrid('load',{
 			keyword:$("#keyword").val()
 		});
+	});
 	});
 	
 	//对话框显示&隐藏

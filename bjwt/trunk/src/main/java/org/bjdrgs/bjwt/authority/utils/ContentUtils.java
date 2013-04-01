@@ -22,4 +22,22 @@ public final class ContentUtils {
 		}
 		return "其他";
 	}
+	/**
+	 * 校验两个字符串是否相等
+	 * @param str1
+	 * @param str2
+	 * @return
+	 */
+	public static boolean checkStringEqual(String str1,String str2){
+		if(str1==str2){
+			return true;
+		}
+		if(str1!=null){
+			return str1.equals(str2);
+		}
+		if(str2!=null){
+			return str2.equals(str1);
+		}
+		return false;
+	}
 }

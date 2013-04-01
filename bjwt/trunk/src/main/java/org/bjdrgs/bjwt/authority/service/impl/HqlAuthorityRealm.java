@@ -12,6 +12,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IUserService;
+import org.bjdrgs.bjwt.authority.utils.CipherUtil;
 import org.bjdrgs.bjwt.authority.utils.Constants;
 
 public class HqlAuthorityRealm extends AuthorizingRealm {

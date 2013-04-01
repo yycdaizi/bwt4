@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.authority.service;
 
 import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.parameter.NewPassword;
 import org.bjdrgs.bjwt.authority.parameter.UserParam;
 import org.bjdrgs.bjwt.core.web.Pagination;
 
@@ -26,7 +27,7 @@ public interface IUserService {
 	/**
 	 * 根据用户名和密码查找用户
 	 * @param username
-	 * @param password
+	 * @param password -- 加密后的密码
 	 * @return
 	 */
 	public User findUserByUP(String username,String password);
@@ -36,4 +37,10 @@ public interface IUserService {
 	 * @return
 	 */
 	public User findUserByName(String username);
+	/**
+	 * 校验旧密码是否正确
+	 * @param userInfo
+	 * @param param
+	 */
+	public boolean checkPassword(User userInfo, NewPassword param);
 }

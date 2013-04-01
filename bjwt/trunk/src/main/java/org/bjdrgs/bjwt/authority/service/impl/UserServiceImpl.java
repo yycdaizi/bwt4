@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 
 import org.bjdrgs.bjwt.authority.dao.IUserDao;
 import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.parameter.NewPassword;
 import org.bjdrgs.bjwt.authority.parameter.UserParam;
 import org.bjdrgs.bjwt.authority.service.IUserService;
 import org.bjdrgs.bjwt.authority.utils.CipherUtil;
@@ -23,11 +24,11 @@ public class UserServiceImpl implements IUserService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Resource(name = "UserDao")
-	private IUserDao UserDao;
+	private IUserDao userDao;
 
 	@Override
 	public Pagination<User> queryUser(UserParam param) {
-		return UserDao.query(param);
+		return userDao.query(param);
 	}
 
 	@Override
@@ -46,28 +47,28 @@ public class UserServiceImpl implements IUserService {
 			entity.setPassword(password);
 		} else {// 更新
 			Integer userId = entity.getUserid();
-			User originUser = UserDao.get(userId);
+			User originUser = userDao.get(userId);
 			ModelHelper.updateModel(entity, originUser);
 			entity = originUser;
 		}
-		UserDao.save(entity);
+		userDao.save(entity);
 	}
+	
 
 	@Override
 	public void deleteById(Integer Userid) {
-		UserDao.deleteById(Userid);
+		userDao.deleteById(Userid);
 	}
 
 	/**
 	 * 根据用户名和密码查找用户
 	 * 
 	 * @param username
-	 * @param password
+	 * @param password -- 加密后的密码
 	 * @return
 	 */
 	public User findUserByUP(String username,String password){
-		password = CipherUtil.generatePassword(password);
-		List<User> userList = UserDao.findUserByUP(username, password);
+		List<User> userList = userDao.findUserByUP(username, password);
 		if(userList!=null && userList.size() == 1){
 			return userList.get(0);
 		}else if(userList == null || userList.size()==0){
@@ -80,6 +81,17 @@ public class UserServiceImpl implements IUserService {
 	
 	@Override
 	public User findUserByName(String username) {
-		return UserDao.getByUnique("username", username);
+		return userDao.getByUnique("username", username);
+	}
+
+	@Override
+	public boolean checkPassword(User userInfo, NewPassword param) {
+		Integer userid = userInfo.getUserid();
+		String oldPswd = param.getOldPswd();
+		User dbInfo = userDao.get(userid);
+		if(dbInfo.getPassword()==null || dbInfo.getPassword().length()==0){
+			return oldPswd==null || oldPswd.length()==0;
+		}
+		return CipherUtil.validatePassword(dbInfo.getPassword(), oldPswd);
 	}
 }

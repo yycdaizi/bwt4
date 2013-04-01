@@ -21,6 +21,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.bjdrgs.bjwt.authority.utils.CipherUtil;
 import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.slf4j.Logger;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping("/user")
@@ -64,6 +66,13 @@ public class LoginController {
 		}
 		return doLogin(username, password);
 	}
+	
+	@RequestMapping(value = "/loginout")
+	public ModelAndView loginout(){
+		//安全退出
+		SecurityUtils.getSubject().logout();
+		return new ModelAndView(new RedirectView("login.do"));
+	}
 
 	/**
 	 * 用户登录shiro实现
@@ -74,6 +83,7 @@ public class LoginController {
 	 */
 	private AjaxResult doLogin(String username, String password) {
 		AjaxResult result = new AjaxResult();
+		password = CipherUtil.generatePassword(password);
 		UsernamePasswordToken token = new UsernamePasswordToken(username,
 				password);
 		token.setRememberMe(true);

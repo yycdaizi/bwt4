@@ -28,9 +28,8 @@
         <value>
             /login = authc
             /user/** = anon
-            /logout = logout
             /resourses/** = anon
-            /** = authc
+            /** = user
             <!-- # some example chain definitions:
             /admin/** = authc, roles[admin]
             /docs/** = authc, perms[document:read]

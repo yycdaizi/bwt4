@@ -21,7 +21,11 @@ $(function(){
 		}
 		if($(this).hasClass("easyui-numberbox")){
 			var precision = $(this).attr("precision")||0;
-			str.push('"number['+precision+']"');
+			if(precision == 0){
+				str.push('"integer"');
+			}else{
+				str.push('"number['+precision+']"');
+			}
 		}
 		if($(this).attr("min")){
 			str.push('"min['+$(this).attr("min")+']"');

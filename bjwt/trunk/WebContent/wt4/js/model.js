@@ -1,6 +1,6 @@
 var Disabled = $.ModelValidator.definedModel({
 	AEN01 : {
-		validators : [ "number[0]", "min[1]", "max[9999]" ]
+		validators : [ "required", "integer", "min[1]", "max[9999]" ]
 	},
 	AEN02C : {
 		validators : [ "fixedin[dic.ICD10,'code']" ]
@@ -211,16 +211,22 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "required", "date['yyyy-MM-dd']" ]
 	},
 	AAA04 : {
-		validators : [ "number[0]", "min[0]", "max[999]" ]
+		validators : [ "integer", "min[0]", "max[999]" ]
 	},
 	AAA05C : {
 		validators : [ "fixedin[dic.country]" ]
 	},
 	AAA40 : {
-		validators : [ "number[0]", "min[1]", "max[365]" ]
+		validators : [ "integer", "min[1]", "max[365]" ]
 	},
 	AAA42 : {
-		validators : [ "number[0]", "min[1]", "max[9999]" ] // TODO 年龄天数AAA40小于28天时，新生儿体重必填
+		validators : [ "integer", "min[1]", "max[9999]",{
+		    rule : "required",
+            param : [function(){
+                var days = parseInt(this.AAA40);
+                return (!isNaN(days) && days >= 1 && days <= 28);
+            }]
+		}] // 年龄天数AAA40小于28天时，新生儿体重必填
 	},
 	AAA06C : {
 		validators : [ "fixedin[dic.nation]" ]
@@ -244,7 +250,7 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "length[0,20]" ]
 	},
 	AAA21C : {
-		validators : [ "number[0]", "min[100000]", "max[999999]" ]
+		validators : [ "integer", "min[100000]", "max[999999]" ]
 	},
 	AAA22 : {
 		validators : [ "length[0,20]" ]
@@ -265,31 +271,145 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "length[0,40]" ]
 	},
 	AAA29 : {
-		validators : [ "required", "number[0]", "min[1]", "max[9999]" ]
+		validators : [ "required", "integer", "min[1]", "max[9999]" ]
 	},
 	AAA09 : {
 		validators : [ "fixedin[dic.address,'text']" ]
 	},
 	AAA10 : {
-		//validators : [ "fixedin['AAA10']" ]
+		validators : [ {
+		    rule : "fixedin",
+		    param : [function(){
+		        var address = dic.address;
+		        var AAA09 = this.AAA09;
+		        var flag = false,i;
+		        for (i = 0,len=address.length; i < len; i++) {
+                    if (address[i]['text'] === AAA09) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    return address[i].children||[];
+                }else{
+                    return [];
+                }
+		    },'text']
+		} ]
 	},
 	AAA11 : {
-		//validators : [ "fixedin['AAA11']" ] TODO
+		validators : [ {
+            rule : "fixedin",
+            param : [function(){
+                var address = dic.address;
+                var AAA09 = this.AAA09;
+                var AAA10 = this.AAA10;
+                var flag = false,i;
+                for (i = 0,len=address.length; i < len; i++) {
+                    if (address[i]['text'] === AAA09) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag){
+                    return [];
+                }
+                
+                var children = address[i].children||[],flag = false;                
+                for (i = 0,len=children.length; i < len; i++) {
+                    if (children[i]['text'] === AAA10) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    return children[i].children||[];
+                }else{
+                    return [];
+                }
+            },'text']
+        } ]
 	},
 	AAA43 : {
-		//validators : [ "fixedin['AAA43']" ]
+		validators : [ "fixedin[dic.address,'text']" ]
 	},
 	AAA44 : {
-		//validators : [ "fixedin['AAA44']" ]
+		validators : [ {
+		    rule : "fixedin",
+		    param : [function(){
+		        var address = dic.address;
+		        var AAA43 = this.AAA43;
+		        var flag = false,i;
+		        for (i = 0,len=address.length; i < len; i++) {
+                    if (address[i]['text'] === AAA43) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    return address[i].children||[];
+                }else{
+                    return [];
+                }
+		    },'text']
+		} ]
 	},
 	AAA45 : {
-		//validators : [ "fixedin['AAA45']" ]
+		validators : [ "fixedin[dic.address,'text']" ]
 	},
 	AAA46 : {
-		//validators : [ "fixedin['AAA46']" ]
+		validators : [ {
+		    rule : "fixedin",
+		    param : [function(){
+		        var address = dic.address;
+		        var AAA45 = this.AAA45;
+		        var flag = false,i;
+		        for (i = 0,len=address.length; i < len; i++) {
+                    if (address[i]['text'] === AAA45) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    return address[i].children||[];
+                }else{
+                    return [];
+                }
+		    },'text']
+		} ]
 	},
 	AAA47 : {
-		//validators : [ "fixedin['AAA47']" ]
+		validators : [ {
+            rule : "fixedin",
+            param : [function(){
+                var address = dic.address;
+                var AAA45 = this.AAA45;
+                var AAA46 = this.AAA46;
+                var flag = false,i;
+                for (i = 0,len=address.length; i < len; i++) {
+                    if (address[i]['text'] === AAA45) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(!flag){
+                    return [];
+                }
+                
+                var children = address[i].children||[],flag = false;                
+                for (i = 0,len=children.length; i < len; i++) {
+                    if (children[i]['text'] === AAA46) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if(flag){
+                    return children[i].children||[];
+                }else{
+                    return [];
+                }
+            },'text']
+        } ]
 	},
 	AAA13C : {
 		validators : [ "fixedin[dic.area]" ]
@@ -298,7 +418,7 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "fixedin[dic.streat,'code']" ]
 	},
 	AAA14C : {
-		validators : [ "number[0]", "min[100000]", "max[999999]" ]
+		validators : [ "integer", "min[100000]", "max[999999]" ]
 	},
 	AAA48 : {
 		validators : [ "length[0,50]" ]
@@ -316,11 +436,18 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "length[0,20]" ]
 	},
 	AAA17C : {
-		validators : [ "number[0]", "min[100000]", "max[999999]" ]
+		validators : [ "integer", "min[100000]", "max[999999]" ]
 	},
 	AAB01 : {
-		validators : [ "required", "datebefore['#AAC01','出院时间']",//TODO
-				"datetime['yyyy-MM-dd HH:mm:ss']" ]
+		validators : [ "required", "datetime['yyyy-MM-dd HH:mm:ss']", {
+			rule : "func",
+			param : [function(field, value, element, param){
+				if(this.AAB01&&this.AAC01){
+					return this.AAB01 < this.AAC01;
+				}
+				return true;
+			}]
+		} ]
 	},
 	AAB02C : {
 		validators : [ "required", "fixedin[dic.medicalSubject]" ]
@@ -332,8 +459,7 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "required", "fixedin[dic.ruYuanTuJing]" ]
 	},
 	AAC01 : {
-		validators : [ "required", "dateafter['#AAB01','入院时间']",//TODO
-				"datetime['yyyy-MM-dd HH:mm:ss']" ]
+		validators : [ "required", "datetime['yyyy-MM-dd HH:mm:ss']" ]
 	},
 	AAC02C : {
 		validators : [ "required", "fixedin[dic.medicalSubject]" ]
@@ -342,10 +468,34 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "length[0,20]" ]
 	},
 	AAC04 : {
-		validators : [ "required", "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "required", "integer", "min[1]", "max[999999]" ]
 	},
 	AAD01C : {
-		//validators : [ "fixedin[dic.medicalSubject]" ] TODO 多选
+		validators : [{
+			rule : "func",
+			param : [function(field, value, element, param){
+				if(!value){
+					return true;
+				}
+				var items = value.split(',');
+				var medicalSubject = dic.medicalSubject;
+				var item, i, j, flag=false, len=medicalSubject.length;
+				for(j = 0; j<items.length; j++){
+					flag = false;
+					item = items[j];
+					for (i = 0; i < len; i++) {
+						if (medicalSubject[i]['value'] == item) {
+							flag = true;
+							break;
+						}
+					}
+					if(!flag){
+						return false;
+					}
+				}
+				return true;
+			}]
+		}]
 	},
 	AEE01 : {
 		validators : [ "length[0,20]" ]
@@ -381,7 +531,7 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "fixedin[dic.ICD10,'code']" ]
 	},
 	ABA01N : {
-		validators : [ "fixedin[dic.ICD10,'name']" ]
+		validators : [ "fixedin[dic.ICD10,'name']" ] //TODO 验证code和名称是否匹配
 	},
 	ABC01C : {
 		validators : [ "required", "fixedin[dic.ICD10,'code']" ]
@@ -393,10 +543,10 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "required", "fixedin[dic.ruYuanBingQing]" ]
 	},
 	ABF01C : {
-		validators : [ "fixedin[dic.BLZD,'code']" ]
+		validators : [ "fixedin[dic.BLZD,'code']", "required[this.ABC01C&&this.ABC01C>='C00'&&this.ABC01C<'D49']" ]//肿瘤作为主诊时，编码范围在C00~D48,病理诊断编码为必填。
 	},
 	ABF01N : {
-		validators : [ "fixedin[dic.BLZD,'name']" ]
+		validators : [ "fixedin[dic.BLZD,'name']", "required[this.ABC01C&&this.ABC01C>='C00'&&this.ABC01C<'D49']" ]
 	},
 	ABF04 : {
 		validators : [ "length[0,50]" ]
@@ -408,31 +558,31 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "fixedin[dic.fenHuaChengDu]" ]
 	},
 	ABG01C : {
-		validators : [ "fixedin[dic.ICD10,'code']" ]
+		validators : [ "fixedin[dic.ICD10,'code']", "required[this.ABC01C&&this.ABC01C>='S00'&&this.ABC01C<'T99']" ]//损伤中毒作为主诊时，编码范围在S00 – T98, 损伤外部原因必填
 	},
 	ABG01N : {
-		validators : [ "fixedin[dic.ICD10,'name']" ]
+		validators : [ "fixedin[dic.ICD10,'name']", "required[this.ABC01C&&this.ABC01C>='S00'&&this.ABC01C<'T99']" ]
 	},
 	ABH01C : {
 		validators : [ "fixedin[dic.bool]" ]
 	},
 	ABH0201C : {
-		validators : [ "fixedin[dic.TNM_T]" ]
+		validators : [ "fixedin[dic.TNM_T]", "required[this.ABH01C==='2']" ]//肿瘤分期是否不详为否时，肿瘤分期..必填
 	},
 	ABH0202C : {
-		validators : [ "fixedin[dic.TNM_N]" ]
+		validators : [ "fixedin[dic.TNM_N]", "required[this.ABH01C==='2']" ]
 	},
 	ABH0203C : {
-		validators : [ "fixedin[dic.TNM_M]" ]
+		validators : [ "fixedin[dic.TNM_M]", "required[this.ABH01C==='2']" ]
 	},
 	ABH03C : {
-		validators : [ "fixedin[dic.zhongLiuFenQi]" ]
+		validators : [ "fixedin[dic.zhongLiuFenQi]", "required[this.ABH01C==='2']" ]
 	},
 	AEB02C : {
 		validators : [ "required", "fixedin[dic.haveOrNot]" ]
 	},
 	AEB01 : {
-		validators : [ "length[0,200]" ]
+		validators : [ "length[0,200]", "required[this.AEB02C==='2']" ]
 	},
 	AED01C : {
 		validators : [ "fixedin[dic.binAnZhiLiang]" ]
@@ -453,40 +603,40 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "fixedin[dic.Rh]" ]
 	},
 	AEG04 : {
-		validators : [ "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "integer", "min[1]", "max[999999]" ]
 	},
 	AEG05 : {
-		validators : [ "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "integer", "min[1]", "max[999999]" ]
 	},
 	AEG06 : {
-		validators : [ "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "integer", "min[1]", "max[999999]" ]
 	},
 	AEG07 : {
-		validators : [ "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "integer", "min[1]", "max[999999]" ]
 	},
 	AEG08 : {
-		validators : [ "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "integer", "min[1]", "max[999999]" ]
 	},
 	AEJ01 : {
-		validators : [ "number[0]", "min[0]", "max[99999]" ]
+		validators : [ "integer", "min[0]", "max[99999]" ]
 	},
 	AEJ02 : {
-		validators : [ "number[0]", "min[0]" ]
+		validators : [ "integer", "min[0]", "max[23]" ]
 	},
 	AEJ03 : {
-		validators : [ "number[0]", "min[0]" ]
+		validators : [ "integer", "min[0]", "max[59]" ]
 	},
 	AEJ04 : {
-		validators : [ "number[0]", "min[0]", "max[99999]" ]
+		validators : [ "integer", "min[0]", "max[99999]" ]
 	},
 	AEJ05 : {
-		validators : [ "number[0]", "min[0]", "max[23]" ]
+		validators : [ "integer", "min[0]", "max[23]" ]
 	},
 	AEJ06 : {
-		validators : [ "number[0]", "min[0]", "max[59]" ]
+		validators : [ "integer", "min[0]", "max[59]" ]
 	},
 	AEL01 : {
-		validators : [ "number[0]", "min[1]", "max[999999]" ]
+		validators : [ "integer", "min[1]", "max[999999]" ]
 	},
 	AEM01C : {
 		validators : [ "required", "fixedin[dic.liYuanFangShi]" ]
@@ -504,16 +654,32 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "fixedin[dic.bool]" ]
 	},
 	AEI09 : {
-		validators : [ "number[0]", "min[0]", "max[100]" ]
+		validators : [ "integer", "min[0]", "max[100]" ]
 	},
 	AEI10 : {
-		validators : [ "number[0]", "min[0]", "max[100]" ]
+		validators : [ "integer", "min[0]", "max[100]" ]
 	},
 	AEI08 :{
 		validators : [ "length[0,500]" ]
 	},
 	ADA01 : {
-		validators : [ "required", "number[2]", "min[0.01]" ]
+		validators : [ "required", "number[2]", "min[0.01]", {
+			rule : "func",
+			param : [function(field, value, element, param){
+				var tags = ["ADA11","ADA21","ADA22","ADA23","ADA24","ADA25","ADA26","ADA27","ADA28","ADA13","ADA15","ADA12",
+				            "ADA29","ADA03","ADA30","ADA31","ADA32","ADA07","ADA08","ADA33","ADA34","ADA35","ADA36","ADA37","ADA38","ADA02",
+				            "ADA39","ADA09","ADA10","ADA04","ADA40","ADA41","ADA42","ADA43","ADA44","ADA05","ADA06","ADA20"];
+				var total = parseFloat(this.ADA01||0);
+				var count=0;
+				for(var i=0;i<tags.length;i++){
+					var exp = this[tags[i]];
+					if(exp){
+						count += parseFloat(exp);
+					}
+				}
+				return (total===count);
+			}]
+		}]
 	},
 	ADA0101 : {
 		validators : [ "number[2]", "min[0]" ]
@@ -662,8 +828,8 @@ MedicalRecord.parse = function (node){
 			obj[tag]=getNodeValue(node, tag);
 		}
 	}
-	//验证病案数据
-	obj.valid = obj.validate();
+	//验证病案数据，此处因一次性验证数据过多速度太慢。所以把验证分散到每页展示的时候
+	//obj.valid = obj.validate();
 	return obj;
 };
 MedicalRecord.toXmlDoc = function(obj){
@@ -863,15 +1029,35 @@ Disabled.toXmlDoc = function(obj){
 };
 
 function getNodeValue(root, tag){
+	var nodes = root.getElementsByTagName(tag);
+	if (nodes.length != 0) {
+		var child = nodes[0].childNodes[0];
+		if(child){			
+			return $.trim(child.nodeValue);
+		}
+	}
+	return null;
+	/*使用jquery方式实现，但效率太差，慢了5倍
 	var value = $(root).find(tag).first().text();
 	return $.trim(value);
+	*/
 }
 function getNodeValues(root, tag, model){
+	var res = [];
+	var tagNodes = root.getElementsByTagName(tag);
+	if(tagNodes.length!=0){
+		var childNodes = tagNodes[0].childNodes;
+		for(var i=0,len=childNodes.length; i<len;i++){
+			res.push(model.parse(childNodes[i]));
+		}
+	}
+	return res;
+	/*jquery方式实现 效率太差
 	var res = [];
 	$(root).find(tag).first().children().each(function(){
 		res.push(model.parse(this));
 	});
-	return res;
+	 */
 }
 /**
  * 删除xml中的空节点

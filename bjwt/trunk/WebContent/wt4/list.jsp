@@ -85,7 +85,7 @@
 </div>
 	
 <div id="dialogMedicalRecordEdit" class="easyui-dialog" title="病案" maximized="true"
-	collapsible="false"  closed="true" modal="true" buttons="#dialogMREdit-buttons">
+	collapsible="false" modal="true" buttons="#dialogMREdit-buttons">
 	<div id="mainTabs" class="easyui-tabs" fit="true" border="false">
 	    <div title="患者基本信息" style="padding:10px;" href="view/tab1.html">
 	    </div>
@@ -117,12 +117,16 @@ function updateMedicalRecord(index){
 	MedicalRecordForm.loadData(row);
 	$('#dialogMedicalRecordEdit').dialog('setTitle','修改病案').dialog('open'); 
 }
+function loadAllTabs(){
+    //遍历加载所有的tab
+    var tabs = $('#mainTabs').tabs().tabs("tabs");
+    for(var i=tabs.length-1;i>0;i--){
+        $('#mainTabs').tabs("select",tabs[i].panel('options').title);
+    }
+}
 $(function(){
-	//遍历加载所有的tab
-	var tabs = $('#mainTabs').tabs().tabs("tabs");
-	for(var i=tabs.length-1;i>=0;i--){
-		$('#mainTabs').tabs("select",tabs[i].panel('options').title);
-	}
+	loadAllTabs();
+	$('#dialogMedicalRecordEdit').dialog('close');
 	
 	$('#medicalRecord-btnQuery').click(function(){
 		$('#gridMedicalRecord').datagrid('load',$('#formMedicalRecordQuery').serializeObject());

@@ -31,7 +31,7 @@
 	<script type="text/javascript" src="js/main.js"></script>
 </head>
 <body>
-	<table id="gridMedicalRecord" style="height:400px" class="easyui-datagrid" title='病案'
+	<table id="gridMedicalRecord" style="height:400px" title='病案'
 		autoRowHeight="false" singleSelect="false"
 		pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
         sortOrder="desc" toolbar="#gridMedicalRecord-toolbar">
@@ -58,8 +58,10 @@
 	</div>
 	
 	<div id="dialogMedicalRecordEdit" class="easyui-dialog" title="病案" maximized="true"
-		collapsible="false"  closed="true" modal="true" buttons="#dialogMREdit-buttons">
+		collapsible="false" modal="true" buttons="#dialogMREdit-buttons">
 		<div id="mainTabs" class="easyui-tabs" fit="true" border="false">
+		    <!--
+		    -->
 		    <div title="患者基本信息" style="padding:10px;" href="view/tab1.html">
 		    </div>
 		    <div title="诊断信息" style="padding:10px;" href="view/tab2.html">
@@ -70,8 +72,6 @@
 		    </div>
 		    <div title="费用信息" style="padding:10px;" href="view/tab5.html">
 		    </div>
-		    <!--
-		    -->
 		</div>
 	</div>
 	<div id="dialogMREdit-buttons" style="text-align: center;">
@@ -106,16 +106,85 @@ function updateMedicalRecord(index){
 	$('#dialogMedicalRecordEdit').data('dataIndex',index);
 	$('#dialogMedicalRecordEdit').dialog('setTitle','编辑病案').dialog('open'); 
 }
+function loadAllTabs(){
+    //遍历加载所有的tab
+    var tabs = $('#mainTabs').tabs().tabs("tabs");
+    for(var i=tabs.length-1;i>=0;i--){
+        $('#mainTabs').tabs("select",tabs[i].panel('options').title);
+    }
+}
 $(function(){
-	//遍历加载所有的tab
-	var tabs = $('#mainTabs').tabs().tabs("tabs");
-	for(var i=tabs.length-1;i>=0;i--){
-		$('#mainTabs').tabs("select",tabs[i].panel('options').title);
-	}
+	loadAllTabs();
+	$('#dialogMedicalRecordEdit').dialog('close');
+	
+	$('#gridMedicalRecord').datagrid({
+		//选中时设置记录中的check属性为true
+		onCheck : function(rowIndex,rowData){
+			rowData.check = true;
+		},
+		onUncheck : function(rowIndex,rowData){
+			rowData.check = false;
+		},
+		onCheckAll : function(rows){
+			for(var i=0,len=rows.length;i<len;i++){
+				rows[i].check = true;
+			}
+		},
+		onUncheckAll : function(rows){
+			for(var i=0,len=rows.length;i<len;i++){
+				rows[i].check = false;
+			}
+		},
+		//本地数据分页
+		loadFilter : function(data){
+			if ($.isArray(data)){	// is array
+				data = {
+					total: data.length,
+					rows: data
+				}
+			}
+			var dg = $(this);
+			var opts = dg.datagrid('options');
+			var pager = dg.datagrid('getPager');
+			pager.pagination({
+				onSelectPage:function(pageNum, pageSize){
+					opts.pageNumber = pageNum;
+					opts.pageSize = pageSize;
+					pager.pagination('refresh',{
+						pageNumber:pageNum,
+						pageSize:pageSize
+					});
+					dg.datagrid('loadData',data);
+					
+					//将check属性为true的行设为选中checked
+					var rows = dg.datagrid('getRows');
+					for(var i=0,len=rows.length;i<len;i++){
+						if(rows[i]['check']){
+							dg.datagrid('checkRow', i);
+						}
+					}
+				}
+			});
+			if (!data.all){
+				data.all = (data.rows);
+			}
+			var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
+			var end = start + parseInt(opts.pageSize);
+			data.rows = (data.all.slice(start, end));
+			
+			//对未验证的记录进行验证
+			for(var i=0,len=data.rows.length;i<len;i++){
+				if(!data.rows[i].valid){
+					data.rows[i].valid = MedicalRecord.validate(data.rows[i]);
+				}
+			}
+			return data;
+		}
+	});
 	
 	$('#dialogMREdit-btnExport').click(function(){
 		$.messager.progress({
-			title:'保存病案',
+			title:'导出病案',
 			msg:'请稍候...'
 		}); 
 		if(!MedicalRecordForm.validExpenses()){
@@ -143,7 +212,6 @@ $(function(){
 		$.messager.progress({
 			title:'保存病案',
 			msg:'请稍候...'
-			//text:'正在验证数据...'
 		}); 
 		if(!MedicalRecordForm.validExpenses()){
 			$.messager.progress('close');
@@ -180,8 +248,17 @@ $(function(){
 	                //TODO 删除表格中的已保存的记录
 	                var index = $('#dialogMedicalRecordEdit').data('dataIndex');
 	                if(index||index==0){
-	                	$('#gridMedicalRecord').datagrid('deleteRow',index);
+	                	var opts = $('#gridMedicalRecord').datagrid('options');
+	                	var start = (opts.pageNumber-1)*parseInt(opts.pageSize) + index;
+	                	var data = $('#gridMedicalRecord').datagrid("getData");
+	            		var all = (data&&data.all) ? data.all : [];
+	                	for(var i=start,len=all.length;i<len-1;i++){
+	                		all[i]=all[i+1];
+	                	}
+	                	all.pop();
+		        		$('#gridMedicalRecord').datagrid('loadData',all);
 	                }
+	                
 	            	$('#dialogMedicalRecordEdit').dialog('close');
 	            } else {  
 	            	$.messager.alert('错误',result.message,'error');   
@@ -208,21 +285,42 @@ $(function(){
 		$('#dialogImport').dialog('open');
 	});
 	$("#medicalRecord-btnSaveChecked").click(function(){
-		var rows = $('#gridMedicalRecord').datagrid("getChecked");
-		if(rows.length==0){
+		var data = $('#gridMedicalRecord').datagrid("getData");
+		var all = (data&&data.all) ? data.all : [];
+		
+		var checkedRows = [];
+		for(var i=0,len=all.length;i<len;i++){
+			if(all[i]['check']){
+				checkedRows.push(all[i]);
+			}
+		}
+		
+		if(checkedRows.length==0){
 			$.messager.alert('提示','请至少选择一条记录！','info');
 			return;
 		}
 		var valid = true;
-		for(var i=0,len=rows.length;i<len;i++){
-			rows[i].valid = MedicalRecord.validate(rows[i]);
-			if(rows[i].valid.length>0){
+		for(var i=0,len=checkedRows.length;i<len;i++){
+			if(!checkedRows[i].valid){
+				checkedRows[i].valid = MedicalRecord.validate(checkedRows[i]);
+			}
+			if(checkedRows[i].valid.length>0){
 				valid = false;
 			}
 		}
 		if(!valid){
 			$.messager.alert('错误','部分记录未验证通过，请修改后再保存！','error');
-			// TODO 刷新表格
+			/*
+			// 刷新表格当前页
+			$('#gridMedicalRecord').datagrid('loadData',data);
+			//将check属性为true的行设为选中checked TODO
+			var rows = dg.datagrid('getRows');
+			for(var i=0,len=rows.length;i<len;i++){
+				if(rows[i]['check']){
+					dg.datagrid('checkRow', i);
+				}
+			}
+			*/
 			return;
 		}
 		
@@ -236,14 +334,21 @@ $(function(){
 			async : true,
 			contentType : 'application/json;utf-8',
 			dataType : 'json',
-			data : JSON.stringify(rows),
+			data : JSON.stringify(checkedRows),
 			success : function(result){
 				if (result.success){  
 	            	$.messager.show({  
 	                    title: '提示',  
 	                    msg: result.message  
 	                }); 
-	                //TODO 删除表格中的已保存的记录
+	                //删除表格中的已保存的记录
+	            	var lastData = [];
+	        		for(var i=0,len=all.length;i<len;i++){
+	        			if(all[i]&&!all[i]['check']){
+	        				lastData.push(all[i]);
+	        			}
+	        		}
+	        		$('#gridMedicalRecord').datagrid('loadData',lastData);
 	            } else {  
 	            	$.messager.alert('错误',result.message,'error');   
 	            }
@@ -266,10 +371,12 @@ $(function(){
 				var path = $("#importfile").val();
 				
 				var recordList = parseMedicalRecordXML(path);
-				var rows = $('#gridMedicalRecord').datagrid('getRows');
+				//var rows = $('#gridMedicalRecord').datagrid('getRows');
+				var data = $('#gridMedicalRecord').datagrid("getData");
+				var all = (data&&data.all) ? data.all : [];
 				//合并数据
-				$.merge(rows, recordList);
-				$('#gridMedicalRecord').datagrid('loadData',rows);
+				$.merge(all, recordList);
+				$('#gridMedicalRecord').datagrid('loadData',all);
 				
 				$("#importfile").val("");
 				$('#dialogImport').dialog('close');

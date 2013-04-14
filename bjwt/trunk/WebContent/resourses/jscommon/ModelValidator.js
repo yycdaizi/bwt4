@@ -38,8 +38,8 @@
 	});
 	
 	var Regex = {
-		decimal	: /^\-?[0-9]*\.?[0-9]+$/,
-		integer : /^\-?[0-9]+$/,
+		decimal	: /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/,
+		integer : /^-?(?:0|[1-9]\d*)$/,
 		numeric : /^[0-9]+$/,
 		email : /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i,
 		url : /^(https?|ftp):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i,
@@ -70,12 +70,12 @@
 				var field = fields[key]||{};
 				var validators = field.validators||[];
 				$.each(validators, function(i, n){
-					n = $.ModelValidator.parseValidator(n);
+					n = $.ModelValidator.parseValidator.call(obj,n);
 					var ruleName = n.rule;
 					var rule = $.ModelValidator.rules[ruleName];
 					var param = n.param;
 					if(rule){
-						var ret = rule.validate(field, obj[key], null, param);
+						var ret = rule.validate.call(obj, field, obj[key], null, param);
 						
 						var result = true, message=n.message;
 						if(!ret){
@@ -127,10 +127,21 @@
 			validate : function(field, value, element, param){
 				param = param||[];
 				var depend = param[0];
-				if($.type(depend) === 'boolean'&&depend === false){
-					return true;
-				}else{
-					// TODO
+				switch($.type(depend)){
+				    case 'undefined':
+				        break;
+				    case 'boolean':
+				        if(depend==false){
+				            return true;
+				        }
+				        break;
+			        case 'function':
+			            if(!depend.apply(this, arguments)){
+			                return true;    
+			            }
+			            break;
+			        default:
+			            $.error('required验证器定义出错！');
 				}
 				return $.trim(value).length>0;
 			},
@@ -138,7 +149,7 @@
 		},
 		func : {
 			validate : function(field, value, element, param){
-				return param[0](field, value, element, param);
+				return param[0].apply(this, arguments);
 			},
 			message : "自定义验证未通过"
 		},
@@ -166,7 +177,26 @@
 				if($.trim(value).length==0){
 					return true;
 				}
-				return Regex.decimal.test(value);
+				param = param||[];
+				var precision = param[0];
+				switch($.type(precision)){
+                    case 'undefined':
+                        return Regex.decimal.test(value);
+                        break;
+                    case 'number':
+                        if(precision === 0){
+                            return Regex.integer.test(value);
+                        }else if(precision>0){
+                            var regStr = "^-?(?:0|[1-9]\\d*)(?:\\.\\d{"+precision+"})?$";
+                            var reg = new RegExp(regStr);
+                            return reg.test(value);
+                        }else{
+                            $.error('number验证器定义出错！');
+                        }
+                        break;
+                    default:
+                        $.error('number验证器定义出错！');
+                }
 			},
 			message : "必须为数值"
 		},
@@ -211,9 +241,22 @@
 		},
 		fixedin : {
 			validate : function(field, value, element, param){
+			    if(!value){
+			        return true;
+			    }
 				var dic = param[0];
 				var validField = param[1]||'value';
-				if (!(value && dic)) {
+				switch($.type(dic)){
+                    case 'undefined':
+                    case 'array':
+                        break;
+                    case 'function':
+                        dic = dic.apply(this, arguments);
+                        break;
+                    default:
+                        $.error('fixedin验证器参数定义出错！');
+                }
+				if (!dic) {
 					return true;
 				}
 				for ( var i = 0,len=dic.length; i < len; i++) {
@@ -224,7 +267,26 @@
 				return false;
 			},
 			message : "不在选择项中"
-		}
-		
+		},
+		date : {
+            validate : function(field, value, element, param){
+                //TODO 完善
+                if(!value){
+                    return true;
+                }
+                return /^\d{4}-(?:0[1-9]|1[012])-(?:0[1-9]|[12]\d|3[01])$/.test(value);
+            },
+            message : "非法的日期"
+        },
+        datetime : {
+            validate : function(field, value, element, param){
+                //TODO 
+                if(!value){
+                    return true;
+                }
+                return /^\d{4}-(?:0[1-9]|1[012])-(?:0[1-9]|[12]\d|3[01]) (?:[0-1]\d|2[0-4]):(?:[0-5]\d):(?:[0-5]\d)$/.test(value);
+            },
+            message : "非法的时间"
+        }
 	});
 })(jQuery);

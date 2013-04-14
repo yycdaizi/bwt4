@@ -9,7 +9,7 @@ insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (7
 /*预制机构*/
 insert into b_org (orgid, parentid, orgcode, orgname, orgaddr, orgmanager, ts) values (1, null, '0001', '北京医院IT管理中心', '北京市XX区', 1, '2013-03-28 00:59:10');
 /*预置系统超级管理员*/
-insert into b_user (userid, orgid, username, password, sex, telphone, mobilephone, email, ts, locked) values (1, 1, 'root', null, '1', null, null, null, '2013-03-28 00:39:32', 0);
+insert into b_user (userid, orgid, username, password, sex, telphone, mobilephone, email, ts, locked) values (1, 1, 'root', 'e10adc3949ba59abbe56e057f20f883e', '男', null, null, null, '2013-04-01 23:19:19', 0);
 /*超级管理员角色*/
 insert into b_role (roleid, orgid, rolecode, rolename, note, ts) values (1, 1, 'superadmin', '超级管理员', '系统超级管理员', '2013-03-28 23:14:08');
 /*用户角色分配*/

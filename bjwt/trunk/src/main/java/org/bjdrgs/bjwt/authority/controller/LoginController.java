@@ -47,29 +47,36 @@ public class LoginController {
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	@ResponseBody
 	public AjaxResult login(@RequestParam String username,
-			@RequestParam String password,@RequestParam String checkcode, HttpServletRequest request)
-			throws Exception {
+			@RequestParam String password, @RequestParam String checkcode,
+			HttpServletRequest request) throws Exception {
+		username = username != null ? username.trim() : null;
+		password = password != null ? password.trim() : null;
 		AjaxResult result = new AjaxResult();
-		String trueCheckCode = (String) request.getSession().getAttribute(Constants.KEY_CHECKCODE);
-		if (username == null) {
+		String trueCheckCode = (String) request.getSession().getAttribute(
+				Constants.KEY_CHECKCODE);
+		if (username == null || username.length() == 0) {
 			result.setMessage("用户名为空");
 			result.setSuccess(false);
 			return result;
-		} else if(checkcode == null){
+		} else if (password == null || password.length() == 0) {
+			result.setMessage("密码为空");
+			result.setSuccess(false);
+			return result;
+		} else if (checkcode == null) {
 			result.setMessage("验证码为空");
 			result.setSuccess(false);
 			return result;
-		} else if(!trueCheckCode.toLowerCase().equals(checkcode.toLowerCase())){
+		} else if (!trueCheckCode.toLowerCase().equals(checkcode.toLowerCase())) {
 			result.setMessage("验证码错误");
 			result.setSuccess(false);
 			return result;
 		}
 		return doLogin(username, password);
 	}
-	
+
 	@RequestMapping(value = "/loginout")
-	public ModelAndView loginout(){
-		//安全退出
+	public ModelAndView loginout() {
+		// 安全退出
 		SecurityUtils.getSubject().logout();
 		return new ModelAndView(new RedirectView("login.do"));
 	}
@@ -98,16 +105,10 @@ public class LoginController {
 			result.setSuccess(false);
 			logger.error(ae.getMessage(), ae);
 		}
-		//登录成功,若是root用户第一次登陆 
-		if(Constants.ROOTUSER_NAME.equals(username) && (password==null || password.length()==0)){
-			result.setSuccess(true);
-			result.setStatus("root_first");
-		}
 		return result;
 	}
 
 	// 验证码
-
 	public Color getRandColor(int s, int e) {
 		Random random = new Random();
 		if (s > 255)
@@ -132,7 +133,7 @@ public class LoginController {
 		int width = 130;
 		int height = 25;
 		BufferedImage image = new BufferedImage(width, height,
-		BufferedImage.TYPE_INT_RGB); // 创建BufferedImage类的对象
+				BufferedImage.TYPE_INT_RGB); // 创建BufferedImage类的对象
 		Graphics g = image.getGraphics(); // 创建Graphics类的对象
 		Graphics2D g2d = (Graphics2D) g; // 通过Graphics类的对象创建一个Graphics2D类的对象
 		Random random = new Random(); // 实例化一个Random对象
@@ -141,7 +142,7 @@ public class LoginController {
 		g.fillRect(0, 0, width, height); // 绘制一个填色矩形
 		// 画一条折线
 		BasicStroke bs = new BasicStroke(2f, BasicStroke.CAP_BUTT,
-		BasicStroke.JOIN_BEVEL); // 创建一个供画笔选择线条粗细的对象
+				BasicStroke.JOIN_BEVEL); // 创建一个供画笔选择线条粗细的对象
 		g2d.setStroke(bs); // 改变线条的粗细
 		g.setColor(Color.DARK_GRAY); // 设置当前颜色为预定义颜色中的深灰色
 		int[] xPoints = new int[3];
@@ -164,7 +165,7 @@ public class LoginController {
 			char ctmp = (char) itmp;
 			sRand += String.valueOf(ctmp);
 			Color color = new Color(20 + random.nextInt(110),
-			20 + random.nextInt(110), 20 + random.nextInt(110));
+					20 + random.nextInt(110), 20 + random.nextInt(110));
 			g.setColor(color);
 			/**** 随机缩放文字并将文字旋转指定角度 **/
 			// 将文字旋转指定角度

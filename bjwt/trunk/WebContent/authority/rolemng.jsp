@@ -182,6 +182,7 @@
 		$.messager.progress(); // display the progress bar
 		$.post('${pageContext.request.contextPath}/role/deleteById.do',{roleid:selRow.roleid},function(result){
 			$.messager.progress('close'); // hide progress bar
+			var result = $.parseJSON(result);
 			if (result.success){
 				$.messager.show({
                     title: '提示',  

@@ -205,6 +205,7 @@
 		$.messager.progress(); // display the progress bar
 		$.post('${pageContext.request.contextPath}/user/deleteById.do',{userid:selRow.userid},function(result){
 			$.messager.progress('close'); // hide progress bar
+			var result = $.parseJSON(result);
 			if (result.success){
 				$.messager.show({
                     title: '提示',  

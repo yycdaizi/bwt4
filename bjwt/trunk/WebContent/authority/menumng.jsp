@@ -58,7 +58,7 @@
 	        </div>
 	        <div class="fitem">    
 	            <label>菜单路径：</label>    
-	            <input name="menuurl" class="easyui-validatebox" required="true" validType="maxLength[30]"> 
+	            <input name="menuurl" class="easyui-validatebox" validType="maxLength[30]"> 
 	        </div>
 	        <div class="fitem">    
 	            <label>菜单图标：</label>  
@@ -171,12 +171,13 @@
 		$.messager.progress(); // display the progress bar
 		$.post('${pageContext.request.contextPath}/menu/deleteById.do',{menuid:selRow.menuid},function(result){
 			$.messager.progress('close'); // hide progress bar
+			var result = $.parseJSON(result);
 			if (result.success){
 				$.messager.show({
                     title: '提示',  
                     msg: result.message  
                 }); 
-                $('#grid_menu').datagrid('reload');    // reload the user data  
+                $('#grid_menu').treegrid('reload');    // reload the user data  
             } else {  
                 $.messager.show({
                     title: '错误',  

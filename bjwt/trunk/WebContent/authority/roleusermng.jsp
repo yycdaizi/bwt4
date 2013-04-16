@@ -172,13 +172,13 @@
 	//对话框显示or隐藏
 	function dialogAddShow(){
 		$("#dialog_roleuser").dialog({
-			title : '新增角色',
+			title : '新增',
 			iconCls : 'icon-add'
 		}).dialog('open');
 	}
 	function dialogEditShow(){
 		$("#dialog_roleuser").dialog({
-			title : '编辑角色',
+			title : '编辑',
 			iconCls : 'icon-edit'
 		}).dialog('open');
 	}
@@ -216,6 +216,7 @@
 		$.messager.progress(); // display the progress bar
 		$.post('${pageContext.request.contextPath}/roleuser/deleteById.do',{roleuserid:selRow.roleuserid},function(result){
 			$.messager.progress('close'); // hide progress bar
+			var result = $.parseJSON(result);
 			if (result.success){
 				$.messager.show({
                     title: '提示',  

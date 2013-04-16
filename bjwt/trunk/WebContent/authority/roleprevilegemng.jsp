@@ -109,7 +109,7 @@
 	            $(function(){
 	            	$('#cg_ownmenu').combogrid({  
 	                    panelWidth:400,  
-	                    url: '${pageContext.request.contextPath}/menu/page.do',  
+	                    url: '${pageContext.request.contextPath}/menu/page.do?query_all=true',  
 	                    idField:'menuid',  
 	                    textField:'menuname', 
 	                    mode:'remote',
@@ -184,13 +184,13 @@
 	//对话框显示or隐藏
 	function dialogAddShow(){
 		$("#dialog_previlege").dialog({
-			title : '新增角色',
+			title : '新增权限',
 			iconCls : 'icon-add'
 		}).dialog('open');
 	}
 	function dialogEditShow(){
 		$("#dialog_previlege").dialog({
-			title : '编辑角色',
+			title : '编辑权限',
 			iconCls : 'icon-edit'
 		}).dialog('open');
 	}
@@ -235,6 +235,7 @@
 		$.messager.progress(); // display the progress bar
 		$.post('${pageContext.request.contextPath}/previlege/deleteById.do',{previlegeid:selRow.previlegeid},function(result){
 			$.messager.progress('close'); // hide progress bar
+			var result = $.parseJSON(result);
 			if (result.success){
 				$.messager.show({
                     title: '提示',  

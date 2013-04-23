@@ -4,7 +4,9 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.bjdrgs.bjwt.authority.dao.IRoleuserDao;
 import org.bjdrgs.bjwt.authority.dao.IUserDao;
+import org.bjdrgs.bjwt.authority.model.Roleuser;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.parameter.NewPassword;
 import org.bjdrgs.bjwt.authority.parameter.UserParam;
@@ -25,6 +27,9 @@ public class UserServiceImpl implements IUserService {
 
 	@Resource(name = "UserDao")
 	private IUserDao userDao;
+	
+	@Resource(name = "RoleuserDao")
+	private IRoleuserDao roleuserDao;
 
 	@Override
 	public Pagination<User> queryUser(UserParam param) {
@@ -93,5 +98,11 @@ public class UserServiceImpl implements IUserService {
 			return oldPswd==null || oldPswd.length()==0;
 		}
 		return CipherUtil.validatePassword(dbInfo.getPassword(), oldPswd);
+	}
+
+	@Override
+	public boolean hasRole(User user, String rolecode) {
+		Roleuser roleuser = roleuserDao.get(user.getUserid(), rolecode);
+		return roleuser != null;
 	}
 }

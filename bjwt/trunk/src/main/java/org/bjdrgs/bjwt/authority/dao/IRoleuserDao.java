@@ -13,4 +13,11 @@ public interface IRoleuserDao extends IBaseDao<Roleuser> {
 	 */
 	public Pagination<Roleuser> query(RoleuserParam param);
 
+	/**
+	 * 通过用户id和角色代码取得Roleuser
+	 * @param userid
+	 * @param rolecode
+	 */
+	public Roleuser get(Integer userid, String rolecode);
+
 }

@@ -21,6 +21,8 @@ public class MedicalRecordParam extends GridParam{
 	//离院方式
 	private String eq_AEM01C;
 
+	private Integer orgId;
+	
 	public String getBlike_AAA28() {
 		return blike_AAA28;
 	}
@@ -67,5 +69,19 @@ public class MedicalRecordParam extends GridParam{
 
 	public void setEq_AEM01C(String eq_AEM01C) {
 		this.eq_AEM01C = eq_AEM01C;
+	}
+
+	/**
+	 * @return the orgId
+	 */
+	public Integer getOrgId() {
+		return orgId;
+	}
+
+	/**
+	 * @param orgId the orgId to set
+	 */
+	public void setOrgId(Integer orgId) {
+		this.orgId = orgId;
 	}
 }

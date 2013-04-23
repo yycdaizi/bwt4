@@ -9,12 +9,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.core.format.DateDeserializer;
 import org.bjdrgs.bjwt.core.format.DateSerializer;
 import org.bjdrgs.bjwt.core.format.DateTimeDeserializer;
@@ -24,6 +27,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -43,6 +48,9 @@ public class MedicalRecord implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	//是否可编辑
+	@Transient
+	private boolean editable;
 
 	@GenericGenerator(name = "increment", strategy = "increment")
 	@Id
@@ -81,8 +89,9 @@ public class MedicalRecord implements Serializable {
 	@Column(name="created")
 	private Date createTime;
 	
-	@Column(name="createdby")
-	private Integer createdBy;
+	@ManyToOne
+	@JoinColumn(name = "createdby")
+	private User createdBy;
 	
 	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
@@ -91,8 +100,9 @@ public class MedicalRecord implements Serializable {
 	@Column(name="updated")
 	private Date updateTime;
 	
-	@Column(name="updatedby")
-	private Integer updatedBy;
+	@ManyToOne
+	@JoinColumn(name = "updatedby")
+	private User updatedBy;
 
 	/** 行政区划代码 */
 	//TODO ==================================
@@ -510,11 +520,11 @@ public class MedicalRecord implements Serializable {
 	
 	/** 血型代码 */
 	@Column(name = "BLOODTYPE")
-	@JsonProperty private String AEG01C;
+	@JsonProperty private Integer AEG01C;
 	
 	/** Rh 代码 */
 	@Column(name = "RH")
-	@JsonProperty private String AEG02C;
+	@JsonProperty private Integer AEG02C;
 	
 	/** 红细胞(单位) */
 	@Column(name = "REDCELL")
@@ -844,11 +854,11 @@ public class MedicalRecord implements Serializable {
 		this.createTime = createTime;
 	}
 
-	public Integer getCreatedBy() {
+	public User getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(Integer createdBy) {
+	public void setCreatedBy(User createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -860,11 +870,11 @@ public class MedicalRecord implements Serializable {
 		this.updateTime = updateTime;
 	}
 
-	public Integer getUpdatedBy() {
+	public User getUpdatedBy() {
 		return updatedBy;
 	}
 
-	public void setUpdatedBy(Integer updatedBy) {
+	public void setUpdatedBy(User updatedBy) {
 		this.updatedBy = updatedBy;
 	}
 
@@ -1628,19 +1638,19 @@ public class MedicalRecord implements Serializable {
 		AEE10 = aEE10;
 	}
 
-	@JsonIgnore public String getAEG01C() {
+	@JsonIgnore public Integer getAEG01C() {
 		return AEG01C;
 	}
 
-	@JsonIgnore public void setAEG01C(String aEG01C) {
+	@JsonIgnore public void setAEG01C(Integer aEG01C) {
 		AEG01C = aEG01C;
 	}
 
-	@JsonIgnore public String getAEG02C() {
+	@JsonIgnore public Integer getAEG02C() {
 		return AEG02C;
 	}
 
-	@JsonIgnore public void setAEG02C(String aEG02C) {
+	@JsonIgnore public void setAEG02C(Integer aEG02C) {
 		AEG02C = aEG02C;
 	}
 
@@ -2122,5 +2132,19 @@ public class MedicalRecord implements Serializable {
 
 	@JsonIgnore public void setADA20(Double aDA20) {
 		ADA20 = aDA20;
+	}
+
+	/**
+	 * @return the editable
+	 */
+	public boolean isEditable() {
+		return editable;
+	}
+
+	/**
+	 * @param editable the editable to set
+	 */
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 }

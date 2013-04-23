@@ -108,7 +108,9 @@
 <script type="text/javascript">
 function medicalRecordOperater(value, row, index){
 	var html = [];
-	html.push($.operateButton('icon-edit','修改','updateMedicalRecord('+index+')'));
+	if(row.editable){
+		html.push($.operateButton('icon-edit','修改','updateMedicalRecord('+index+')'));
+	}
 	return html.join('');
 }
 function updateMedicalRecord(index){
@@ -182,6 +184,7 @@ $(function(){
 			},
 			error : function (XMLHttpRequest, textStatus, errorThrown) {
 				$.messager.alert('错误','对不起，出错啦！','error');
+				$.messager.progress('close');
 			}
 		});
 	});

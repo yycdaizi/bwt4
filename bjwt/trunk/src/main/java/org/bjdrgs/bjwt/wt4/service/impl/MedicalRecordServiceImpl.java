@@ -11,7 +11,13 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.subject.Subject;
+import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.service.IUserService;
+import org.bjdrgs.bjwt.authority.utils.Constants;
+import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
+import org.bjdrgs.bjwt.wt4.Wt4Constants;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.dao.IDiagnoseDao;
 import org.bjdrgs.bjwt.wt4.dao.IICUDao;
@@ -30,7 +36,6 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
-import org.dom4j.Text;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +67,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 	
 	@Resource(name="surgeryDao")
 	private ISurgeryDao surgeryDao;
-
+	
 	@Override
 	public void save(MedicalRecord[] entities) {
 		for (MedicalRecord medicalRecord : entities) {
@@ -72,17 +77,16 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 	
 	@Override
 	public void save(MedicalRecord entity) {
+		User user = SecurityUtils.getCurrentUser();
 		//一些处理
 		if(entity.getCreateTime()==null){
 			entity.setCreateTime(new Date());
 		}
 		if(entity.getCreatedBy()==null){
-			//TODO
-			entity.setCreatedBy(1);
+			entity.setCreatedBy(user);
 		}
 		entity.setUpdateTime(new Date());
-		//TODO
-		entity.setUpdatedBy(1);
+		entity.setUpdatedBy(user);
 				
 		//保存病案
 		medicalRecordDao.save(entity);

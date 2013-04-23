@@ -267,6 +267,7 @@ $(function(){
 			},
 			error : function (XMLHttpRequest, textStatus, errorThrown) {
 				$.messager.alert('错误','对不起，出错啦！','error');
+				$.messager.progress('close');
 			}
 		});
 	});
@@ -356,6 +357,7 @@ $(function(){
 			},
 			error : function (XMLHttpRequest, textStatus, errorThrown) {
 				$.messager.alert('错误','对不起，出错啦！','error');
+				$.messager.progress('close');
 			}
 		});
 	});

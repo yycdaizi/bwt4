@@ -43,4 +43,12 @@ public interface IUserService {
 	 * @param param
 	 */
 	public boolean checkPassword(User userInfo, NewPassword param);
+	
+	/**
+	 * 判断某用户是否拥有某角色
+	 * @param user
+	 * @param rolecode
+	 * @return
+	 */
+	boolean hasRole(User user, String rolecode);
 }

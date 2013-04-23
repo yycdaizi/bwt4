@@ -8,9 +8,13 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
+import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.service.IUserService;
+import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
+import org.bjdrgs.bjwt.wt4.Wt4Constants;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
@@ -32,6 +36,9 @@ public class MedicalRecordController {
 	@Resource(name="medicalRecordService")
 	private IMedicalRecordService medicalRecordService;
 	
+	@Resource(name="UserService")
+	private IUserService userService;
+	
 	@RequestMapping("/page")
 	@ResponseBody
 	public GridPage<MedicalRecord> page(MedicalRecordParam param){
@@ -41,7 +48,23 @@ public class MedicalRecordController {
 			date.setTime(date.getTime()+24*3600*1000-1);
 			param.setLe_AAC01(date);
 		}
+		//只能查询本机构下面的病案
+		User user = SecurityUtils.getCurrentUser();
+		param.setOrgId(user.getOrg().getOrgid());
+		
 		GridPage<MedicalRecord> page =GridPage.valueOf(medicalRecordService.query(param));
+		
+		//控制编辑权限
+		boolean isDirector = userService.hasRole(user, Wt4Constants.ROLE_DIRECTOR);
+		for (MedicalRecord obj : page.getRows()) {
+			boolean editable = false;
+			if(user.getUserid().equals(obj.getCreatedBy().getUserid())){
+				editable = true;
+			}else if(isDirector){
+				editable = true;
+			}
+			obj.setEditable(editable);
+		}
 		return page;
 	}
 	
@@ -77,6 +100,10 @@ public class MedicalRecordController {
 		String xml = null;
 		OutputStream output = null;
 		try {
+			//只能查询本机构下面的病案
+			User user = SecurityUtils.getCurrentUser();
+			param.setOrgId(user.getOrg().getOrgid());
+			
 			List<MedicalRecord> list = medicalRecordService.queryAll(param);
 			xml = medicalRecordService.exportToXML(list);
 			

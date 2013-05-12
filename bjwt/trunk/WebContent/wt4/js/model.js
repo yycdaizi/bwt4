@@ -274,9 +274,10 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		validators : [ "required", "integer", "min[1]", "max[9999]" ]
 	},
 	AAA09 : {
-		validators : [ "fixedin[dic.address,'text']" ]
+		//validators : [ "fixedin[dic.address,'text']" ]
 	},
 	AAA10 : {
+		/*
 		validators : [ {
 		    rule : "fixedin",
 		    param : [function(){
@@ -296,8 +297,10 @@ var MedicalRecord = $.ModelValidator.definedModel({
                 }
 		    },'text']
 		} ]
+		*/
 	},
 	AAA11 : {
+		/*
 		validators : [ {
             rule : "fixedin",
             param : [function(){
@@ -329,11 +332,13 @@ var MedicalRecord = $.ModelValidator.definedModel({
                 }
             },'text']
         } ]
+        */
 	},
 	AAA43 : {
-		validators : [ "fixedin[dic.address,'text']" ]
+		//validators : [ "fixedin[dic.address,'text']" ]
 	},
 	AAA44 : {
+		/*
 		validators : [ {
 		    rule : "fixedin",
 		    param : [function(){
@@ -353,11 +358,13 @@ var MedicalRecord = $.ModelValidator.definedModel({
                 }
 		    },'text']
 		} ]
+		*/
 	},
 	AAA45 : {
-		validators : [ "fixedin[dic.address,'text']" ]
+		//validators : [ "fixedin[dic.address,'text']" ]
 	},
 	AAA46 : {
+		/*
 		validators : [ {
 		    rule : "fixedin",
 		    param : [function(){
@@ -377,8 +384,10 @@ var MedicalRecord = $.ModelValidator.definedModel({
                 }
 		    },'text']
 		} ]
+		*/
 	},
 	AAA47 : {
+		/*
 		validators : [ {
             rule : "fixedin",
             param : [function(){
@@ -410,6 +419,7 @@ var MedicalRecord = $.ModelValidator.definedModel({
                 }
             },'text']
         } ]
+        */
 	},
 	AAA13C : {
 		validators : [ "fixedin[dic.area]" ]

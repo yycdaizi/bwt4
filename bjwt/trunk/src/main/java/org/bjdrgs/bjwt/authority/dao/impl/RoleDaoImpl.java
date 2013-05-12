@@ -1,11 +1,13 @@
 package org.bjdrgs.bjwt.authority.dao.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.authority.dao.IRoleDao;
 import org.bjdrgs.bjwt.authority.model.Role;
+import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.parameter.RoleParam;
 import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
 import org.bjdrgs.bjwt.core.web.Pagination;
@@ -33,6 +35,14 @@ public class RoleDaoImpl extends BaseDaoImpl<Role> implements IRoleDao {
 		return this.queryForPage(hql.toString(), param.getPage(),
 				param.getRows(), paramMap);
 	}
-
+	
+	@Override
+	public List<Role> getRoleByUser(User user) {
+		String hql = "select role from Role role,Roleuser ru where ru.user.userid=:userid and ru.role.roleid=role.roleid";
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("userid", user.getUserid());
+		return this.query(hql, params);
+	}
+	
 }
 

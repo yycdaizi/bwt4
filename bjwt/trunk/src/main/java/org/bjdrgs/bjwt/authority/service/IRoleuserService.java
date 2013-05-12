@@ -1,6 +1,10 @@
 package org.bjdrgs.bjwt.authority.service;
 
+import java.util.List;
+
+import org.bjdrgs.bjwt.authority.model.Role;
 import org.bjdrgs.bjwt.authority.model.Roleuser;
+import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.parameter.RoleuserParam;
 import org.bjdrgs.bjwt.core.web.Pagination;
 
@@ -22,4 +26,5 @@ public interface IRoleuserService {
 	 * @param id
 	 */
 	public void deleteById(Integer id);
+	
 }

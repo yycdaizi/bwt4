@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-@Service("authorityService")
+@Service("AuthorityService")
 public class AuthorityServiceImpl implements IAuthorityService{
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -72,5 +72,15 @@ public class AuthorityServiceImpl implements IAuthorityService{
 		attrs.put(MenuTree.PROP_URL, menu.getMenuurl());
 		treeItem.setAttributes(attrs);
 		return treeItem;
+	}
+	
+	@Override
+	public List<String> getPermissionsByUser(User user) {
+		List<Menu> menuList = authDao.getAuthedMenu(user.getUserid());
+		List<String> permissionList = new ArrayList<String>();
+		for(Menu menu : menuList){
+			permissionList.add(menu.getMenuid().toString());
+		}
+		return permissionList;
 	}
 }

@@ -12,4 +12,11 @@ public interface IAuthorityService {
 	 * @return
 	 */
 	List<MenuTree> getAuthedMenuTree(User user);
+	
+	/**
+	 * 获取用户的所有权限（menu id 列表）
+	 * @param role
+	 * @return
+	 */
+	List<String> getPermissionsByUser(User user);
 }

@@ -1,0 +1,10 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
+dic.sex = [
+	{"value":"","text":""},
+	{"value":0, "text":"0 - 未知的性别"},
+	{"value":1, "text":"1 - 男"},
+	{"value":2, "text":"2 - 女"},
+	{"value":9, "text":"9 - 未说明的性别"}
+]

@@ -1,0 +1,397 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>病案首页</title>
+    <link rel="stylesheet" type="text/css" href="../resourses/jslib/easyui/themes/default/easyui.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/jslib/easyui/themes/icon.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/css/image.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/wt4.css" />
+    <link rel="stylesheet" type="text/css" href="../resourses/jslib/autocomplete/jquery.autocomplete.css" />
+    <script type="text/javascript" src="../resourses/jslib/easyui/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/autocomplete/jquery.autocomplete.js"></script>
+    
+    <script type="text/javascript" src="../resourses/jslib/My97DatePicker/WdatePicker.js"></script>
+	<script type="text/javascript" src="../resourses/jslib/date/Date.min.js"></script>
+	<script type="text/javascript" src="../resourses/jslib/json/json2.js"></script>
+    
+    <script type="text/javascript" src="../resourses/jslib/xmloperator/XmlUtils.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/oop.js"></script>
+    <script type="text/javascript" src="../resourses/jscommon/ModelValidator.js"></script>
+	<script type="text/javascript" src="../resourses/jscommon/expand.js"></script>
+	<script type="text/javascript" src="../resourses/jscommon/jquery.customParam.js"></script>
+	
+	<script type="text/javascript" src="data/dics/dic.js"></script>
+	<script type="text/javascript" src="js/model.js"></script>
+	
+	<script type="text/javascript" src="js/surgery.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+	<table id="gridMedicalRecord" style="height:400px" title='病案'
+		autoRowHeight="false" singleSelect="false"
+		pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
+        sortOrder="desc" toolbar="#gridMedicalRecord-toolbar">
+		<thead>
+			<tr>
+				<th data-options="field:'check',checkbox:true"></th>
+				<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
+				<th data-options="field:'AAA01',width:200">姓名</th>
+				<th data-options="field:'AAB02C',width:200">入院科别</th>
+				<th data-options="field:'AAC01',width:200">出院时间</th>
+				<th data-options="field:'AEM01C',width:200">离院方式</th>
+				<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+				<th data-options="field:'valid',width:80,formatter:showState">状态</th>
+				<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
+			</tr>
+		</thead>
+	</table>
+	<div id="gridMedicalRecord-toolbar" style="height:28px">
+		<a id="medicalRecord-btnSaveChecked" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-save" style="float:right">批量保存</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
+		<a id="medicalRecord-btnImport" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">导入</a>
+		<div class="datagrid-btn-separator" style="float:right"></div>
+		<a id="medicalRecord-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
+	</div>
+	
+	<div id="dialogMedicalRecordEdit" class="easyui-dialog" title="病案" maximized="true"
+		collapsible="false" modal="true" buttons="#dialogMREdit-buttons">
+		<div id="mainTabs" class="easyui-tabs" fit="true" border="false">
+		    <!--
+		    -->
+		    <div title="患者基本信息" style="padding:10px;" href="view/tab1.html">
+		    </div>
+		    <div title="诊断信息" style="padding:10px;" href="view/tab2.html">
+		    </div>
+		    <div title="手术及操作信息" style="padding:10px;" href="view/tab3.html">
+		    </div>
+		    <div title="其他医疗信息" style="padding:10px;" href="view/tab4.html">
+		    </div>
+		    <div title="费用信息" style="padding:10px;" href="view/tab5.html">
+		    </div>
+		</div>
+	</div>
+	<div id="dialogMREdit-buttons" style="text-align: center;">
+		<a id="dialogMREdit-btnExport" href="#" class="easyui-linkbutton">导出</a>    
+		<a id="dialogMREdit-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">提交</a>
+    	<a id="dialogMREdit-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+	</div>
+	<div id="dialogImport" class="easyui-dialog" title="导入病案" closed="true" modal="true" iconCls="icon-save" style="width:500px;padding:10px 20px;background: #fafafa;">
+		<label for="importfile" style="width: 30%;float: left">病例文件（*.xml）：</label>
+		<input id="importfile" name="importfile" class="easyui-validatebox" type="file" required="true" style="width: 70%;float: left"/>
+	</div>
+	<form id="exportForm" name="exportForm" action="" method="post">
+		<input id="mrXMl" name="mrXMl" type="hidden" />
+	</form>
+<script type="text/javascript">
+function showState(value, row, index){
+	if(value&&value.length>0){
+		return "<span style='color:red'>验证出错</span>";
+	}else{
+		return "验证通过";
+	}
+}
+function medicalRecordOperater(value, row, index){
+	var html = [];
+	html.push($.operateButton('icon-edit','修改','updateMedicalRecord('+index+')'));
+	return html.join('');
+}
+function updateMedicalRecord(index){
+	var rows = $('#gridMedicalRecord').datagrid('getRows');
+	var row = rows[index];
+	MedicalRecordForm.loadData(row);
+	$('#dialogMedicalRecordEdit').data('dataIndex',index);
+	$('#dialogMedicalRecordEdit').dialog('setTitle','编辑病案').dialog('open'); 
+}
+function loadAllTabs(){
+    //遍历加载所有的tab
+    var tabs = $('#mainTabs').tabs().tabs("tabs");
+    for(var i=tabs.length-1;i>=0;i--){
+        $('#mainTabs').tabs("select",tabs[i].panel('options').title);
+    }
+}
+$(function(){
+	loadAllTabs();
+	$('#dialogMedicalRecordEdit').dialog('close');
+	
+	$('#gridMedicalRecord').datagrid({
+		//选中时设置记录中的check属性为true
+		onCheck : function(rowIndex,rowData){
+			rowData.check = true;
+		},
+		onUncheck : function(rowIndex,rowData){
+			rowData.check = false;
+		},
+		onCheckAll : function(rows){
+			for(var i=0,len=rows.length;i<len;i++){
+				rows[i].check = true;
+			}
+		},
+		onUncheckAll : function(rows){
+			for(var i=0,len=rows.length;i<len;i++){
+				rows[i].check = false;
+			}
+		},
+		//本地数据分页
+		loadFilter : function(data){
+			if ($.isArray(data)){	// is array
+				data = {
+					total: data.length,
+					rows: data
+				}
+			}
+			var dg = $(this);
+			var opts = dg.datagrid('options');
+			var pager = dg.datagrid('getPager');
+			pager.pagination({
+				onSelectPage:function(pageNum, pageSize){
+					opts.pageNumber = pageNum;
+					opts.pageSize = pageSize;
+					pager.pagination('refresh',{
+						pageNumber:pageNum,
+						pageSize:pageSize
+					});
+					dg.datagrid('loadData',data);
+					
+					//将check属性为true的行设为选中checked
+					var rows = dg.datagrid('getRows');
+					for(var i=0,len=rows.length;i<len;i++){
+						if(rows[i]['check']){
+							dg.datagrid('checkRow', i);
+						}
+					}
+				}
+			});
+			if (!data.all){
+				data.all = (data.rows);
+			}
+			var start = (opts.pageNumber-1)*parseInt(opts.pageSize);
+			var end = start + parseInt(opts.pageSize);
+			data.rows = (data.all.slice(start, end));
+			
+			//对未验证的记录进行验证
+			for(var i=0,len=data.rows.length;i<len;i++){
+				if(!data.rows[i].valid){
+					data.rows[i].valid = MedicalRecord.validate(data.rows[i]);
+				}
+			}
+			return data;
+		}
+	});
+	
+	$('#dialogMREdit-btnExport').click(function(){
+		$.messager.progress({
+			title:'导出病案',
+			msg:'请稍候...'
+		}); 
+		if(!MedicalRecordForm.validExpenses()){
+			$.messager.progress('close');
+			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			return false;
+		}
+		if (!MedicalRecordForm.validate()) {
+			$.messager.progress('close');
+			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			return false;
+		}
+		
+		var record = MedicalRecordForm.getData();
+		var xmlStr = exportMedicalRecordsToXML([record]);
+		
+		//alert(xmlStr);
+		$("#mrXMl").val(xmlStr);
+		$("#exportForm").attr("action", "medicalRecord/download.do");
+		$("#exportForm").submit();
+		$.messager.progress('close');
+	});
+	
+	$('#dialogMREdit-btnSubmit').click(function(){
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...'
+		}); 
+		if(!MedicalRecordForm.validExpenses()){
+			$.messager.progress('close');
+			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			return false;
+		}
+		if (!MedicalRecordForm.validate()) {
+			$.messager.progress('close');
+			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			return false;
+		}
+		//$.messager.progress('close');
+		/*
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...',
+			text:'正在提交数据...'
+		});
+		*/
+		var record = MedicalRecordForm.getData();
+		$.ajax({
+			type: "POST",
+			url : 'medicalRecord/save.do',
+			async : true,
+			contentType : 'application/json;utf-8',
+			dataType : 'json',
+			data : JSON.stringify([record]),
+			success : function(result){
+				if (result.success){  
+	            	$.messager.show({  
+	                    title: '提示',  
+	                    msg: result.message  
+	                }); 
+	                //TODO 删除表格中的已保存的记录
+	                var index = $('#dialogMedicalRecordEdit').data('dataIndex');
+	                if(index||index==0){
+	                	var opts = $('#gridMedicalRecord').datagrid('options');
+	                	var start = (opts.pageNumber-1)*parseInt(opts.pageSize) + index;
+	                	var data = $('#gridMedicalRecord').datagrid("getData");
+	            		var all = (data&&data.all) ? data.all : [];
+	                	for(var i=start,len=all.length;i<len-1;i++){
+	                		all[i]=all[i+1];
+	                	}
+	                	all.pop();
+		        		$('#gridMedicalRecord').datagrid('loadData',all);
+	                }
+	                
+	            	$('#dialogMedicalRecordEdit').dialog('close');
+	            } else {  
+	            	$.messager.alert('错误',result.message,'error');   
+	            }
+				$.messager.progress('close');
+			},
+			error : function (XMLHttpRequest, textStatus, errorThrown) {
+				$.messager.alert('错误','对不起，出错啦！','error');
+				$.messager.progress('close');
+			}
+		});
+	});
+	
+	$('#dialogMREdit-btnCancel').click(function(){
+		$('#dialogMedicalRecordEdit').dialog('close');
+	});
+	
+	$("#medicalRecord-btnAdd").click(function(){
+		MedicalRecordForm.clear();
+		$('#dialogMedicalRecordEdit').data('dataIndex',null)
+		$('#dialogMedicalRecordEdit').dialog('setTitle','新增病案').dialog('open'); 
+	});
+	
+	$("#medicalRecord-btnImport").click(function(){
+		$('#dialogImport').dialog('open');
+	});
+	$("#medicalRecord-btnSaveChecked").click(function(){
+		var data = $('#gridMedicalRecord').datagrid("getData");
+		var all = (data&&data.all) ? data.all : [];
+		
+		var checkedRows = [];
+		for(var i=0,len=all.length;i<len;i++){
+			if(all[i]['check']){
+				checkedRows.push(all[i]);
+			}
+		}
+		
+		if(checkedRows.length==0){
+			$.messager.alert('提示','请至少选择一条记录！','info');
+			return;
+		}
+		var valid = true;
+		for(var i=0,len=checkedRows.length;i<len;i++){
+			if(!checkedRows[i].valid){
+				checkedRows[i].valid = MedicalRecord.validate(checkedRows[i]);
+			}
+			if(checkedRows[i].valid.length>0){
+				valid = false;
+			}
+		}
+		if(!valid){
+			$.messager.alert('错误','部分记录未验证通过，请修改后再保存！','error');
+			/*
+			// 刷新表格当前页
+			$('#gridMedicalRecord').datagrid('loadData',data);
+			//将check属性为true的行设为选中checked TODO
+			var rows = dg.datagrid('getRows');
+			for(var i=0,len=rows.length;i<len;i++){
+				if(rows[i]['check']){
+					dg.datagrid('checkRow', i);
+				}
+			}
+			*/
+			return;
+		}
+		
+		$.messager.progress({
+			title:'保存病案',
+			msg:'请稍候...'
+		});
+		$.ajax({
+			type: "POST",
+			url : 'medicalRecord/save.do',
+			async : true,
+			contentType : 'application/json;utf-8',
+			dataType : 'json',
+			data : JSON.stringify(checkedRows),
+			success : function(result){
+				if (result.success){  
+	            	$.messager.show({  
+	                    title: '提示',  
+	                    msg: result.message  
+	                }); 
+	                //删除表格中的已保存的记录
+	            	var lastData = [];
+	        		for(var i=0,len=all.length;i<len;i++){
+	        			if(all[i]&&!all[i]['check']){
+	        				lastData.push(all[i]);
+	        			}
+	        		}
+	        		$('#gridMedicalRecord').datagrid('loadData',lastData);
+	            } else {  
+	            	$.messager.alert('错误',result.message,'error');   
+	            }
+				$.messager.progress('close');
+			},
+			error : function (XMLHttpRequest, textStatus, errorThrown) {
+				$.messager.alert('错误','对不起，出错啦！','error');
+				$.messager.progress('close');
+			}
+		});
+	});
+	
+	$('#dialogImport').dialog({
+		buttons:[{
+			iconCls:'icon-ok',
+			text: '确定',
+			handler: function(){
+				if(!$("#importfile").validatebox("isValid")){
+					return;
+				}
+				var path = $("#importfile").val();
+				
+				var recordList = parseMedicalRecordXML(path);
+				//var rows = $('#gridMedicalRecord').datagrid('getRows');
+				var data = $('#gridMedicalRecord').datagrid("getData");
+				var all = (data&&data.all) ? data.all : [];
+				//合并数据
+				$.merge(all, recordList);
+				$('#gridMedicalRecord').datagrid('loadData',all);
+				
+				$("#importfile").val("");
+				$('#dialogImport').dialog('close');
+			}
+		},{
+			iconCls:'icon-cancel',
+			text: '取消',
+			handler: function(){
+				$('#dialogImport').dialog('close');
+			}
+		}]
+	});
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+if(!window["dic"]){
+	window["dic"] = {};
+}
+dic.TNM_T = [
+{"value":"","text":""},
+{"value":"0","text":"0 - T0期"},
+{"value":"1","text":"1 - T1期"},
+{"value":"2","text":"2 - T2期"},
+{"value":"3","text":"3 - T3期"},
+{"value":"4","text":"4 - T4期"},
+{"value":"9","text":"9 - 无法评估原发肿瘤大小"}
+]

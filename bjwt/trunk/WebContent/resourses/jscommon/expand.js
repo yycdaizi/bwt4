@@ -360,6 +360,36 @@ Array.prototype.clone = function() {
 };
 
 /**
+ * 修改autocomplete的默认配置
+ */
+$.Autocompleter.defaults = {
+    inputClass: "ac_input",
+    resultsClass: "ac_results",
+    loadingClass: "ac_loading",
+    minChars: 1,
+    delay: 400,
+    matchCase: false,
+    matchSubset: true,
+    matchContains: false,
+    cacheLength: 30,
+    max: 30,
+    mustMatch: false,
+    extraParams: {},
+    selectFirst: true,
+    formatItem: function(row) { return row[0]; },
+    formatMatch: null,
+    autoFill: false,
+    width: 0,
+    multiple: false,
+    multipleSeparator: ",",
+    highlight: function(value, term) {
+        return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong style='color:#FF6100'>$1</strong>");
+    },
+    scroll: true,
+    scrollHeight: 180
+};
+
+/**
  * 计算年龄
  * @param birth 生日
  * @param dudate 计算日期

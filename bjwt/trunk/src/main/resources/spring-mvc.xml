@@ -12,7 +12,10 @@
 	<import resource="classpath:shiro-context.xml" />
 	<context:annotation-config />
 	<context:component-scan base-package="org.bjdrgs.bjwt"/>
-	
+	<mvc:interceptors>
+		<!-- 权限管理拦截器 -->
+    	<bean class="com.geloin.spring.interceptor.SystemInterceptor" />  
+	</mvc:interceptors>  
 	<mvc:annotation-driven validator="validator">
 		<mvc:message-converters>
 			<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>

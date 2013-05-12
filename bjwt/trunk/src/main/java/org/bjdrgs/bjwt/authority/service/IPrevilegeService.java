@@ -23,6 +23,10 @@ public interface IPrevilegeService {
 	 * @param id
 	 */
 	public void deleteById(Integer id);
-	
+	/**
+	 * 分页查询权限View
+	 * @param param
+	 * @return
+	 */
 	public Pagination<PrevilegeView> queryPrevilegeView(PrevilegeParam param);
 }

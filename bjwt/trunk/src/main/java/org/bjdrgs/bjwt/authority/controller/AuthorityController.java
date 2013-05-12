@@ -21,7 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/authority")
 public class AuthorityController {
 
-	@Resource(name = "authorityService")
+	@Resource(name = "AuthorityService")
 	private IAuthorityService authorityService;
 
 	@RequestMapping("/index")

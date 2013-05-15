@@ -52,9 +52,9 @@ public class MedicalRecord implements Serializable {
 	@Transient
 	private boolean editable;
 
-	@GenericGenerator(name = "increment", strategy = "increment")
 	@Id
-	@GeneratedValue(generator = "increment")
+	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_id", nullable = false, unique = true)
 	private Long id;
 

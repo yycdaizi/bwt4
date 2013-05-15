@@ -9,6 +9,7 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resourses/jslib/autocomplete/jquery.autocomplete.css" />
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/autocomplete/jquery.autocomplete.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/My97DatePicker/WdatePicker.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/blockui/jquery.blockUI.js"></script>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/xmloperator/XmlUtils.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/oop.js"></script>
@@ -63,16 +64,17 @@
 	<div data-options="region:'center',border:false">
 		<table id="gridMedicalRecord" class="easyui-datagrid" fit="true"
 			autoRowHeight="false" singleSelect="true" url="${pageContext.request.contextPath}/wt4/medicalRecord/page.do"
-			pagination="true" rownumbers="true" fitColumns="true" sortName="createTime" 
+			pagination="true" rownumbers="true" fitColumns="true" sortName="updateTime" 
 	        sortOrder="desc" toolbar="#gridMedicalRecord-toolbar">
 			<thead>
 				<tr>
 					<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
 					<th data-options="field:'AAA01',width:200">姓名</th>
-					<th data-options="field:'AAB02C',width:200">入院科别</th>
+					<th data-options="field:'AAB02C',width:200,formatter:medicalSubject_Formatter">入院科别</th>
 					<th data-options="field:'AAC01',width:200">出院时间</th>
-					<th data-options="field:'AEM01C',width:200">离院方式</th>
+					<th data-options="field:'AEM01C',width:200,formatter:liYuanFangShi_Formatter">离院方式</th>
 					<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+					<th	data-options="field:'updateTime',width:150,sortable:true">最后修改时间</th>
 					<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
 				</tr>
 			</thead>
@@ -106,6 +108,22 @@
    	<a id="dialogMREdit-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 </div>
 <script type="text/javascript">
+function medicalSubject_Formatter(value) {
+	var medicalSubject = dic.medicalSubject;
+	for ( var i = 0, len = medicalSubject.length; i < len; i++) {
+		if (medicalSubject[i].value == value)
+			return medicalSubject[i].text;
+	}
+	return value;
+}
+function liYuanFangShi_Formatter(value) {
+	var liYuanFangShi = dic.liYuanFangShi;
+	for ( var i = 0, len = liYuanFangShi.length; i < len; i++) {
+		if (liYuanFangShi[i].value == value)
+			return liYuanFangShi[i].text;
+	}
+	return value;
+}
 function medicalRecordOperater(value, row, index){
 	var html = [];
 	if(row.editable){
@@ -122,7 +140,7 @@ function updateMedicalRecord(index){
 function loadAllTabs(){
     //遍历加载所有的tab
     var tabs = $('#mainTabs').tabs().tabs("tabs");
-    for(var i=tabs.length-1;i>0;i--){
+    for(var i=tabs.length-1;i>=0;i--){
         $('#mainTabs').tabs("select",tabs[i].panel('options').title);
     }
 }
@@ -138,29 +156,34 @@ $(function(){
 	});
 	
 	$('#dialogMREdit-btnSubmit').click(function(){
-		$.messager.progress({
-			title:'保存病案',
-			msg:'请稍候...'
-			//text:'正在验证数据...'
-		}); 
+		$.blockUI({
+		    css: {
+    		    border: 'none', 
+    		    padding: '15px', 
+    		    backgroundColor: '#000', 
+    		    '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },
+            message:"<b>请稍后...</b>"
+        });
 		if(!MedicalRecordForm.validExpenses()){
-			$.messager.progress('close');
-			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			$.unblockUI({
+			    onUnblock: function(){
+			        $.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+		        }
+	        });
 			return false;
 		}
 		if (!MedicalRecordForm.validate()) {
-			$.messager.progress('close');
-			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			$.unblockUI({
+                onUnblock: function(){
+                    $.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+                }
+            });
 			return false;
 		}
-		//$.messager.progress('close');
-		/*
-		$.messager.progress({
-			title:'保存病案',
-			msg:'请稍候...',
-			text:'正在提交数据...'
-		});
-		*/
 		var record = MedicalRecordForm.getData();
 		$.ajax({
 			type: "POST",
@@ -170,21 +193,29 @@ $(function(){
 			dataType : 'json',
 			data : JSON.stringify([record]),
 			success : function(result){
-				if (result.success){  
-	            	$.messager.show({  
-	                    title: '提示',  
-	                    msg: result.message  
-	                }); 
+				if (result.success){
 	            	$('#gridMedicalRecord').datagrid('reload');
 	            	$('#dialogMedicalRecordEdit').dialog('close');
-	            } else {  
-	            	$.messager.alert('错误',result.message,'error');   
+	            	
+	            	$.unblockUI({
+                        onUnblock: function(){
+                            $.messager.show({title: '提示', msg: result.message}); 
+                        }
+                    });
+	            } else {
+	                $.unblockUI({
+                        onUnblock: function(){
+                            $.messager.alert('错误',result.message,'error');
+                        }
+                    });  
 	            }
-				$.messager.progress('close');
 			},
 			error : function (XMLHttpRequest, textStatus, errorThrown) {
-				$.messager.alert('错误','对不起，出错啦！','error');
-				$.messager.progress('close');
+				$.unblockUI({
+                    onUnblock: function(){
+                        $.messager.alert('错误','对不起，系统出错啦！','error');
+                    }
+                });
 			}
 		});
 	});
@@ -199,9 +230,22 @@ $(function(){
 	});
 	
 	$("#medicalRecord-btnExport").click(function(){
+		$.blockUI({
+            css: {
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },
+            message:"<b>正在导出，请稍后...</b>"
+        });
 		$("#formMedicalRecordQuery").form('load', $('#gridMedicalRecord').datagrid('options').queryParams);
 		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/export.do");
 		$("#formMedicalRecordQuery").submit();
+		$.unblockUI();
 	});
 });
 </script>

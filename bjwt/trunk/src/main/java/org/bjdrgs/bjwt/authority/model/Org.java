@@ -14,11 +14,13 @@ import javax.persistence.Transient;
 import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.codehaus.jackson.annotate.JsonBackReference;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
 @Table(name = "b_org")
 public class Org implements Serializable {

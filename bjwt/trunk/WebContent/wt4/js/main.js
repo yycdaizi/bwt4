@@ -5,6 +5,9 @@ var MedicalRecordForm = {};
 
 //加载病案数据
 MedicalRecordForm.loadData = function(data){
+    //将填充的原始数据缓存，以免部分表单中没有的字段丢失
+    $("#formTab1").data('MRdata', data)
+    
 	//转经科别 特殊处理（因为输入框需要的值是数组）
 	if(!data["AAD01C"]){
 		data["AAD01C"]='';
@@ -28,10 +31,11 @@ MedicalRecordForm.loadData = function(data){
 
 //获得表单数据
 MedicalRecordForm.getData = function(){
-	var obj = new MedicalRecord();
-	for (var tag in obj){
+	var obj = $("#formTab1").data('MRdata')||new MedicalRecord();
+	var fields = MedicalRecord.fields;
+	for (var tag in fields){
 		//只遍历自身属性
-		if(!obj.hasOwnProperty(tag)){
+		if(!fields.hasOwnProperty(tag)){
 			continue;
 		}
 		switch(tag){
@@ -63,6 +67,9 @@ MedicalRecordForm.getData = function(){
 
 //清除表单数据
 MedicalRecordForm.clear = function(){
+    //清除缓存到表单的数据
+    $("#formTab1").data('MRdata', null)
+    
 	//诊断情况
 	$('#ABDS').datagrid("loadData",[]);
 	//重症情况

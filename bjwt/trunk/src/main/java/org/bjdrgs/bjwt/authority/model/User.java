@@ -11,11 +11,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.bjdrgs.bjwt.authority.utils.ContentUtils;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
 @Table(name = "b_user")
 public class User implements Serializable {

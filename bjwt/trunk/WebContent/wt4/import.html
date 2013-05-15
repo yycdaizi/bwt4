@@ -13,6 +13,7 @@
     <script type="text/javascript" src="../resourses/jslib/easyui/jquery.easyui.min.js"></script>
     <script type="text/javascript" src="../resourses/jslib/easyui/locale/easyui-lang-zh_CN.js"></script>
     <script type="text/javascript" src="../resourses/jslib/autocomplete/jquery.autocomplete.js"></script>
+    <script type="text/javascript" src="../resourses/jslib/blockui/jquery.blockUI.js"></script>
     
     <script type="text/javascript" src="../resourses/jslib/My97DatePicker/WdatePicker.js"></script>
 	<script type="text/javascript" src="../resourses/jslib/date/Date.min.js"></script>
@@ -40,10 +41,9 @@
 				<th data-options="field:'check',checkbox:true"></th>
 				<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
 				<th data-options="field:'AAA01',width:200">姓名</th>
-				<th data-options="field:'AAB02C',width:200">入院科别</th>
+				<th data-options="field:'AAB02C',width:200,formatter:medicalSubject_Formatter">入院科别</th>
 				<th data-options="field:'AAC01',width:200">出院时间</th>
-				<th data-options="field:'AEM01C',width:200">离院方式</th>
-				<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
+				<th data-options="field:'AEM01C',width:200,formatter:liYuanFangShi_Formatter">离院方式</th>
 				<th data-options="field:'valid',width:80,formatter:showState">状态</th>
 				<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
 			</tr>
@@ -93,6 +93,22 @@ function showState(value, row, index){
 	}else{
 		return "验证通过";
 	}
+}
+function medicalSubject_Formatter(value) {
+    var medicalSubject = dic.medicalSubject;
+    for ( var i = 0, len = medicalSubject.length; i < len; i++) {
+        if (medicalSubject[i].value == value)
+            return medicalSubject[i].text;
+    }
+    return value;
+}
+function liYuanFangShi_Formatter(value) {
+    var liYuanFangShi = dic.liYuanFangShi;
+    for ( var i = 0, len = liYuanFangShi.length; i < len; i++) {
+        if (liYuanFangShi[i].value == value)
+            return liYuanFangShi[i].text;
+    }
+    return value;
 }
 function medicalRecordOperater(value, row, index){
 	var html = [];
@@ -183,18 +199,32 @@ $(function(){
 	});
 	
 	$('#dialogMREdit-btnExport').click(function(){
-		$.messager.progress({
-			title:'导出病案',
-			msg:'请稍候...'
-		}); 
+		$.blockUI({
+		    css: {
+    		    border: 'none', 
+    		    padding: '15px', 
+    		    backgroundColor: '#000', 
+    		    '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },
+            message:"<b>请稍后...</b>"
+        });
 		if(!MedicalRecordForm.validExpenses()){
-			$.messager.progress('close');
-			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			$.unblockUI({
+			    onUnblock: function(){
+			        $.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+		        }
+	        });
 			return false;
 		}
 		if (!MedicalRecordForm.validate()) {
-			$.messager.progress('close');
-			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			$.unblockUI({
+                onUnblock: function(){
+                    $.messager.alert('验证错误','输入数据有误，请更正后再导出！','error'); 
+                }
+            });
 			return false;
 		}
 		
@@ -205,32 +235,38 @@ $(function(){
 		$("#mrXMl").val(xmlStr);
 		$("#exportForm").attr("action", "medicalRecord/download.do");
 		$("#exportForm").submit();
-		$.messager.progress('close');
+		$.unblockUI();
 	});
 	
 	$('#dialogMREdit-btnSubmit').click(function(){
-		$.messager.progress({
-			title:'保存病案',
-			msg:'请稍候...'
-		}); 
+		$.blockUI({
+            css: {
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },
+            message:"<b>请稍后...</b>"
+        });
 		if(!MedicalRecordForm.validExpenses()){
-			$.messager.progress('close');
-			$.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+			$.unblockUI({
+                onUnblock: function(){
+                    $.messager.alert('验证错误','[总费用]应等于其他详细费用之和！','error');
+                }
+            });
 			return false;
 		}
 		if (!MedicalRecordForm.validate()) {
-			$.messager.progress('close');
-			$.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+			$.unblockUI({
+                onUnblock: function(){
+                    $.messager.alert('验证错误','输入数据有误，请更正后再提交！','error'); 
+                }
+            });
 			return false;
 		}
-		//$.messager.progress('close');
-		/*
-		$.messager.progress({
-			title:'保存病案',
-			msg:'请稍候...',
-			text:'正在提交数据...'
-		});
-		*/
 		var record = MedicalRecordForm.getData();
 		$.ajax({
 			type: "POST",
@@ -241,10 +277,6 @@ $(function(){
 			data : JSON.stringify([record]),
 			success : function(result){
 				if (result.success){  
-	            	$.messager.show({  
-	                    title: '提示',  
-	                    msg: result.message  
-	                }); 
 	                //TODO 删除表格中的已保存的记录
 	                var index = $('#dialogMedicalRecordEdit').data('dataIndex');
 	                if(index||index==0){
@@ -258,16 +290,27 @@ $(function(){
 	                	all.pop();
 		        		$('#gridMedicalRecord').datagrid('loadData',all);
 	                }
-	                
 	            	$('#dialogMedicalRecordEdit').dialog('close');
-	            } else {  
-	            	$.messager.alert('错误',result.message,'error');   
+	            	
+	            	$.unblockUI({
+                        onUnblock: function(){
+                            $.messager.show({title: '提示', msg: result.message}); 
+                        }
+                    });
+	            } else {
+	                $.unblockUI({
+                        onUnblock: function(){
+                            $.messager.alert('错误',result.message,'error');
+                        }
+                    });  
 	            }
-				$.messager.progress('close');
 			},
 			error : function (XMLHttpRequest, textStatus, errorThrown) {
-				$.messager.alert('错误','对不起，出错啦！','error');
-				$.messager.progress('close');
+				$.unblockUI({
+                    onUnblock: function(){
+                        $.messager.alert('错误','对不起，系统出错啦！','error');
+                    }
+                }); 
 			}
 		});
 	});
@@ -325,10 +368,18 @@ $(function(){
 			return;
 		}
 		
-		$.messager.progress({
-			title:'保存病案',
-			msg:'请稍候...'
-		});
+		$.blockUI({
+            css: {
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },
+            message:"<b>请稍后...</b>"
+        });
 		$.ajax({
 			type: "POST",
 			url : 'medicalRecord/save.do',
@@ -337,11 +388,7 @@ $(function(){
 			dataType : 'json',
 			data : JSON.stringify(checkedRows),
 			success : function(result){
-				if (result.success){  
-	            	$.messager.show({  
-	                    title: '提示',  
-	                    msg: result.message  
-	                }); 
+				if (result.success){
 	                //删除表格中的已保存的记录
 	            	var lastData = [];
 	        		for(var i=0,len=all.length;i<len;i++){
@@ -350,14 +397,26 @@ $(function(){
 	        			}
 	        		}
 	        		$('#gridMedicalRecord').datagrid('loadData',lastData);
-	            } else {  
-	            	$.messager.alert('错误',result.message,'error');   
-	            }
-				$.messager.progress('close');
+	        		
+	                $.unblockUI({
+                        onUnblock: function(){
+                            $.messager.show({title: '提示', msg: result.message}); 
+                        }
+                    });
+                } else {
+                    $.unblockUI({
+                        onUnblock: function(){
+                            $.messager.alert('错误',result.message,'error');
+                        }
+                    });  
+                }
 			},
 			error : function (XMLHttpRequest, textStatus, errorThrown) {
-				$.messager.alert('错误','对不起，出错啦！','error');
-				$.messager.progress('close');
+				$.unblockUI({
+                    onUnblock: function(){
+                        $.messager.alert('错误','对不起，系统出错啦！','error');
+                    }
+                }); 
 			}
 		});
 	});
@@ -367,6 +426,18 @@ $(function(){
 			iconCls:'icon-ok',
 			text: '确定',
 			handler: function(){
+			    $.blockUI({
+                    css: {
+                        border: 'none', 
+                        padding: '15px', 
+                        backgroundColor: '#000', 
+                        '-webkit-border-radius': '10px', 
+                        '-moz-border-radius': '10px', 
+                        opacity: .5, 
+                        color: '#fff' 
+                    },
+                    message:"<b>正在导入，请稍后...</b>"
+                });
 				if(!$("#importfile").validatebox("isValid")){
 					return;
 				}
@@ -382,6 +453,7 @@ $(function(){
 				
 				$("#importfile").val("");
 				$('#dialogImport').dialog('close');
+				$.unblockUI();
 			}
 		},{
 			iconCls:'icon-cancel',

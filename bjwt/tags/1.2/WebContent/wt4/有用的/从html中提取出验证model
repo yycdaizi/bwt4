@@ -1,0 +1,43 @@
+<script type="text/javascript" src="../../resourses/jslib/easyui/jquery-1.8.0.min.js"></script>
+<script type="text/javascript">
+$(function(){
+	var html = [];
+	$("input").each(function(){
+		var field = "";
+		field += ($(this).attr("name")+":{validators:[");
+		//str.push($(this).attr("name"));
+		var str = [];
+		if($(this).attr("required")){
+			str.push('"required"');
+		}
+		if($(this).attr("validType")){
+			str.push('"'+$(this).attr("validType")+'"');
+		}
+		if($(this).hasClass("my97-date")){
+			str.push('"date[\'yyyy-MM-dd\']"');
+		}
+		if($(this).hasClass("my97-datetime-h")||$(this).hasClass("my97-datetime")){
+			str.push('"datetime[\'yyyy-MM-dd HH:mm:ss\']"');
+		}
+		if($(this).hasClass("easyui-numberbox")){
+			var precision = $(this).attr("precision")||0;
+			if(precision == 0){
+				str.push('"integer"');
+			}else{
+				str.push('"number['+precision+']"');
+			}
+		}
+		if($(this).attr("min")){
+			str.push('"min['+$(this).attr("min")+']"');
+		}
+		if($(this).attr("max")){
+			str.push('"max['+$(this).attr("max")+']"');
+		}
+		//console.log(str.join());
+		field += str.join();
+		field += "]}"
+		html.push(field);
+	});
+	console.log("{"+html.join()+"}");
+});
+</script>

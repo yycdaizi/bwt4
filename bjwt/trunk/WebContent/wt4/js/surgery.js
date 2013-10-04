@@ -11,15 +11,22 @@ SurgeryPanel.eventhandles = {
 			var surgerys = $(this).data("surgerys");
 			var cur = $(this).data("current");
 			
-			var curTitle = SurgeryPanel.buildTitle(cur);
-			
 			if(cur!=index){
-				if($(this).tabs('exists',curTitle)){
-					SurgeryPanel.validateSurgery(curTitle);
-				}
-				//保存当前表单中的值
-				if(surgerys[cur]){
-					SurgeryPanel.saveCurrentSurgery();
+				if(cur !== -1){
+					var curTitle = SurgeryPanel.buildTitle(cur);
+					
+					if($(this).tabs('exists',curTitle)){
+						SurgeryPanel.validateSurgery(curTitle);
+					}
+					//保存当前表单中的值
+					if(surgerys[cur]){
+						SurgeryPanel.saveCurrentSurgery();
+					}
+				}else{
+					$('#surgery').show();
+					$('#surgeryPrompt').hide();
+					//防止第一次出现时，表格宽度为0
+					$('#ACA09S').initGrid();
 				}
 				//重新设置表单中的值
 				if(!surgerys[index]){
@@ -32,20 +39,16 @@ SurgeryPanel.eventhandles = {
 			SurgeryPanel.validateSurgery(title);
 		},
 		onClose:function(title){
-			tabs = $('#surgerys').tabs("tabs");
+			var tabs = $('#surgerys').tabs("tabs");
 			if(tabs.length==0){
-				var surgerys = new Array();
-				surgerys[0] = new Surgery();
-				$('#surgerys').data("surgerys",surgerys);
-				$('#surgerys').data("current",0);
-				SurgeryPanel.addSurgeryTab(0);
-				SurgeryPanel.loadSurgery(surgerys[0]);
+				$('#surgerys').data("surgerys", []);
+				$('#surgerys').data("current", -1);
+				$('#surgery').hide();
+				$('#surgeryPrompt').show();
 			}else{
-				//取得index
 				var index = SurgeryPanel.divIndex(title);
 				var surgerys = $('#surgerys').data("surgerys");
 				surgerys[index]=undefined;
-				$('#surgerys').data("surgerys",surgerys);
 			}
 		},
 		onBeforeClose:function(title){
@@ -54,23 +57,22 @@ SurgeryPanel.eventhandles = {
 };
 
 SurgeryPanel.init = function(){
-	//保存当前病案记录的手术情况信息
-	var surgerys = new Array();
-	surgerys[0] = new Surgery();
-	$('#surgerys').data("surgerys", surgerys);
+	$('#surgery').hide();
+	$('#surgeryPrompt').show();
+	
+	//缓存手术情况的信息
+	$('#surgerys').data("surgerys", []);
 	//保存当前页面上【手术信息】tab显示的手术信息记录的编号
-	$('#surgerys').data("current",0);
+	$('#surgerys').data("current", -1);
 	var options = $.extend({
 		tools:[{
 			iconCls:'icon-add',
 			handler: function(){
 				var surgerys = $('#surgerys').data("surgerys");
-				//在当前病案记录中增加一条手术信息记录
+				//增加一条手术信息记录
 				surgerys[surgerys.length] = new Surgery();
 				//增加一个tab
 				SurgeryPanel.addSurgeryTab(surgerys.length-1);
-				
-				$('#surgerys').data("surgerys",surgerys);
 			}
 		}]
 	},SurgeryPanel.eventhandles);
@@ -113,8 +115,16 @@ SurgeryPanel.addSurgeryTab = function(index){
 SurgeryPanel.saveCurrentSurgery = function(){
 	var surgerys = $('#surgerys').data("surgerys");
 	var cur = $('#surgerys').data("current");
+	if(cur === -1){
+		return;
+	}
 	var obj = surgerys[cur];
-	for(var tag in obj){
+	var fields = Surgery.fields;
+	for(var tag in fields){
+		//只遍历自身属性
+		if(!fields.hasOwnProperty(tag)){
+			continue;
+		}
 		if('ACA09S' == tag){
 			obj[tag]= $("#"+tag).datagrid('getData').rows;
 		}else{
@@ -136,33 +146,34 @@ SurgeryPanel.loadSurgery = function(surgery){
 //验证tab页
 SurgeryPanel.validateSurgery = function(title){
 	var validform = $("#surgery").form('validate');
-	var validgrid = $("#ACA09S").datagrid('validateData');//validateGrid('ACA09S');
+	var validgrid = $("#ACA09S").datagrid('validateData');
 	var valid = validform&&validgrid;
 	
-	//var title = SurgeryPanel.buildTitle(index);
-	//var tabs = $('#surgerys');
 	if(valid){
 		$('#surgerys').tabs('updateIcon',{title:title,iconCls:''});
-		//updateTabIcon(tabs,title,'');
 	}else{
 		$('#surgerys').tabs('updateIcon',{title:title,iconCls:'icon-warn'});
-		//updateTabIcon(tabs,title,'icon-warn');
 	}
-	
-//	var surgerys = $('#surgerys').data("surgerys");
-//	surgerys[index].validate = valid;
-//	$('#surgerys').data("surgerys",surgerys);
 	return valid;
 };
 
 //验证所有手术信息
 SurgeryPanel.validate = function(){
 	var valid = true;
-	var tabs = $('#surgerys').tabs("tabs");
-	for(var i=tabs.length-1;i>=0;i--){
-		var title = tabs[i].panel('options').title;
-		$('#surgerys').tabs("select",title);
-		valid = valid && SurgeryPanel.validateSurgery(title);
+//	var tabs = $('#surgerys').tabs("tabs");
+//	for(var i=tabs.length-1;i>=0;i--){
+//		var title = tabs[i].panel('options').title;
+//		$('#surgerys').tabs("select",title);
+//		valid = valid && SurgeryPanel.validateSurgery(title);
+//	}
+	SurgeryPanel.saveCurrentSurgery();
+	//SurgeryPanel.validateSurgery(title);
+	var surgerys = $('#surgerys').data("surgerys");
+	for(var i=0,len=surgerys.length;i<len;i++){
+		if(surgerys[i]&&Surgery.validate(surgerys[i]).length>0){
+			valid = false;
+			break;
+		}
 	}
 	return valid;
 };
@@ -180,20 +191,22 @@ SurgeryPanel.loadData = function(surArray){
 			SurgeryPanel.addSurgeryTab(j);
 		}
 	}
-	//若为空，则自增1
-	tabs = $('#surgerys').tabs("tabs");
-	if(tabs.length==0){
-		surgerys = new Array();
-		surgerys[0] = new Surgery();
-		SurgeryPanel.addSurgeryTab(0);
-	}
-	//初始化，把第一个tab设为当前页，保存surgerys和current
-	tabs = $('#surgerys').tabs("tabs");
-	var title = tabs[0].panel('options').title;
-	$('#surgerys').tabs("select",title);
-	SurgeryPanel.loadSurgery(surgerys[0]);
 	$('#surgerys').data("surgerys",surgerys);
-	$('#surgerys').data("current",SurgeryPanel.divIndex(title));
+	if(tabs.length==0){
+		$('#surgerys').data("surgerys",[]);
+		$('#surgerys').data("current",-1);
+		$('#surgery').hide();
+		$('#surgeryPrompt').show();
+	}else{
+		//初始化，把第一个tab设为当前页，保存surgerys和current
+		tabs = $('#surgerys').tabs("tabs");
+		var title = tabs[0].panel('options').title;
+		$('#surgerys').tabs("select",title);
+		SurgeryPanel.loadSurgery(surgerys[0]);
+		$('#surgerys').data("current",SurgeryPanel.divIndex(title));
+		$('#surgery').show();
+		$('#surgeryPrompt').hide();
+	}
 	SurgeryPanel.enableEvents();
 };
 //获得所有手术信息数据
@@ -208,12 +221,10 @@ SurgeryPanel.clear = function(){
 	for(var i=tabs.length-1;i>=0;i--){
 		$('#surgerys').tabs("close",tabs[i].panel('options').title);
 	}
-	var surgerys = new Array();
-	surgerys[0] = new Surgery();
-	SurgeryPanel.addSurgeryTab(0);
 	//保存surgerys和current
-	SurgeryPanel.loadSurgery(surgerys[0]);
-	$('#surgerys').data("surgerys",surgerys);
-	$('#surgerys').data("current",0);
+	$('#surgerys').data("surgerys",[]);
+	$('#surgerys').data("current",-1);
+	$('#surgery').hide();
+	$('#surgeryPrompt').show();
 	SurgeryPanel.enableEvents();
 };

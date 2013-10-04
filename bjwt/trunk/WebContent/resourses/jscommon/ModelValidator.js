@@ -9,10 +9,22 @@
 					continue;
 				}
 				var defaultValue = fields[key].defaultValue;
-				if(typeof(defaultValue) === 'undefined'){
-					defaultValue = null;
+				switch($.type(defaultValue)){
+				    case 'undefined':
+				        defaultValue = null;
+				        break;
+				    case 'boolean':
+				    case 'number':
+				    case 'string':
+				    case 'function':
+				        this[key] = defaultValue;
+				        break;
+				    case 'array':
+                        this[key] = $.extend(true, new Array(), defaultValue);
+                        break;
+				    default:
+				        this[key] = $.extend(true, {}, defaultValue);
 				}
-				this[key] = defaultValue;
 			}
 		},
 		/**

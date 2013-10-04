@@ -2,7 +2,7 @@ if(!window["dic"]){
 	window["dic"] = {};
 }
 //指标ICD_9，手术操作编码v5
-var dic["ICD9"]=[
+dic["ICD9"]=[
 	{code:"00.01001",name:"头部血管治疗性超声",pym:"tbxgzlxcs"},
 	{code:"00.01002",name:"颈部血管治疗性超声",pym:"jbxgzlxcs"},
 	{code:"00.02001",name:"心脏治疗性超声",pym:"xzzlxcs"},

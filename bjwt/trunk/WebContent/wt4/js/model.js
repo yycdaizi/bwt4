@@ -130,7 +130,7 @@ var MedicalRecord = $.ModelValidator.definedModel({
 		}]
 	},
 	ACAS : {
-		defaultValue : [new Surgery()],
+		defaultValue : [],
 		validators : [{
 			rule : "func",
 			param : [function(field, value, element, param){

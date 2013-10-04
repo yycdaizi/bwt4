@@ -2,7 +2,7 @@ if(!window["dic"]){
 	window["dic"] = {};
 }
 //指标ICD_10 v5
-var dic.ICD10=[
+dic.ICD10=[
 	{code:"A00.001",name:"古典生物型霍乱",pym:"gdswxhl"},
 	{code:"A00.101",name:"埃尔托生物型霍乱",pym:"aetswxhl"},
 	{code:"A00.901",name:"霍乱",pym:"hl"},

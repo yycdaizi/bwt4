@@ -11,7 +11,7 @@
 				var defaultValue = fields[key].defaultValue;
 				switch($.type(defaultValue)){
 				    case 'undefined':
-				        defaultValue = null;
+				    	this[key] = null;
 				        break;
 				    case 'boolean':
 				    case 'number':

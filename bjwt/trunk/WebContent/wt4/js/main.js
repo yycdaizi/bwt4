@@ -68,7 +68,7 @@ MedicalRecordForm.getData = function(){
 //清除表单数据
 MedicalRecordForm.clear = function(){
     //清除缓存到表单的数据
-    $("#mainTabs").data('MRdata', null)
+    $("#mainTabs").data('MRdata', null);
     
 	//诊断情况
 	$('#ABDS').datagrid("loadData",[]);

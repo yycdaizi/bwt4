@@ -242,6 +242,7 @@ CREATE TABLE `b_wt4` (
   `disease_code1` varchar(50) character set utf8 collate utf8_bin default NULL,
   `goout_diagnose_name` varchar(100) character set utf8 collate utf8_bin default NULL,
   `in_status` varchar(20) character set utf8 collate utf8_bin default NULL,
+  `state` varchar(1) not null default '1',
   PRIMARY KEY  (`b_wt4_id`),
   KEY `idx_luo_insurance_code` (`insurance_code`),
   KEY `index_luo_task_id` (`s_task_orglist_id`),

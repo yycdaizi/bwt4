@@ -11,13 +11,9 @@ import java.util.List;
 import javax.annotation.Resource;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.subject.Subject;
 import org.bjdrgs.bjwt.authority.model.User;
-import org.bjdrgs.bjwt.authority.service.IUserService;
-import org.bjdrgs.bjwt.authority.utils.Constants;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
-import org.bjdrgs.bjwt.wt4.Wt4Constants;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.dao.IDiagnoseDao;
 import org.bjdrgs.bjwt.wt4.dao.IICUDao;
@@ -195,7 +191,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 				}
 			}
 		}
-		//TODO 去除空节点
+		//去除空节点
 		removeEmptyNode(document.getRootElement());
 		return document;
 	}
@@ -237,4 +233,12 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 		return medicalRecordDao.queryAll(param);
 	}
 
+	@Override
+	public void delete(MedicalRecord entity) {
+		diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
+		this.deleteSurgerysByMedicalRecordId(entity.getId());
+		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
+		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
+		medicalRecordDao.delete(entity);
+	}
 }

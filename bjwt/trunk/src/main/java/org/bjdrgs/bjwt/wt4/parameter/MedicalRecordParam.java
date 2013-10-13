@@ -20,6 +20,8 @@ public class MedicalRecordParam extends GridParam{
 	
 	//离院方式
 	private String eq_AEM01C;
+	//病案状态
+	private String eq_state;
 
 	private Integer orgId;
 	
@@ -83,5 +85,19 @@ public class MedicalRecordParam extends GridParam{
 	 */
 	public void setOrgId(Integer orgId) {
 		this.orgId = orgId;
+	}
+
+	/**
+	 * @return the eq_state
+	 */
+	public String getEq_state() {
+		return eq_state;
+	}
+
+	/**
+	 * @param eq_state the eq_state to set
+	 */
+	public void setEq_state(String eq_state) {
+		this.eq_state = eq_state;
 	}
 }

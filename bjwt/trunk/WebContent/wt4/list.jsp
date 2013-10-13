@@ -23,7 +23,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false" style="overflow: hidden;height:150px;" title="病案查询">
+	<div data-options="region:'north',border:false" style="overflow: hidden;height:180px;" title="病案查询">
 		<form id="formMedicalRecordQuery" method="post" class="fform">
 			<table width="100%">
 				<colgroup>
@@ -53,6 +53,11 @@
 					<td align="right"><label for="le_AAC01">出院时间早于：</label></td>
 					<td><input name="le_AAC01" type="text" onclick="WdatePicker();"></td>
 				</tr>
+				<tr>
+					<td align="right"><label for="eq_state">病案状态：</label></td>
+					<td><input id="eq_state" name="eq_state" type="text" class="easyui-combobox" editable="false" panelHeight="auto" 
+							  valueField="code" textField="text" url="../dicdata/dicType/getDicData.do?type=MRSTATE"/></td>
+				</tr>
 				</tbody>
 			</table>
 			<div align="center">
@@ -75,6 +80,7 @@
 					<th data-options="field:'AEM01C',width:200,formatter:liYuanFangShi_Formatter">离院方式</th>
 					<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
 					<th	data-options="field:'updateTime',width:150,sortable:true">最后修改时间</th>
+					<th	data-options="field:'state',width:100,formatter:stateFormatter">状态</th>
 					<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
 				</tr>
 			</thead>
@@ -86,8 +92,8 @@
 	</div>
 </div>
 	
-<div id="dialogMedicalRecordEdit" class="easyui-dialog" title="病案" maximized="true"
-	collapsible="false" modal="true" buttons="#dialogMREdit-buttons">
+<div id="dialogMedicalRecordEdit" class="easyui-dialog" title="病案" maximized="true" closable='false'
+	collapsible="false" modal="true" buttons="#dialogMREdit-buttons" >
 	<div id="mainTabs" class="easyui-tabs" fit="true" border="false">
 	    <div title="患者基本信息" style="padding:10px;" href="view/tab1.html">
 	    </div>
@@ -106,8 +112,15 @@
 <div id="dialogMREdit-buttons" style="text-align: center;">
 	<a id="dialogMREdit-btnSubmit" href="#" class="easyui-linkbutton" iconCls="icon-ok">确定</a>    
    	<a id="dialogMREdit-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
+   	<span id="draftSaveInfo"></span>
 </div>
 <script type="text/javascript">
+var Static = {
+		STATE_DRAFT : "0",
+		STATE_COMPLETE : "1",
+		SAVE_DRAFT_INTERVAL: 300
+};
+
 function medicalSubject_Formatter(value) {
 	var medicalSubject = dic.medicalSubject;
 	for ( var i = 0, len = medicalSubject.length; i < len; i++) {
@@ -124,6 +137,15 @@ function liYuanFangShi_Formatter(value) {
 	}
 	return value;
 }
+function stateFormatter(value){
+	var stateDic = $('#eq_state').combobox('getData');
+	for(var i=0,len=stateDic.length;i<len;i++){
+		if(value==stateDic[i]['code']){
+			return stateDic[i]['text'];
+		}
+	}
+	return value;
+}
 function medicalRecordOperater(value, row, index){
 	var html = [];
 	if(row.editable){
@@ -136,6 +158,12 @@ function updateMedicalRecord(index){
 	var row = rows[index];
 	MedicalRecordForm.loadData(row);
 	$('#dialogMedicalRecordEdit').dialog('setTitle','修改病案').dialog('open'); 
+	
+	if(row.state==Static.STATE_DRAFT){
+		//开始定时器，定时保存草稿
+		$('#draftSaveInfo').html('草稿已保存，<span id="Countdown"></span>后将再次自动保存');
+		Countdown.init(Static.SAVE_DRAFT_INTERVAL).start();
+	}
 }
 function loadAllTabs(){
     //遍历加载所有的tab
@@ -144,6 +172,121 @@ function loadAllTabs(){
         $('#mainTabs').tabs("select",tabs[i].panel('options').title);
     }
 }
+//TODO 保存完草稿，用户点取消的时候，应询问是否清除草稿
+//定义一个倒计时器，用来做保存草稿的倒计时
+var Countdown = {
+		startTime: 0,
+		remainingTime: 0,
+		timer: null,
+		init: function(startTime){
+			this.startTime = startTime;
+			this.remainingTime = startTime;
+			this.timer = null;
+			this.display();
+			return this;
+		},
+		start: function(){
+			this.timer = window.setInterval('Countdown.countDown()', 1000);
+		},
+		restart: function(){
+			this.stop();
+			this.remainingTime = this.startTime;
+			this.display();
+			this.start();
+		},
+		stop: function(){
+			if(this.timer){
+				window.clearInterval(this.timer);
+				this.timer = null;
+			}
+		},
+		countDown: function(){
+			if(this.remainingTime>0){
+				this.remainingTime--;
+				this.display();
+			}
+			if(this.remainingTime==0){
+				window.clearInterval(this.timer);
+				this.timer = null;
+				this.onEnded();
+			}
+		},
+		display: function(){
+			var minutes = parseInt(this.remainingTime/60);
+			var seconds = this.remainingTime - minutes*60;
+			
+			var html = minutes + '分' + (seconds<10?('0'+seconds):seconds) + '秒';
+			this.toDisplay(html);
+		},
+		toDisplay: function(html){},
+		onEnded: function(){}
+};
+Countdown.toDisplay = function(html){
+	$('#Countdown').html(html);
+};
+Countdown.onEnded = function(){
+	saveDraft();
+};
+
+function isHasData(obj){
+	for(var p in obj){
+		if(!obj.hasOwnProperty(p)){
+			continue;
+		}
+		var val = obj[p];
+		//判断是否是undefined,null,''。等号个数不能改
+		if(val==null||val===''){
+			continue;
+		}else if($.type(val)==='array'){
+			for(var i=0,len=val.length;i<len;i++){
+				if(isHasData(val[i])){
+					return true;
+				}
+			}
+		}else if($.type(val)==='object'){
+			if(isHasData(val)){
+				return true;
+			}
+		}else{
+			return true;
+		}
+	}
+	return false;
+};
+
+function saveDraft(){
+	var record = MedicalRecordForm.getData();
+	//判断是否有数据
+	if(!isHasData(record)){
+    	Countdown.restart();
+		return;
+	}
+	$('#draftSaveInfo').html('正在保存草稿...');
+	$.ajax({
+		type: "POST",
+		url : '${pageContext.request.contextPath}/wt4/medicalRecord/saveDraft.do',
+		async : true,
+		contentType : 'application/json;utf-8',
+		dataType : 'json',
+		data : JSON.stringify(record),
+		success : function(result){
+			if (result.success){
+            	var newId = result.data;
+            	$('#id').val(newId);
+            	$('#state').val(Static.STATE_DRAFT);
+            	
+            	$('#draftSaveInfo').html('草稿已保存，<span id="Countdown"></span>后将再次自动保存');
+            	Countdown.restart();
+            } else {
+            	$('#draftSaveInfo').html('对不起，系统无法自动保存草稿');
+            }
+		},
+		error : function (XMLHttpRequest, textStatus, errorThrown) {
+			$('#draftSaveInfo').html('对不起，系统无法自动保存草稿');
+		}
+	});
+}
+
 $(function(){
 	loadAllTabs();
 	$('#dialogMedicalRecordEdit').dialog('close');
@@ -184,6 +327,10 @@ $(function(){
             });
 			return false;
 		}
+		
+		//先停止保存草稿的定时器，避免发送了保存请求后又有保存草稿的请求发出
+		Countdown.stop();
+		
 		var record = MedicalRecordForm.getData();
 		$.ajax({
 			type: "POST",
@@ -221,12 +368,43 @@ $(function(){
 	});
 	
 	$('#dialogMREdit-btnCancel').click(function(){
-		$('#dialogMedicalRecordEdit').dialog('close');
+		Countdown.stop();
+		var id = $('#id').val();
+		var state = $('#state').val();
+		if(id && state==Static.STATE_DRAFT){
+			$.messager.confirm('提示', '是否要删除当前的表单草稿？', function(r){  
+		        if (r){
+					$.post('${pageContext.request.contextPath}/wt4/medicalRecord/delete.do',{id:id},function(result){
+						if (result.success){
+							$.messager.show({  
+		                        title: '提示',  
+		                        msg: '草稿删除成功！'
+		                    }); 
+		                } else {  
+		                    $.messager.show({  
+		                        title: '错误',  
+		                        msg: result.message  
+		                    });  
+		                }
+						$('#gridMedicalRecord').datagrid('reload');
+						$('#dialogMedicalRecordEdit').dialog('close');
+					},'json');
+				}else{
+					$('#gridMedicalRecord').datagrid('reload');
+			        $('#dialogMedicalRecordEdit').dialog('close');
+				}
+		    });
+		}else{
+			$('#dialogMedicalRecordEdit').dialog('close');
+		}
 	});
 	
 	$("#medicalRecord-btnAdd").click(function(){
 		MedicalRecordForm.clear();
 		$('#dialogMedicalRecordEdit').dialog('setTitle','新增病案').dialog('open'); 
+		//开始定时器，定时保存草稿
+		$('#draftSaveInfo').html('<span id="Countdown"></span>后将自动保存草稿');
+		Countdown.init(Static.SAVE_DRAFT_INTERVAL).start();
 	});
 	
 	$("#medicalRecord-btnExport").click(function(){

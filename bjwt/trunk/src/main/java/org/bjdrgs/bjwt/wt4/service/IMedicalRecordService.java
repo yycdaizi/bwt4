@@ -25,4 +25,6 @@ public interface IMedicalRecordService {
 	String exportToXML(List<MedicalRecord> entities) throws Exception;
 	
 	List<MedicalRecord> queryAll(MedicalRecordParam param);
+
+	void delete(MedicalRecord entity);
 }

@@ -48,9 +48,16 @@ public class MedicalRecord implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	public static final String STATE_DRAFT = "0";
+	public static final String STATE_COMPLETE = "1";
+	
 	//是否可编辑
 	@Transient
 	private boolean editable;
+	
+	@Column(name = "state")
+	private String state;
 
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "native")
@@ -180,7 +187,7 @@ public class MedicalRecord implements Serializable {
 	
 	/** 性别代码 */
 	@Column(name = "GENDER")
-	@JsonProperty private String AAA02C;
+	@JsonProperty private Integer AAA02C;
 	
 	/** 出生日期 */
 	@JsonDeserialize(using=DateDeserializer.class)
@@ -216,7 +223,7 @@ public class MedicalRecord implements Serializable {
 	
 	/** 婚姻状况代码 */
 	@Column(name = "MARRAGE")
-	@JsonProperty private String AAA08C;
+	@JsonProperty private Integer AAA08C;
 	
 	/** 出生地省（区、市） */
 	@Column(name = "VAR2")
@@ -324,7 +331,7 @@ public class MedicalRecord implements Serializable {
 	
 	/** 医疗付费方式代码 */
 	@Column(name = "PAYMENT_METHODS")
-	@JsonProperty private String AAA26C;
+	@JsonProperty private Integer AAA26C;
 	
 	/** 医疗保险手册(卡)号(健康卡号) */
 	@Column(name = "INSURANCE_CODE")
@@ -990,11 +997,11 @@ public class MedicalRecord implements Serializable {
 		AAA01 = aAA01;
 	}
 
-	@JsonIgnore public String getAAA02C() {
+	@JsonIgnore public Integer getAAA02C() {
 		return AAA02C;
 	}
 
-	@JsonIgnore public void setAAA02C(String aAA02C) {
+	@JsonIgnore public void setAAA02C(Integer aAA02C) {
 		AAA02C = aAA02C;
 	}
 
@@ -1054,11 +1061,11 @@ public class MedicalRecord implements Serializable {
 		AAA07 = aAA07;
 	}
 
-	@JsonIgnore public String getAAA08C() {
+	@JsonIgnore public Integer getAAA08C() {
 		return AAA08C;
 	}
 
-	@JsonIgnore public void setAAA08C(String aAA08C) {
+	@JsonIgnore public void setAAA08C(Integer aAA08C) {
 		AAA08C = aAA08C;
 	}
 
@@ -1270,11 +1277,11 @@ public class MedicalRecord implements Serializable {
 		AAA25 = aAA25;
 	}
 
-	@JsonIgnore public String getAAA26C() {
+	@JsonIgnore public Integer getAAA26C() {
 		return AAA26C;
 	}
 
-	@JsonIgnore public void setAAA26C(String aAA26C) {
+	@JsonIgnore public void setAAA26C(Integer aAA26C) {
 		AAA26C = aAA26C;
 	}
 
@@ -2146,5 +2153,19 @@ public class MedicalRecord implements Serializable {
 	 */
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public String getState() {
+		return state;
+	}
+
+	/**
+	 * @param state the state to set
+	 */
+	public void setState(String state) {
+		this.state = state;
 	}
 }

@@ -82,7 +82,7 @@
 	                        msg: result.message  
 	                    });  
 	                }
-				});
+				},'json');
 			}  
         });
 	}

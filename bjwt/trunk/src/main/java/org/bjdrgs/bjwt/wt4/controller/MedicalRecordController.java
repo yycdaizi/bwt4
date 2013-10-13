@@ -72,9 +72,42 @@ public class MedicalRecordController {
 	@ResponseBody
 	public AjaxResult save(@RequestBody MedicalRecord[] entities) {
 		AjaxResult result = new AjaxResult();
+		for (MedicalRecord medicalRecord : entities) {
+			//设置状态为完成
+			medicalRecord.setState(MedicalRecord.STATE_COMPLETE);
+		}
 		medicalRecordService.save(entities);
 		result.setSuccess(true);
 		result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
+		return result;
+	}
+
+	@RequestMapping("/saveDraft")
+	@ResponseBody
+	public AjaxResult saveDraft(@RequestBody MedicalRecord entity) {
+		AjaxResult result = new AjaxResult();
+		//设置状态为草稿
+		entity.setState(MedicalRecord.STATE_DRAFT);
+		medicalRecordService.save(entity);
+		result.setSuccess(true);
+		result.setMessage(SpringContextUtils.getMessage("sys.save.success"));
+		result.setData(entity.getId());
+		return result;
+	}
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxResult delete(Long id) {
+		AjaxResult result = new AjaxResult();
+		MedicalRecord entity = medicalRecordService.get(id);
+		//只有草稿能删除，其他的不能删
+		if(MedicalRecord.STATE_DRAFT.equals(entity.getState())){
+			medicalRecordService.delete(entity);
+			result.setSuccess(true);
+			result.setMessage(SpringContextUtils.getMessage("sys.delete.success"));
+		}else{
+			result.setSuccess(false);
+			result.setMessage("此病案不是草稿，不能删除！");
+		}
 		return result;
 	}
 	

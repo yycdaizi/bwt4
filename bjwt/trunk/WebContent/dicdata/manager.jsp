@@ -83,7 +83,7 @@ function deleteDicType(index){
                         msg: result.message  
                     });  
                 }
-			});
+			},'json');
 		}  
     });
 }

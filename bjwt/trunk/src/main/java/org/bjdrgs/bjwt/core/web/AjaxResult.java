@@ -11,6 +11,7 @@ public class AjaxResult {
 	private String status;
 	private boolean success;
 	private String message;
+	private Object data;
 	
 	public AjaxResult(){}
 	
@@ -42,5 +43,19 @@ public class AjaxResult {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the data
+	 */
+	public Object getData() {
+		return data;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(Object data) {
+		this.data = data;
 	}
 }

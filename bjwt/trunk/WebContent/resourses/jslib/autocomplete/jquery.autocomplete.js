@@ -426,7 +426,13 @@ $.Autocompleter.defaults = {
 	multiple: false,
 	multipleSeparator: ", ",
 	highlight: function(value, term) {
-		return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong style='color:#FF6100'>$1</strong>");
+		//return value.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + term.replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong style='color:#FF6100'>$1</strong>");
+		var keyList = term.split(/\s+/);
+		var display = value;
+		for(var i=0,len=keyList.length; i<len; i++){
+			display = display.replace(new RegExp("(?![^&;]+;)(?!<[^<>]*)(" + keyList[i].replace(/([\^\$\(\)\[\]\{\}\*\.\+\?\|\\])/gi, "\\$1") + ")(?![^<>]*>)(?![^&;]+;)", "gi"), "<strong style='color:#FF6100'>$1</strong>");
+		}
+		return display;
 	},
     scroll: true,
     scrollHeight: 180
@@ -437,7 +443,7 @@ $.Autocompleter.Cache = function(options) {
 	var data = {};
 	var length = 0;
 	
-	function matchSubset(s, sub) {
+	function matchSimple(s, sub) {
 		if (!options.matchCase) 
 			s = s.toLowerCase();
 		var i = s.indexOf(sub);
@@ -446,6 +452,23 @@ $.Autocompleter.Cache = function(options) {
 		}
 		if (i == -1) return false;
 		return i == 0 || options.matchContains;
+	};
+	
+	function matchSubset(s, sub) {
+//		if (!options.matchCase) 
+//			s = s.toLowerCase();
+//		var i = s.indexOf(sub);
+//		if (options.matchContains == "word"){
+//			i = s.toLowerCase().search("\\b" + sub.toLowerCase());
+//		}
+//		if (i == -1) return false;
+		var keyList = sub.split(/\s+/);
+		for(var i=0,len=keyList.length; i<len; i++){
+			if(!matchSimple(s, keyList[i])){
+				return false;
+			}
+		}
+		return true;
 	};
 	
 	function add(q, value) {

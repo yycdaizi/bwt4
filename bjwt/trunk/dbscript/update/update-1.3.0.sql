@@ -21,8 +21,10 @@ insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, pe
 insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 14, '1', '2013-03-28 01:26:54');
 
 --字典数据
-INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (1,'MRSTATE','病案状态','2013-10-20 14:11:38');
+INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (1,'MR-STATE','病案状态','2013-10-20 14:11:38');
 INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (2,'PERSON-TYPE','人员类别','2013-10-20 14:13:08');
+INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (3,'MR-MDC','病案mdc','2013-10-20 14:13:08');
+INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (4,'MR-DRG','病案drg','2013-10-20 14:13:08');
 INSERT INTO `dic_item` (`id`,`type_id`,`code`,`text`,`create_time`,`description`) VALUES (1,1,'0','草稿','2013-10-20 14:12:01','草稿');
 INSERT INTO `dic_item` (`id`,`type_id`,`code`,`text`,`create_time`,`description`) VALUES (2,1,'1','完成','2013-10-20 14:12:20','已完成');
 INSERT INTO `dic_item` (`id`,`type_id`,`code`,`text`,`create_time`,`description`) VALUES (3,1,'2','未验证','2013-10-20 14:12:40','未验证');

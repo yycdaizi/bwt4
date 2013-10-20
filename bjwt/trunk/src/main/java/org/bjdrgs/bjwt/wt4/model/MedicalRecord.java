@@ -60,6 +60,12 @@ public class MedicalRecord implements Serializable {
 	
 	@Column(name = "state")
 	private String state;
+	
+	@Column(name = "mdc")
+	private String mdc;
+	
+	@Column(name = "drg")
+	private String drg;
 
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "native")
@@ -2169,5 +2175,21 @@ public class MedicalRecord implements Serializable {
 	 */
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getMdc() {
+		return mdc;
+	}
+
+	public void setMdc(String mdc) {
+		this.mdc = mdc;
+	}
+
+	public String getDrg() {
+		return drg;
+	}
+
+	public void setDrg(String drg) {
+		this.drg = drg;
 	}
 }

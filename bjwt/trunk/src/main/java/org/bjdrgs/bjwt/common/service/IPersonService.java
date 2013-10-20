@@ -8,10 +8,12 @@ import org.bjdrgs.bjwt.core.web.Pagination;
 
 public interface IPersonService {
 
-	Pagination<Person> query(PersonParam param);
+	Pagination<Person> queryForPage(PersonParam param);
 
 	void save(List<Person> entities);
 
 	void delete(Integer id);
+
+	List<Person> query(PersonParam param);
 
 }

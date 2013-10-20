@@ -20,7 +20,12 @@ public class PersonServiceImpl implements IPersonService {
 	private IPersonDao personDao;
 
 	@Override
-	public Pagination<Person> query(PersonParam param) {
+	public Pagination<Person> queryForPage(PersonParam param) {
+		return personDao.queryForPage(param);
+	}
+
+	@Override
+	public List<Person> query(PersonParam param) {
 		return personDao.query(param);
 	}
 

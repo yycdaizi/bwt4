@@ -28,12 +28,17 @@ insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, reso
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (8, '病案管理', null, 'icon icon-nav', '2013-03-28 00:38:21', 0);
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (9, '病案查询', 'wt4/list.jsp', 'icon icon-nav', '2013-03-28 00:38:21', 8);
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (10, '病案导入', 'wt4/import.html', 'icon icon-nav', '2013-03-28 00:38:21', 8);
+insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (13, '文件导入', 'wt4/upload.jsp', 'icon icon-nav', '2013-03-28 00:38:21', 8);
 /*字典管理菜单*/
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (11, '综合管理', null, 'icon icon-nav', '2013-03-28 00:38:21', 0);
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (12, '数据字典管理', 'dicdata/manager.jsp', 'icon icon-nav', '2013-03-28 00:38:21', 11);
+/*人员管理菜单*/
+insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (14, '人员管理', 'common/personManage.jsp', 'icon icon-nav', '2013-03-28 00:38:21', 11);
 
 insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (8, 1, 'role', 1, 'menu', 8, '1', '2013-03-28 01:26:54');
 insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (9, 1, 'role', 1, 'menu', 9, '1', '2013-03-28 01:26:54');
 insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (10, 1, 'role', 1, 'menu', 10, '1', '2013-03-28 01:26:54');
 insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (11, 1, 'role', 1, 'menu', 11, '1', '2013-03-28 01:26:54');
 insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (12, 1, 'role', 1, 'menu', 12, '1', '2013-03-28 01:26:54');
+insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (13, 1, 'role', 1, 'menu', 13, '1', '2013-03-28 01:26:54');
+insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (14, 1, 'role', 1, 'menu', 14, '1', '2013-03-28 01:26:54');

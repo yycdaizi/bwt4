@@ -1,5 +1,6 @@
 package org.bjdrgs.bjwt.wt4.service;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.List;
 
@@ -27,4 +28,6 @@ public interface IMedicalRecordService {
 	List<MedicalRecord> queryAll(MedicalRecordParam param);
 
 	void delete(MedicalRecord entity);
+
+	List<MedicalRecord> importFile(InputStream inputStream) throws Exception;
 }

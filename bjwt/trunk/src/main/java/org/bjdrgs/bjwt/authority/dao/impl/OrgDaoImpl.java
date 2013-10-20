@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.authority.dao.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +43,12 @@ public class OrgDaoImpl extends BaseDaoImpl<Org> implements IOrgDao {
 		}
 		return this.queryForPage(hql.toString(), param.getPage(),
 				param.getRows(), paramMap);
+	}
+
+	@Override
+	public List<Org> getTopOrgs() {
+		String hql = "from "+Org.class.getName()+" obj where obj.parentOrg.orgid is null";
+		return this.query(hql);
 	}
 
 }

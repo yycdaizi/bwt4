@@ -25,6 +25,7 @@ public class Operation implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final String ROOT_NAME = "ACA09";
 	
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "native")

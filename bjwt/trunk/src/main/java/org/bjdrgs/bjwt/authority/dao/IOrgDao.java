@@ -1,5 +1,7 @@
 package org.bjdrgs.bjwt.authority.dao;
 
+import java.util.List;
+
 import org.bjdrgs.bjwt.authority.model.Org;
 import org.bjdrgs.bjwt.authority.parameter.OrgParam;
 import org.bjdrgs.bjwt.core.dao.IBaseDao;
@@ -12,5 +14,11 @@ public interface IOrgDao extends IBaseDao<Org> {
 	 * @return 分页对象
 	 */
 	public Pagination<Org> query(OrgParam param);
+
+	/**
+	 * 查询所有顶级机构
+	 * @return
+	 */
+	public List<Org> getTopOrgs();
 
 }

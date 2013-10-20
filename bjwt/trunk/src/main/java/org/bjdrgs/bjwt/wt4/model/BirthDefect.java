@@ -25,6 +25,7 @@ public class BirthDefect implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final String ROOT_NAME = "AEN";
 	
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "native")

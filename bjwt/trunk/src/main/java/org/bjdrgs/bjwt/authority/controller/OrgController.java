@@ -1,5 +1,6 @@
 package org.bjdrgs.bjwt.authority.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -11,12 +12,14 @@ import org.bjdrgs.bjwt.authority.service.IOrgService;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
+import org.bjdrgs.bjwt.core.web.TreeNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -36,6 +39,23 @@ public class OrgController {
 		}else{
 			return page.getRows();
 		}
+	}
+	
+	@RequestMapping("/tree")
+	@ResponseBody
+	public List<TreeNode> tree(@RequestParam(required=false, value="id")Integer parentId){
+		List<Org> orgList = orgService.queryForTree(parentId);
+		
+		List<TreeNode> nodeList = new ArrayList<TreeNode>();
+		for(Org org : orgList){
+			TreeNode node = new TreeNode();
+			node.setId(org.getOrgid());
+			node.setText(org.getOrgname());
+			node.setState(org.getState());
+			
+			nodeList.add(node);
+		}
+		return nodeList;
 	}
 	
 	@RequestMapping("/save")

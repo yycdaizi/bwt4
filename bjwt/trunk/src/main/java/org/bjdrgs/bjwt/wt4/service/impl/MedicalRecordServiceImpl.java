@@ -1,10 +1,14 @@
 package org.bjdrgs.bjwt.wt4.service.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -13,6 +17,7 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
+import org.bjdrgs.bjwt.core.exception.BaseException;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.dao.IDiagnoseDao;
@@ -29,6 +34,7 @@ import org.bjdrgs.bjwt.wt4.model.Surgery;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -226,6 +232,77 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 			}
 		}
 		return document.asXML();
+	}
+	
+	public <T> List<T> parseXML(Node document, Class<T> clazz) throws Exception{
+		Field rootNameField = clazz.getDeclaredField("ROOT_NAME");
+		rootNameField.setAccessible(true);
+		String rootName = (String) rootNameField.get(null);
+		
+		List<T> objList = new ArrayList<T>();
+		List<Node> rootList = document.selectNodes("//"+rootName);
+		for (Node root : rootList) {
+			T obj = clazz.newInstance();
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field field : fields) {
+				field.setAccessible(true);
+				String key = field.getName();
+				Node node = root.selectSingleNode("//"+key);
+				
+				if(node==null){
+					continue;
+				}
+				
+				Object value = null;
+				Type type = field.getGenericType();
+				if(type instanceof Class){
+					//Class typeClass = (Class) type;
+					if(type == Date.class){
+						if(field.isAnnotationPresent(DateTimeFormat.class)){
+							DateTimeFormat format = field.getAnnotation(DateTimeFormat.class);
+							value = new SimpleDateFormat(format.pattern()).parse(node.getText());
+						}else{
+							throw new BaseException("类"+clazz.getName()+"的字段"+key+"未找到日期格式化注解");
+						}
+					}else if(type == Double.class){
+						value = Double.valueOf(node.getText());
+					}else if(type == Integer.class){
+						value = Integer.valueOf(node.getText());
+					}else if(type == String.class){
+						value = node.getText();
+					}else{
+						throw new BaseException("未识别类"+clazz.getName()+"的字段"+key+"的类型，无法处理");
+					}
+				}
+				else if(type instanceof ParameterizedType){
+					ParameterizedType ptype = (ParameterizedType) type;
+					if(ptype.getRawType() == List.class){
+						Type[] argTypes = ptype.getActualTypeArguments();
+						Class argClazz = (Class) argTypes[0];
+						value = parseXML(node, argClazz);
+					}else{
+						throw new BaseException("未识别类"+clazz.getName()+"的字段"+key+"的类型，无法处理");
+					}
+				}else{
+					throw new BaseException("未识别类"+clazz.getName()+"的字段"+key+"的类型，无法处理");
+				}
+				field.set(obj, value);
+			}
+			objList.add(obj);
+		}
+		return objList;
+	}
+	
+	@Override
+	public List<MedicalRecord> importFile(InputStream inputStream) throws Exception{
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(inputStream);
+		List<MedicalRecord> list = parseXML(document, MedicalRecord.class);
+		for (MedicalRecord medicalRecord : list) {
+			medicalRecord.setState(MedicalRecord.STATE_UNVALIDATE);
+			save(medicalRecord);
+		}
+		return list;
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package org.bjdrgs.bjwt.wt4.controller;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("/wt4/medicalRecord")
@@ -181,5 +184,26 @@ public class MedicalRecordController {
 			IOUtils.closeQuietly(output);
 		}
 		
+	}
+	
+	@RequestMapping("/importFile")
+	@ResponseBody
+	public AjaxResult importFile(MultipartFile importfile){
+		AjaxResult result = new AjaxResult();
+		InputStream input = null;
+		try {
+			input = importfile.getInputStream();
+			List<MedicalRecord> list = medicalRecordService.importFile(input);
+			result.setSuccess(true);
+			result.setMessage("导入成功！共导入了"+list.size()+"条记录。");
+		} catch (Exception e) {
+			result.setSuccess(false);
+			result.setMessage("对不起，系统出错，导入失败！");
+			logger.error(e.toString());
+			e.printStackTrace();
+		}finally{
+			IOUtils.closeQuietly(input);
+		}
+		return result;
 	}
 }

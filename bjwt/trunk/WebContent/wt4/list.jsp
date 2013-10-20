@@ -56,7 +56,7 @@
 				<tr>
 					<td align="right"><label for="eq_state">病案状态：</label></td>
 					<td><input id="eq_state" name="eq_state" type="text" class="easyui-combobox" editable="false" panelHeight="auto" 
-							  valueField="code" textField="text" url="../dicdata/dicType/getDicData.do?type=MRSTATE"/></td>
+							  valueField="code" textField="text" url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MRSTATE"/></td>
 				</tr>
 				</tbody>
 			</table>

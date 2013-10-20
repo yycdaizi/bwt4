@@ -33,6 +33,7 @@ public class ICU implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final String ROOT_NAME = "AEK";
 	
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "native")

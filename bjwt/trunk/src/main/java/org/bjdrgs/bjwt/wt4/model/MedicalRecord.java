@@ -48,9 +48,11 @@ public class MedicalRecord implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	public static final String ROOT_NAME = "CASE";
 	
-	public static final String STATE_DRAFT = "0";
-	public static final String STATE_COMPLETE = "1";
+	public static final String STATE_DRAFT = "0";//草稿
+	public static final String STATE_COMPLETE = "1";//完成
+	public static final String STATE_UNVALIDATE = "2";//未验证
 	
 	//是否可编辑
 	@Transient

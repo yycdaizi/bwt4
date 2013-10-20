@@ -31,7 +31,6 @@
 		            		valueField: 'code',
 		            		textField: 'text',
 		            		url: '${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=PERSON-TYPE',
-		            		required: true
 		            	">
 		            </td>
 					<td align="right"><label for="blike_name">人员姓名：</label></td>
@@ -89,6 +88,7 @@
 		            		valueField: 'code',
 		            		textField: 'text',
 		            		url: '${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=PERSON-TYPE',
+		            		required: true
 		            	"> 
 		        </div>
 		        <div class="fitem">    

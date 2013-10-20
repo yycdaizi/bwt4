@@ -426,6 +426,16 @@ $(function(){
 			iconCls:'icon-ok',
 			text: '确定',
 			handler: function(){
+				if(!$("#importfile").validatebox("isValid")){
+					return;
+				}
+				
+				var path = $("#importfile").val();
+				
+				if(!(/.+\.xml/i.test(path))){
+            		$.messager.alert('提示','文件格式错误！只能导入xml文件！','warning');
+            		return;
+            	}
 			    $.blockUI({
                     css: {
                         border: 'none', 
@@ -438,10 +448,6 @@ $(function(){
                     },
                     message:"<b>正在导入，请稍后...</b>"
                 });
-				if(!$("#importfile").validatebox("isValid")){
-					return;
-				}
-				var path = $("#importfile").val();
 				
 				var recordList = parseMedicalRecordXML(path);
 				//var rows = $('#gridMedicalRecord').datagrid('getRows');

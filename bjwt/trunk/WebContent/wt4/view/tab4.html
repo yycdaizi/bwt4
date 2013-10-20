@@ -82,13 +82,17 @@
 						class="easyui-combobox" data-options="data:dic.binAnZhiLiang"
 						panelHeight="auto" validType="comboboxfixed['AED01C']" /></td>
 					<td align="right"><label for="AED02"> 质控医师姓名: </label></td>
-					<td><input class="easyui-validatebox" type="text" id="AED02"
-						name="AED02" validType="length[0,20]" /></td>
+					<td><input class="easyui-combobox" type="text" id="AED02"
+						name="AED02" validType="length[0,20]" 
+						valueField="name" textField="name"
+						url="../common/person/getPersonInSameOrg.do?eq_type=1"/></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="AED03"> 质控护士姓名: </label></td>
-					<td><input class="easyui-validatebox" type="text" id="AED03"
-						name="AED03" validType="length[0,20]" /></td>
+					<td><input class="easyui-combobox" type="text" id="AED03"
+						name="AED03" validType="length[0,20]" 
+						valueField="name" textField="name"
+						url="../common/person/getPersonInSameOrg.do?eq_type=2"/></td>
 					<td align="right"><label for="AED04"> 病案质量检查日期: </label></td>
 					<td><input class="easyui-validatebox my97-date" type="text"
 						id="AED04" name="AED04" /></td>

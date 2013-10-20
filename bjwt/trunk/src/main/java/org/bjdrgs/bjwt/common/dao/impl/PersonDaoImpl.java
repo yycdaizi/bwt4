@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.common.dao.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,13 +16,30 @@ import org.springframework.stereotype.Repository;
 public class PersonDaoImpl extends BaseDaoImpl<Person> implements IPersonDao {
 
 	@Override
-	public Pagination<Person> query(PersonParam param) {
+	public List<Person> query(PersonParam param) {
 		StringBuilder hql = new StringBuilder();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		
+		buildHql(param, hql, paramMap);
+		
+		return query(hql.toString(), paramMap);
+	}
+
+	@Override
+	public Pagination<Person> queryForPage(PersonParam param) {
+		StringBuilder hql = new StringBuilder();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		
+		buildHql(param, hql, paramMap);
+		
+		return queryForPage(hql.toString(), param.getPage(), param.getRows(), paramMap);
+	}
+
+	private void buildHql(PersonParam param, StringBuilder hql, Map<String, Object> paramMap){
 		hql.append("from ");
 		hql.append(Person.class.getName());
 		hql.append(" obj where 1=1");
 		
-		Map<String, Object> paramMap = new HashMap<String, Object>();
 		if(param.getOrgId()!=null){
 			hql.append(" and obj.org.orgid= :orgId");
 			paramMap.put("orgId", param.getOrgId());
@@ -38,8 +56,5 @@ public class PersonDaoImpl extends BaseDaoImpl<Person> implements IPersonDao {
 		if(StringUtils.isNotEmpty(param.getSort())){
 			hql.append(" order by "+param.getSort()+" "+param.getOrder());
 		}
-		
-		return this.queryForPage(hql.toString(), param.getPage(), param.getRows(), paramMap);
 	}
-
 }

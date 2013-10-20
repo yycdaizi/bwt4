@@ -109,6 +109,12 @@ var MedicalRecord = $.ModelValidator.definedModel({
 	state : {
 		validators : []
 	},
+	mdc : {
+		validators : []
+	},
+	drg : {
+		validators : []
+	},
 	ABDS : {
 		defaultValue : new Array(),
 		validators : [{

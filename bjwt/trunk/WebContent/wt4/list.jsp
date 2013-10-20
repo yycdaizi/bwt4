@@ -23,7 +23,7 @@
 </head>
 <body>
 <div class="easyui-layout" data-options="fit:true,border:false">
-	<div data-options="region:'north',border:false" style="overflow: hidden;height:180px;" title="病案查询">
+	<div data-options="region:'north',border:false" style="overflow: hidden;height:200px;" title="病案查询">
 		<form id="formMedicalRecordQuery" method="post" class="fform">
 			<table width="100%">
 				<colgroup>
@@ -54,9 +54,20 @@
 					<td><input name="le_AAC01" type="text" onclick="WdatePicker();"></td>
 				</tr>
 				<tr>
+					<td align="right"><label for="eq_mdc">mdc：</label></td>
+					<td><input id="eq_mdc" name="eq_mdc" type="text"	class="easyui-combobox"
+							 valueField="code" textField="text" 
+							 url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MR-MDC"/></td>
+					<td align="right"><label for="eq_drg">drg：</label></td>
+					<td><input id="eq_drg" name="eq_drg" type="text"	class="easyui-combobox"
+							valueField="code" textField="text" 
+							url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MR-DRG"/></td>
+				</tr>
+				<tr>
 					<td align="right"><label for="eq_state">病案状态：</label></td>
 					<td><input id="eq_state" name="eq_state" type="text" class="easyui-combobox" editable="false" panelHeight="auto" 
-							  valueField="code" textField="text" url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MRSTATE"/></td>
+							  valueField="code" textField="text" 
+							  url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MR-STATE"/></td>
 				</tr>
 				</tbody>
 			</table>
@@ -78,6 +89,8 @@
 					<th data-options="field:'AAB02C',width:200,formatter:medicalSubject_Formatter">入院科别</th>
 					<th data-options="field:'AAC01',width:200">出院时间</th>
 					<th data-options="field:'AEM01C',width:200,formatter:liYuanFangShi_Formatter">离院方式</th>
+					<th	data-options="field:'mdc',width:100,formatter:mdcFormatter">mdc</th>
+					<th	data-options="field:'drg',width:100,formatter:drgFormatter">drg</th>
 					<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
 					<th	data-options="field:'updateTime',width:150,sortable:true">最后修改时间</th>
 					<th	data-options="field:'state',width:100,formatter:stateFormatter">状态</th>
@@ -134,6 +147,24 @@ function liYuanFangShi_Formatter(value) {
 	for ( var i = 0, len = liYuanFangShi.length; i < len; i++) {
 		if (liYuanFangShi[i].value == value)
 			return liYuanFangShi[i].text;
+	}
+	return value;
+}
+function mdcFormatter(value){
+	var stateDic = $('#eq_mdc').combobox('getData');
+	for(var i=0,len=stateDic.length;i<len;i++){
+		if(value==stateDic[i]['code']){
+			return stateDic[i]['text'];
+		}
+	}
+	return value;
+}
+function drgFormatter(value){
+	var stateDic = $('#eq_drg').combobox('getData');
+	for(var i=0,len=stateDic.length;i<len;i++){
+		if(value==stateDic[i]['code']){
+			return stateDic[i]['text'];
+		}
 	}
 	return value;
 }

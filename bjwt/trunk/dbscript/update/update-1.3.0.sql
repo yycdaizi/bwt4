@@ -1,7 +1,7 @@
---更新时间:2013-10-06
---病案表添加状态字段，0 - 草稿；1 - 完成
+-- 更新时间:2013-10-06
+-- 病案表添加状态字段，0 - 草稿；1 - 完成
 ALTER TABLE `b_wt4` ADD COLUMN `state` VARCHAR(1) NOT NULL DEFAULT '1';
---新增字段，mdc，drg，都是字符，长度4
+-- 新增字段，mdc，drg，都是字符，长度4
 ALTER TABLE `b_wt4` ADD COLUMN `mdc` VARCHAR(4);
 ALTER TABLE `b_wt4` ADD COLUMN `drg` VARCHAR(4);
 
@@ -20,7 +20,7 @@ insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (1
 insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 13, '1', '2013-03-28 01:26:54');
 insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 14, '1', '2013-03-28 01:26:54');
 
---字典数据
+-- 字典数据
 INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (1,'MR-STATE','病案状态','2013-10-20 14:11:38');
 INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (2,'PERSON-TYPE','人员类别','2013-10-20 14:13:08');
 INSERT INTO `dic_type` (`id`,`code`,`name`,`create_time`) VALUES (3,'MR-MDC','病案mdc','2013-10-20 14:13:08');

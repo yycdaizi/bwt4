@@ -27,7 +27,7 @@ insert into b_previlege (previlegeid, orgid, master, mastervalue, resource, reso
 /*病案管理菜单*/
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (8, '病案管理', null, 'icon icon-nav', '2013-03-28 00:38:21', 0);
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (9, '病案查询', 'wt4/list.jsp', 'icon icon-nav', '2013-03-28 00:38:21', 8);
-insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (10, '病案导入', 'wt4/import.html', 'icon icon-nav', '2013-03-28 00:38:21', 8);
+insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (10, '病案录入', 'wt4/import.html', 'icon icon-nav', '2013-03-28 00:38:21', 8);
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (13, '文件导入', 'wt4/upload.jsp', 'icon icon-nav', '2013-03-28 00:38:21', 8);
 /*字典管理菜单*/
 insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (11, '综合管理', null, 'icon icon-nav', '2013-03-28 00:38:21', 0);

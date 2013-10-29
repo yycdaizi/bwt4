@@ -10,11 +10,16 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.tools.zip.ZipEntry;
+import org.apache.tools.zip.ZipFile;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.exception.BaseException;
@@ -49,69 +54,69 @@ import org.springframework.util.CollectionUtils;
 
 @Transactional
 @Service("medicalRecordService")
-public class MedicalRecordServiceImpl implements IMedicalRecordService{
+public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	@Resource(name="medicalRecordDao")
+
+	@Resource(name = "medicalRecordDao")
 	private IMedicalRecordDao medicalRecordDao;
-	
-	@Resource(name="birthDefectDao")
+
+	@Resource(name = "birthDefectDao")
 	private IBirthDefectDao birthDefectDao;
-	
-	@Resource(name="diagnoseDao")
+
+	@Resource(name = "diagnoseDao")
 	private IDiagnoseDao diagnoseDao;
-	
-	@Resource(name="ICUDao")
+
+	@Resource(name = "ICUDao")
 	private IICUDao ICUDao;
-	
-	@Resource(name="operationDao")
+
+	@Resource(name = "operationDao")
 	private IOperationDao operationDao;
-	
-	@Resource(name="surgeryDao")
+
+	@Resource(name = "surgeryDao")
 	private ISurgeryDao surgeryDao;
-	
+
 	@Override
 	public void save(MedicalRecord[] entities) {
 		for (MedicalRecord medicalRecord : entities) {
 			this.save(medicalRecord);
 		}
-	}	
-	
+	}
+
 	@Override
 	public void save(MedicalRecord entity) {
 		User user = SecurityUtils.getCurrentUser();
-		//一些处理
-		if(entity.getCreateTime()==null){
+		// 一些处理
+		if (entity.getCreateTime() == null) {
 			entity.setCreateTime(new Date());
 		}
-		if(entity.getCreatedBy()==null){
+		if (entity.getCreatedBy() == null) {
 			entity.setCreatedBy(user);
 		}
 		entity.setUpdateTime(new Date());
 		entity.setUpdatedBy(user);
-				
-		//保存病案
+
+		// 保存病案
 		medicalRecordDao.save(entity);
-		
-		//保存其他诊断信息
+
+		// 保存其他诊断信息
 		diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
-		if(!CollectionUtils.isEmpty(entity.getABDS())){
-			for(Diagnose diagnose : entity.getABDS()){
+		if (!CollectionUtils.isEmpty(entity.getABDS())) {
+			for (Diagnose diagnose : entity.getABDS()) {
 				diagnose.setId(null);
 				diagnose.setMedicalRecordId(entity.getId());
 				diagnoseDao.save(diagnose);
 			}
 		}
-		
-		//保存手术情况信息
+
+		// 保存手术情况信息
 		this.deleteSurgerysByMedicalRecordId(entity.getId());
-		if(!CollectionUtils.isEmpty(entity.getACAS())){
-			for(Surgery surgery : entity.getACAS()){
+		if (!CollectionUtils.isEmpty(entity.getACAS())) {
+			for (Surgery surgery : entity.getACAS()) {
 				surgery.setId(null);
 				surgery.setMedicalRecordId(entity.getId());
 				surgeryDao.save(surgery);
-				if(!CollectionUtils.isEmpty(surgery.getACA09S())){
-					for(Operation operation : surgery.getACA09S()){
+				if (!CollectionUtils.isEmpty(surgery.getACA09S())) {
+					for (Operation operation : surgery.getACA09S()) {
 						operation.setId(null);
 						operation.setSurgeryId(surgery.getId());
 						operationDao.save(operation);
@@ -119,30 +124,31 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 				}
 			}
 		}
-		
-		//保存ICU信息
+
+		// 保存ICU信息
 		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
-		if(!CollectionUtils.isEmpty(entity.getAEKS())){
-			for(ICU icu : entity.getAEKS()){
+		if (!CollectionUtils.isEmpty(entity.getAEKS())) {
+			for (ICU icu : entity.getAEKS()) {
 				icu.setId(null);
 				icu.setMedicalRecordId(entity.getId());
 				ICUDao.save(icu);
 			}
 		}
-		
-		//保存新生儿缺陷信息
+
+		// 保存新生儿缺陷信息
 		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
-		if(!CollectionUtils.isEmpty(entity.getAENS())){
-			for(BirthDefect obj : entity.getAENS()){
+		if (!CollectionUtils.isEmpty(entity.getAENS())) {
+			for (BirthDefect obj : entity.getAENS()) {
 				obj.setId(null);
 				obj.setMedicalRecordId(entity.getId());
 				birthDefectDao.save(obj);
 			}
 		}
 	}
-	
-	private void deleteSurgerysByMedicalRecordId(Long medicalRecordId){
-		List<Surgery> list = surgeryDao.queryByProperty("medicalRecordId", medicalRecordId);
+
+	private void deleteSurgerysByMedicalRecordId(Long medicalRecordId) {
+		List<Surgery> list = surgeryDao.queryByProperty("medicalRecordId",
+				medicalRecordId);
 		for (Surgery surgery : list) {
 			operationDao.deleteByProperty("surgeryId", surgery.getId());
 		}
@@ -156,61 +162,66 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public Document toXML(Object entity) throws Exception {			
+	public Document toXML(Object entity) throws Exception {
 		SAXReader reader = new SAXReader();
 		Document document = null;
-		
-		String path = TEMPLATE_FOLDER+File.separatorChar+entity.getClass().getSimpleName()+".xml";
+
+		String path = TEMPLATE_FOLDER + File.separatorChar
+				+ entity.getClass().getSimpleName() + ".xml";
 		document = reader.read(this.getClass().getResourceAsStream(path));
-			
+
 		Field[] fields = entity.getClass().getDeclaredFields();
-		
+
 		for (Field field : fields) {
 			field.setAccessible(true);
-			if(field.get(entity)!=null){
+			if (field.get(entity) != null) {
 				String key = field.getName();
-				Node node = document.selectSingleNode("//"+key);
-				if(node!=null){
+				Node node = document.selectSingleNode("//" + key);
+				if (node != null) {
 					String value = field.get(entity).toString();
 					String type = field.getGenericType().toString();
-					if("class java.util.Date".equals(type)){
-						if(field.isAnnotationPresent(DateTimeFormat.class)){
-							DateTimeFormat format = field.getAnnotation(DateTimeFormat.class);
-							value = new SimpleDateFormat(format.pattern()).format(field.get(entity));
+					if ("class java.util.Date".equals(type)) {
+						if (field.isAnnotationPresent(DateTimeFormat.class)) {
+							DateTimeFormat format = field
+									.getAnnotation(DateTimeFormat.class);
+							value = new SimpleDateFormat(format.pattern())
+									.format(field.get(entity));
 						}
 						node.setText(value);
-					}else if("class java.lang.Double".equals(type)){
-						if(field.isAnnotationPresent(NumberFormat.class)){
-							NumberFormat format = field.getAnnotation(NumberFormat.class);
-							value = new DecimalFormat(format.pattern()).format(field.get(entity));
+					} else if ("class java.lang.Double".equals(type)) {
+						if (field.isAnnotationPresent(NumberFormat.class)) {
+							NumberFormat format = field
+									.getAnnotation(NumberFormat.class);
+							value = new DecimalFormat(format.pattern())
+									.format(field.get(entity));
 						}
 						node.setText(value);
-					}else if(type.startsWith("java.util.List")){
+					} else if (type.startsWith("java.util.List")) {
 						List list = (List) field.get(entity);
 						for (Object object : list) {
 							Document child = this.toXML(object);
-							((Element)node).add(child.getRootElement());
+							((Element) node).add(child.getRootElement());
 						}
-					}else{
+					} else {
 						node.setText(value);
 					}
 				}
 			}
 		}
-		//去除空节点
+		// 去除空节点
 		removeEmptyNode(document.getRootElement());
 		return document;
 	}
-	
-	private void removeEmptyNode(Element element){
-		if(element==null){
+
+	private void removeEmptyNode(Element element) {
+		if (element == null) {
 			return;
 		}
 		for (Object child : element.elements()) {
 			removeEmptyNode((Element) child);
 		}
 		String content = element.getStringValue();
-		if(StringUtils.isBlank(content)){
+		if (StringUtils.isBlank(content)) {
 			element.detach();
 		}
 	}
@@ -224,67 +235,73 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 	public String exportToXML(List<MedicalRecord> entities) throws Exception {
 		Document document = DocumentHelper.createDocument();
 		Element root = document.addElement("CASES");
-		
+
 		for (MedicalRecord medicalRecord : entities) {
 			Document node = toXML(medicalRecord);
-			if(node.getRootElement()!=null){
-				root.add(node.getRootElement());	
+			if (node.getRootElement() != null) {
+				root.add(node.getRootElement());
 			}
 		}
 		return document.asXML();
 	}
-	
-	public <T> List<T> parseXML(Node document, Class<T> clazz) throws Exception{
+
+	@SuppressWarnings("unchecked")
+	public <T> List<T> parseXML(Node document, Class<T> clazz) throws Exception {
 		Field rootNameField = clazz.getDeclaredField("ROOT_NAME");
 		rootNameField.setAccessible(true);
 		String rootName = (String) rootNameField.get(null);
-		
+
 		List<T> objList = new ArrayList<T>();
-		List<Node> rootList = document.selectNodes("//"+rootName);
+		List<Node> rootList = document.selectNodes(document.getUniquePath()+"/" + rootName);
 		for (Node root : rootList) {
 			T obj = clazz.newInstance();
 			Field[] fields = clazz.getDeclaredFields();
 			for (Field field : fields) {
 				field.setAccessible(true);
 				String key = field.getName();
-				Node node = root.selectSingleNode("//"+key);
-				
-				if(node==null){
+				Node node = root.selectSingleNode(root.getUniquePath()+"/" + key);
+
+				if (node == null) {
 					continue;
 				}
-				
+
 				Object value = null;
 				Type type = field.getGenericType();
-				if(type instanceof Class){
-					//Class typeClass = (Class) type;
-					if(type == Date.class){
-						if(field.isAnnotationPresent(DateTimeFormat.class)){
-							DateTimeFormat format = field.getAnnotation(DateTimeFormat.class);
-							value = new SimpleDateFormat(format.pattern()).parse(node.getText());
-						}else{
-							throw new BaseException("类"+clazz.getName()+"的字段"+key+"未找到日期格式化注解");
+				if (type instanceof Class) {
+					// Class typeClass = (Class) type;
+					if (type == Date.class) {
+						if (field.isAnnotationPresent(DateTimeFormat.class)) {
+							DateTimeFormat format = field
+									.getAnnotation(DateTimeFormat.class);
+							value = new SimpleDateFormat(format.pattern())
+									.parse(node.getText());
+						} else {
+							throw new BaseException("类" + clazz.getName()
+									+ "的字段" + key + "未找到日期格式化注解");
 						}
-					}else if(type == Double.class){
+					} else if (type == Double.class) {
 						value = Double.valueOf(node.getText());
-					}else if(type == Integer.class){
+					} else if (type == Integer.class) {
 						value = Integer.valueOf(node.getText());
-					}else if(type == String.class){
+					} else if (type == String.class) {
 						value = node.getText();
-					}else{
-						throw new BaseException("未识别类"+clazz.getName()+"的字段"+key+"的类型，无法处理");
+					} else {
+						throw new BaseException("未识别类" + clazz.getName()
+								+ "的字段" + key + "的类型，无法处理");
 					}
-				}
-				else if(type instanceof ParameterizedType){
+				} else if (type instanceof ParameterizedType) {
 					ParameterizedType ptype = (ParameterizedType) type;
-					if(ptype.getRawType() == List.class){
+					if (ptype.getRawType() == List.class) {
 						Type[] argTypes = ptype.getActualTypeArguments();
-						Class argClazz = (Class) argTypes[0];
+						Class<?> argClazz = (Class<?>) argTypes[0];
 						value = parseXML(node, argClazz);
-					}else{
-						throw new BaseException("未识别类"+clazz.getName()+"的字段"+key+"的类型，无法处理");
+					} else {
+						throw new BaseException("未识别类" + clazz.getName()
+								+ "的字段" + key + "的类型，无法处理");
 					}
-				}else{
-					throw new BaseException("未识别类"+clazz.getName()+"的字段"+key+"的类型，无法处理");
+				} else {
+					throw new BaseException("未识别类" + clazz.getName() + "的字段"
+							+ key + "的类型，无法处理");
 				}
 				field.set(obj, value);
 			}
@@ -292,9 +309,10 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 		}
 		return objList;
 	}
-	
+
 	@Override
-	public List<MedicalRecord> importFile(InputStream inputStream) throws Exception{
+	public List<MedicalRecord> importXmlFile(InputStream inputStream)
+			throws Exception {
 		SAXReader reader = new SAXReader();
 		Document document = reader.read(inputStream);
 		List<MedicalRecord> list = parseXML(document, MedicalRecord.class);
@@ -303,6 +321,35 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService{
 			save(medicalRecord);
 		}
 		return list;
+	}
+
+	@Override
+	public List<MedicalRecord> importZipFile(File file) throws Exception {
+		ZipFile zipFile = new ZipFile(file);
+		try {
+			Enumeration<ZipEntry> enumeration = zipFile.getEntries();
+			ZipEntry zipEntry = null;
+			List<MedicalRecord> list = new ArrayList<MedicalRecord>();
+			while (enumeration.hasMoreElements()) {
+				zipEntry = (ZipEntry) enumeration.nextElement();
+				if (zipEntry.isDirectory()) {
+					continue;
+				}
+				String name = zipEntry.getName();
+				// 只解析压缩文件中的xml文件
+				if (name != null && name.matches("^.+\\.(?i)xml$")) {
+					InputStream inputStream = zipFile.getInputStream(zipEntry);
+					try {
+						list.addAll(importXmlFile(inputStream));
+					} finally {
+						IOUtils.closeQuietly(inputStream);
+					}
+				}
+			}
+			return list;
+		} finally {
+			ZipFile.closeQuietly(zipFile);
+		}
 	}
 
 	@Override

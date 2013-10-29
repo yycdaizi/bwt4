@@ -142,7 +142,7 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 			<form id="formImport" action="" method="post"
 				enctype="multipart/form-data" style="width: 600px;padding:10px;line-height: 18px">
 				
-				<label class="uploader-label">病例文件（*.xml）：</label>
+				<label class="uploader-label">病例文件（xml/zip）：</label>
 				<div class="uploader white">
 					<input type="text" class="filename" readonly="readonly"/>
 					<input type="button" name="file" class="button" value="浏览..."/>
@@ -153,13 +153,17 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 				</div>	
 			</form>
 		</div>
-		<div id="importInfo" data-options="region:'center',title:'导入信息'" style="padding:5px;line-height: 18px"></div>
+		<div id="importInfo" data-options="region:'center',title:'导入过程信息'" style="padding:5px;line-height: 18px"></div>
 	</div>
 	<script type="text/javascript">
 	$(function(){
 		$("input[type=file]").change(function(){$(this).parents(".uploader").find(".filename").val($(this).val());});
 		
 		$("#btnImport").click(function(){
+			$.messager.progress({
+				//msg:'正在导入...',
+				text:'正在导入...'
+			});
 			$('#formImport').form('submit',{  
 	            url: "${pageContext.request.contextPath}/wt4/medicalRecord/importFile.do",  
 	            onSubmit: function(){
@@ -167,11 +171,11 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 	            	if(!filename){
 	            		$.messager.alert('提示','请先选择一个文件！','warning');
 	            		return false;
-	            	}else if(!(/.+\.xml/i.test(filename))){
-	            		$.messager.alert('提示','文件格式错误！只能导入xml文件！','warning');
+	            	}else if(!(/.+\.(xml|zip)$/i.test(filename))){
+	            		$.messager.alert('提示','文件格式错误！只能导入xml或zip文件！','warning');
 	            		return false;
 	            	}
-	            	$("#importInfo").append('正在导入文件'+filename+'，请稍候...<br/>');
+	            	$("#importInfo").append('正在导入文件 <b>'+filename+'</b>，请稍候...<br/>');
 	                return true;
 	            },  
 	            success: function(result){  
@@ -187,9 +191,13 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 	                        msg: result.message  
 	                    });  
 	                }
-	                $("#importInfo").append(result.message+"<br/>");
+	                if(result.message){
+	                	$("#importInfo").append(result.message+"<br/>");
+	                }
+	                $.messager.progress('close');
 	            }
 	        }); 
+			
 		});
 		
 	});

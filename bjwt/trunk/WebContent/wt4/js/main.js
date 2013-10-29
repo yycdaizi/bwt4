@@ -215,10 +215,13 @@ jQuery.fn.initGrid = function(){
 					return;
 				}
 				$grid.datagrid('endEdit', lastIndex);
-				$grid.datagrid('appendRow', {});
-				lastIndex = $grid.datagrid('getRows').length - 1;
-				$grid.datagrid('beginEdit', lastIndex);
-				$grid.data("lastIndex",lastIndex);
+//				$grid.datagrid('appendRow', {});
+//				lastIndex = $grid.datagrid('getRows').length - 1;
+//				$grid.datagrid('beginEdit', lastIndex);
+//				$grid.data("lastIndex",lastIndex);
+				$grid.datagrid('insertRow', {index:0, row: {}});
+				$grid.datagrid('beginEdit', 0);
+				$grid.data("lastIndex",0);
 			}
 		}, '-', {
 			text : '删除',

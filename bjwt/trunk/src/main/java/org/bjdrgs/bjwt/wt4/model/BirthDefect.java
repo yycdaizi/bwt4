@@ -28,7 +28,7 @@ public class BirthDefect implements Serializable {
 	public static final String ROOT_NAME = "AEN";
 	
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GenericGenerator(name = "idGenerator", strategy = "increment")
 	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_disabled_id", nullable = false, unique = true)
 	private Long id;

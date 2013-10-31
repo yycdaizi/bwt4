@@ -28,7 +28,7 @@ public class Operation implements Serializable {
 	public static final String ROOT_NAME = "ACA09";
 	
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GenericGenerator(name = "idGenerator", strategy = "increment")
 	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_operation_id", nullable = false, unique = true)
 	private Long id;

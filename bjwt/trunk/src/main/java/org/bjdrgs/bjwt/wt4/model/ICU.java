@@ -36,7 +36,7 @@ public class ICU implements Serializable {
 	public static final String ROOT_NAME = "AEK";
 	
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GenericGenerator(name = "idGenerator", strategy = "increment")
 	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_icu_id", nullable = false, unique = true)
 	private Long id;

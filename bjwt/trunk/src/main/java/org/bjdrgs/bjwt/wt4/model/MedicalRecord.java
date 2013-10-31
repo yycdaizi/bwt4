@@ -27,8 +27,6 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -68,7 +66,7 @@ public class MedicalRecord implements Serializable {
 	private String drg;
 
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GenericGenerator(name = "idGenerator", strategy = "increment")
 	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_id", nullable = false, unique = true)
 	private Long id;

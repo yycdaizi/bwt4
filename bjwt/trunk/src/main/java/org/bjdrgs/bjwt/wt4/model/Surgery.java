@@ -40,7 +40,7 @@ public class Surgery implements Serializable {
 	public static final String ROOT_NAME = "ACA";
 	
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GenericGenerator(name = "idGenerator", strategy = "increment")
 	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_surgery_id", nullable = false, unique = true)
 	private Long id;
@@ -113,7 +113,7 @@ public class Surgery implements Serializable {
 	 * 手术级别代码 
 	 */
 	@Column(name="OPERATION_LEVEL")
-	@JsonProperty private String ACA10C;
+	@JsonProperty private String ACA10C = "0";
 
 	public Long getId() {
 		return id;

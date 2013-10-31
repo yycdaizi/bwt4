@@ -71,6 +71,19 @@ public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T>
 	}
 
 	@Override
+	public void saveByBatch(Collection<T> entities) {
+		int count = 0;
+		for (T entity : entities) {
+			this.save(entity);
+			count++;
+			if(count%50 == 0){
+				getCurrentSession().flush();
+				getCurrentSession().clear();
+			}
+		}
+	}
+
+	@Override
 	public void update(String hql, Map<String, Object> parameters) {
 		this.executeUpdateHql(hql, parameters);
 	}

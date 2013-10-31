@@ -45,6 +45,12 @@ public interface IBaseDao<T extends Serializable> {
 	void save(Collection<T> entities);
 
 	/**
+	 * 批量保存或更新数据对象集合。此方法每保存一定数量就会清理缓存，防止内存溢出
+	 * @param entities
+	 */
+	void saveByBatch(Collection<T> entities);
+
+	/**
 	 * HQL方式更新数据
 	 * @param hql
 	 * @param parameters

@@ -29,7 +29,7 @@ public class Diagnose implements Serializable {
 	public static final String ROOT_NAME = "ABD";
 	
 	@Id
-	@GenericGenerator(name = "idGenerator", strategy = "native")
+	@GenericGenerator(name = "idGenerator", strategy = "increment")
 	@GeneratedValue(generator = "idGenerator")
 	@Column(name = "b_wt4_diagnose_id", nullable = false, unique = true)
 	private Long id;

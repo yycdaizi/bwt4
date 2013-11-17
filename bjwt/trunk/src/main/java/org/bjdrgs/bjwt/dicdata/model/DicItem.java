@@ -47,9 +47,18 @@ public class DicItem implements Serializable {
 	@Column(name="text",length=60)
 	private String text;
 	
+	//@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="parent_id")
+	private DicItem parent;
+	
 	@Length(max=100,message="{DicItem.description.length}")
 	@Column(name="description",length=100)
 	private String description;
+	
+	@Length(max=100,message="{DicItem.remark.length}")
+	@Column(name="remark",length=100)
+	private String remark;
 	
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -89,12 +98,28 @@ public class DicItem implements Serializable {
 		this.text = text;
 	}
 
+	public DicItem getParent() {
+		return parent;
+	}
+
+	public void setParent(DicItem parent) {
+		this.parent = parent;
+	}
+
 	public String getDescription() {
 		return description;
 	}
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 	public Date getCreateTime() {

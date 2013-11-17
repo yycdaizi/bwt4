@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.wt4.service.impl;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -9,7 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -19,7 +23,11 @@ import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
+import org.bjdrgs.bjwt.core.exception.BaseException;
 import org.bjdrgs.bjwt.core.web.Pagination;
+import org.bjdrgs.bjwt.dicdata.model.DicItem;
+import org.bjdrgs.bjwt.dicdata.service.IDicDataService;
+import org.bjdrgs.bjwt.wt4.Wt4Constants;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.dao.IDiagnoseDao;
 import org.bjdrgs.bjwt.wt4.dao.IICUDao;
@@ -48,6 +56,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import au.com.bytecode.opencsv.CSVWriter;
+
 @Transactional
 @Service("medicalRecordService")
 public class MedicalRecordServiceImpl implements IMedicalRecordService {
@@ -70,8 +80,11 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 
 	@Resource(name = "surgeryDao")
 	private ISurgeryDao surgeryDao;
+	
+	@Resource(name = "dicDataService")
+	private IDicDataService dicDataService;
 
-	private void beforeSave(MedicalRecord entity){
+	private void beforeSave(MedicalRecord entity) {
 		User user = SecurityUtils.getCurrentUser();
 		// 一些处理
 		if (entity.getCreateTime() == null) {
@@ -83,7 +96,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		entity.setUpdateTime(new Date());
 		entity.setUpdatedBy(user);
 	}
-	
+
 	@Override
 	public void save(MedicalRecord[] entities) {
 		for (MedicalRecord medicalRecord : entities) {
@@ -250,28 +263,31 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			throws Exception {
 		SAXReader reader = new SAXReader();
 		Document document = reader.read(inputStream);
-		
-		BaseVisitor<MedicalRecord> visitor = new BaseVisitor<MedicalRecord>(MedicalRecord.class);
+
+		BaseVisitor<MedicalRecord> visitor = new BaseVisitor<MedicalRecord>(
+				MedicalRecord.class);
 		document.accept(visitor);
 		List<MedicalRecord> list = visitor.getData();
-		
+
 		for (MedicalRecord medicalRecord : list) {
 			medicalRecord.setState(MedicalRecord.STATE_UNVALIDATE);
 		}
 		batchInsert(list);
-		
+
 		return list;
 	}
+
 	/**
 	 * 批量插入,由于不用执行删除，同时还使用了批量提交，速度比save快了近百倍
+	 * 
 	 * @param list
 	 */
-	public void batchInsert(List<MedicalRecord> list){
+	public void batchInsert(List<MedicalRecord> list) {
 		for (MedicalRecord medicalRecord : list) {
 			beforeSave(medicalRecord);
 		}
 		medicalRecordDao.saveByBatch(list);
-		
+
 		List<Diagnose> diagnoseList = new ArrayList<Diagnose>();
 		List<Surgery> surgeryList = new ArrayList<Surgery>();
 		List<Operation> operationList = new ArrayList<Operation>();
@@ -285,7 +301,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 					diagnoseList.add(diagnose);
 				}
 			}
-			
+
 			if (!CollectionUtils.isEmpty(entity.getACAS())) {
 				for (Surgery surgery : entity.getACAS()) {
 					surgery.setId(null);
@@ -293,7 +309,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 					surgeryList.add(surgery);
 				}
 			}
-			
+
 			if (!CollectionUtils.isEmpty(entity.getAEKS())) {
 				for (ICU icu : entity.getAEKS()) {
 					icu.setId(null);
@@ -301,7 +317,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 					icuList.add(icu);
 				}
 			}
-			
+
 			if (!CollectionUtils.isEmpty(entity.getAENS())) {
 				for (BirthDefect obj : entity.getAENS()) {
 					obj.setId(null);
@@ -310,12 +326,12 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				}
 			}
 		}
-		
+
 		diagnoseDao.saveByBatch(diagnoseList);
 		surgeryDao.saveByBatch(surgeryList);
 		ICUDao.saveByBatch(icuList);
 		birthDefectDao.saveByBatch(defectList);
-		
+
 		for (Surgery surgery : surgeryList) {
 			if (!CollectionUtils.isEmpty(surgery.getACA09S())) {
 				for (Operation operation : surgery.getACA09S()) {
@@ -327,7 +343,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		}
 		operationDao.saveByBatch(operationList);
 	}
-	
+
 	public void insert(MedicalRecord entity) {
 		beforeSave(entity);
 
@@ -378,16 +394,13 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		}
 	}
 
-	/*批量插入的另一种备选，速度差不多，不过有内存溢出的风险。
-	 * 另外还有一种方案是使用原生的jdbc批量执行。
+	/*
+	 * 批量插入的另一种备选，速度差不多，不过有内存溢出的风险。 另外还有一种方案是使用原生的jdbc批量执行。
 	 * 通过sessionFactory.getClassMetadata(clazz)，得到的实际是AbstractEntityPersister
-	 * 的子类，里面有个sqlInsertStrings属性可以获得插入sql
-	public void batchInsert(List<MedicalRecord> list){
-		for (MedicalRecord medicalRecord : list) {
-			insert(medicalRecord);
-		}
-	}
-	*/
+	 * 的子类，里面有个sqlInsertStrings属性可以获得插入sql public void
+	 * batchInsert(List<MedicalRecord> list){ for (MedicalRecord medicalRecord :
+	 * list) { insert(medicalRecord); } }
+	 */
 
 	@Override
 	public List<MedicalRecord> importZipFile(File file) throws Exception {
@@ -430,5 +443,91 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
 		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
 		medicalRecordDao.delete(entity);
+	}
+
+	@SuppressWarnings("resource")
+	@Override
+	public void exportToCSV(List<MedicalRecord> list, File csvFile)
+			throws Exception {
+		String[] header = new String[] { "病案号", "姓名", "出院日期", "出院科室", "主要诊断",
+				"离院方式", "mdc", "drg", "总费用", "住院天数", "权重" };
+		String[] fieldNames = new String[] { "AAA28", "AAA01", "AAC01",
+				"AAC02C", "ABC01N", "AEM01C", "mdc", "drg", "ADA01", "AAC04",
+				null };
+		Field[] fields = new Field[fieldNames.length];
+		for (int i = 0; i < fieldNames.length; i++) {
+			if (fieldNames[i] != null) {
+				Field field = MedicalRecord.class
+						.getDeclaredField(fieldNames[i]);
+				field.setAccessible(true);
+				fields[i] = field;
+			}
+		}
+		
+		List<DicItem> dicItemList = dicDataService.listDicItemsByType(Wt4Constants.DIC_MR_MDC_DRG);
+		Map<String, String> weightMap = new HashMap<String, String>();
+		for (DicItem dicItem : dicItemList) {
+			if(dicItem.getParent()!=null && dicItem.getParent().getCode()!=null){
+				String key = buildMdcAndDrgCombination(dicItem.getParent().getCode(), dicItem.getCode());
+				weightMap.put(key, dicItem.getRemark());
+			}
+		}
+
+		CSVWriter writer = new CSVWriter(new FileWriter(csvFile));
+		try {
+			writer.writeNext(header);
+			for (MedicalRecord mr : list) {
+				String[] data = new String[header.length];
+				for (int i = 0; i < fields.length; i++) {
+					if (fields[i] == null) {
+						continue;
+					}
+					Object value = fields[i].get(mr);
+					if (value == null) {
+						continue;
+					}
+					String valStr = "";
+					Class<?> type = fields[i].getType();
+					if (type == Date.class) {
+						if (fields[i].isAnnotationPresent(DateTimeFormat.class)) {
+							DateTimeFormat format = fields[i]
+									.getAnnotation(DateTimeFormat.class);
+							valStr = new SimpleDateFormat(format.pattern())
+									.format(value);
+						} else {
+							throw new BaseException("字段" + fieldNames[i]
+									+ "未找到日期格式化注解");
+						}
+					} else if (type == Double.class) {
+						if (fields[i].isAnnotationPresent(NumberFormat.class)) {
+							NumberFormat format = fields[i]
+									.getAnnotation(NumberFormat.class);
+							valStr = new DecimalFormat(format.pattern())
+									.format(value);
+						} else {
+							valStr = value.toString();
+						}
+					} else if (type == Integer.class) {
+						valStr = value.toString();
+					} else if (type == String.class) {
+						valStr = (String) value;
+					} else {
+						throw new BaseException("未识别字段" + fieldNames[i]
+								+ "的类型，无法处理");
+					}
+					data[i] = valStr;
+				}
+				//权重
+				data[10] = weightMap.get(buildMdcAndDrgCombination(mr.getMdc(), mr.getDrg()));
+				writer.writeNext(data);
+			}
+			writer.flush();
+		} finally {
+			IOUtils.closeQuietly(writer);
+		}
+	}
+	
+	private String buildMdcAndDrgCombination(String mdc, String drg){
+		return "["+mdc + ">>" + drg + "]";
 	}
 }

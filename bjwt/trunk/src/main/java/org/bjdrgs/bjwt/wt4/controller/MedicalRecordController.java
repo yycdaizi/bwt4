@@ -1,10 +1,13 @@
 package org.bjdrgs.bjwt.wt4.controller;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/wt4/medicalRecord")
 public class MedicalRecordController {
-	public static final String ENCODING = "UTF-8";
+	public static final String ENCODING_UTF8 = "UTF-8";
+	public static final String ENCODING_GBK = "GBK";
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -138,8 +142,8 @@ public class MedicalRecordController {
 	// }
 	// }
 
-	@RequestMapping("/export")
-	public void export(MedicalRecordParam param, HttpServletResponse response) {
+	@RequestMapping("/exportToXML")
+	public void exportToXML(MedicalRecordParam param, HttpServletResponse response) {
 		String xml = null;
 		OutputStream output = null;
 		try {
@@ -150,8 +154,8 @@ public class MedicalRecordController {
 			List<MedicalRecord> list = medicalRecordService.queryAll(param);
 			xml = medicalRecordService.exportToXML(list);
 
-			response.setContentType("text/xml;charset=" + ENCODING);
-			response.setCharacterEncoding(ENCODING);
+			response.setContentType("text/xml;charset=" + ENCODING_UTF8);
+			response.setCharacterEncoding(ENCODING_UTF8);
 			response.setHeader("Content-disposition",
 					"attachment;filename=untitled.xml");
 			long fileLength = xml.length();
@@ -160,7 +164,7 @@ public class MedicalRecordController {
 
 			output = response.getOutputStream();
 
-			IOUtils.write(xml, output, ENCODING);
+			IOUtils.write(xml, output, ENCODING_UTF8);
 			output.flush();
 		} catch (Exception e) {
 			logger.warn(e.toString());
@@ -169,14 +173,56 @@ public class MedicalRecordController {
 			IOUtils.closeQuietly(output);
 		}
 	}
+	
+	@RequestMapping("/exportToCSV")
+	public void exportToCSV(MedicalRecordParam param, HttpServletRequest request, HttpServletResponse response) {
+		File csvFile = null;
+		OutputStream output = null;
+		Reader reader = null;
+		String tempDirPath = request.getSession().getServletContext().getRealPath("/temp/mrexport");
+		try {
+			// 只能查询本机构下面的病案
+			User user = SecurityUtils.getCurrentUser();
+			param.setOrgId(user.getOrg().getOrgid());
+
+			List<MedicalRecord> list = medicalRecordService.queryAll(param);
+			
+			File tempDir = new File(tempDirPath);
+			FileUtils.forceMkdir(tempDir);
+			csvFile = new File(tempDir, "exp-"+UUID.randomUUID()+".csv");
+			medicalRecordService.exportToCSV(list, csvFile);
+
+			response.setContentType("application/csv;charset=" + ENCODING_GBK);
+			response.setCharacterEncoding(ENCODING_UTF8);
+			response.setHeader("Content-disposition",
+					"attachment;filename=untitled.csv");
+			long fileLength = FileUtils.sizeOf(csvFile);
+			String length = String.valueOf(fileLength);
+			response.setHeader("Content_Length", length + 1024 * 10);
+
+			output = response.getOutputStream();
+			reader = new FileReader(csvFile);
+
+			IOUtils.copy(reader, output, ENCODING_GBK);
+			output.flush();
+		} catch (Exception e) {
+			logger.warn(e.toString());
+			e.printStackTrace();
+		} finally {
+			IOUtils.closeQuietly(output);
+			IOUtils.closeQuietly(reader);
+			//删除临时文件
+			FileUtils.deleteQuietly(csvFile);
+		}
+	}
 
 	@RequestMapping("/download")
 	public void download(@RequestParam("mrXMl") String xml,
 			HttpServletResponse response) {
 		OutputStream output = null;
 		try {
-			response.setContentType("text/xml;charset=" + ENCODING);
-			response.setCharacterEncoding(ENCODING);
+			response.setContentType("text/xml;charset=" + ENCODING_UTF8);
+			response.setCharacterEncoding(ENCODING_UTF8);
 			response.setHeader("Content-disposition",
 					"attachment;filename=untitled.xml");
 			long fileLength = xml.length();
@@ -185,7 +231,7 @@ public class MedicalRecordController {
 
 			output = response.getOutputStream();
 
-			IOUtils.write(xml, output, ENCODING);
+			IOUtils.write(xml, output, ENCODING_UTF8);
 			output.flush();
 		} catch (Exception e) {
 			logger.warn(e.toString());

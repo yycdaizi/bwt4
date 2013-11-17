@@ -17,9 +17,17 @@ import org.springframework.util.CollectionUtils;
 public class DicItemDaoImpl extends BaseDaoImpl<DicItem> implements IDicItemDao {
 
 	@Override
-	public DicItem get(String type, String code) {
+	public DicItem get(String type, String code, String parentCode) {
 		String hql = "from "+DicItem.class.getName()+" where type.code=? and code=?";
-		List<DicItem> list = this.query(hql, type, code);
+		List<DicItem> list = null;
+		if(StringUtils.isEmpty(parentCode)){
+			hql += " and parent is null";
+			list = this.query(hql, type, code);
+		}else{
+			hql += " and parent.code =?";
+			list = this.query(hql, type, code, parentCode);
+		}
+		
 		if(CollectionUtils.isEmpty(list)){
 			return null;
 		}else{
@@ -45,5 +53,11 @@ public class DicItemDaoImpl extends BaseDaoImpl<DicItem> implements IDicItemDao 
 		}
 		
 		return this.queryForPage(hql.toString(), param.getPage(), param.getRows(), paramMap);
+	}
+
+	@Override
+	public List<DicItem> getChildrenDicItem(DicItem parent) {
+		String hql = "from "+DicItem.class.getName()+" where type.id=? and parent.id=?";
+		return this.query(hql, parent.getType().getId(), parent.getParent().getId());
 	}
 }

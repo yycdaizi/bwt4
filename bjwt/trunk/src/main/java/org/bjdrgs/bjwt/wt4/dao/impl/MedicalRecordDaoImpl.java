@@ -64,6 +64,14 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 			hql.append(" and obj.AAC01 >= :ge_AAC01");
 			paramMap.put("ge_AAC01", param.getGe_AAC01());
 		}
+		if(StringUtils.isNotEmpty(param.getEq_mdc())){
+			hql.append(" and obj.mdc = :eq_mdc");
+			paramMap.put("eq_mdc", param.getEq_mdc());
+		}
+		if(StringUtils.isNotEmpty(param.getEq_drg())){
+			hql.append(" and obj.drg = :eq_drg");
+			paramMap.put("eq_drg", param.getEq_drg());
+		}
 		if(StringUtils.isNotEmpty(param.getEq_state())){
 			hql.append(" and obj.state = :eq_state");
 			paramMap.put("eq_state", param.getEq_state());

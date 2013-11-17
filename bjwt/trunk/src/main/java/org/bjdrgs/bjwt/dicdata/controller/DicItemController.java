@@ -99,7 +99,7 @@ public class DicItemController {
 		if(dicType==null){
 			return true;
 		}
-		DicItem dicItem = dicDataService.getDicItem(dicType.getCode(), code);
+		DicItem dicItem = dicDataService.getDicItem(dicType.getCode(), code, null);
 		return dicItem==null||dicItem.getId().equals(itemId);
 	}
 }

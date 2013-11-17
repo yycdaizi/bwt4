@@ -12,6 +12,7 @@
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/blockui/jquery.blockUI.js"></script>
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/xmloperator/XmlUtils.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/base/accounting.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/oop.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/ModelValidator.js"></script>
 
@@ -56,12 +57,10 @@
 				<tr>
 					<td align="right"><label for="eq_mdc">mdc：</label></td>
 					<td><input id="eq_mdc" name="eq_mdc" type="text"	class="easyui-combobox"
-							 valueField="code" textField="text" 
-							 url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MR-MDC"/></td>
+							 valueField="code" textField="text" /></td>
 					<td align="right"><label for="eq_drg">drg：</label></td>
 					<td><input id="eq_drg" name="eq_drg" type="text"	class="easyui-combobox"
-							valueField="code" textField="text" 
-							url="${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MR-DRG"/></td>
+							valueField="code" textField="text" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="eq_state">病案状态：</label></td>
@@ -86,20 +85,29 @@
 				<tr>
 					<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
 					<th data-options="field:'AAA01',width:200">姓名</th>
-					<th data-options="field:'AAB02C',width:200,formatter:medicalSubject_Formatter">入院科别</th>
 					<th data-options="field:'AAC01',width:200">出院时间</th>
+					<th data-options="field:'AAC02C',width:200,formatter:medicalSubject_Formatter">出院科别</th>
+					<th data-options="field:'ABC01N',width:200">主要诊断</th>
 					<th data-options="field:'AEM01C',width:200,formatter:liYuanFangShi_Formatter">离院方式</th>
-					<th	data-options="field:'mdc',width:100,formatter:mdcFormatter">mdc</th>
-					<th	data-options="field:'drg',width:100,formatter:drgFormatter">drg</th>
+					<th	data-options="field:'mdc',width:100,formatter:mdcAnddrgFormatter">mdc</th>
+					<th	data-options="field:'drg',width:100,formatter:mdcAnddrgFormatter">drg</th>
+					<th data-options="field:'ADA01',width:100,align:'right',formatter:costFormatter">总费用</th>
+					<th data-options="field:'AAC04',width:100,align:'right'">住院天数</th>
 					<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
 					<th	data-options="field:'updateTime',width:150,sortable:true">最后修改时间</th>
 					<th	data-options="field:'state',width:100,formatter:stateFormatter">状态</th>
 					<th	data-options="field:'operate',width:100,formatter:medicalRecordOperater">操作</th>
+					<!-- 
+					<th data-options="field:'AAB02C',width:200,formatter:medicalSubject_Formatter">入院科别</th>
+					 -->
 				</tr>
 			</thead>
 		</table>
 		<div id="gridMedicalRecord-toolbar" style="height:28px">
-			<a id="medicalRecord-btnExport" href="#" class="easyui-linkbutton" plain="true" style="float:right">导出</a>
+			<a id="medicalRecord-btnExportXML" href="#" class="easyui-linkbutton" plain="true" style="float:right">导出XML</a>
+			<div class="datagrid-btn-separator" style="float:right"></div>
+			<a id="medicalRecord-btnExportCSV" href="#" class="easyui-linkbutton" plain="true" style="float:right">导出分组结果</a>
+			<div class="datagrid-btn-separator" style="float:right"></div>
 			<a id="medicalRecord-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
 		</div>
 	</div>
@@ -133,7 +141,25 @@ var Static = {
 		STATE_COMPLETE : "1",
 		SAVE_DRAFT_INTERVAL: 300
 };
+var mdcDrgDic = [];
+$.ajax({
+	type: "GET",
+	url : '${pageContext.request.contextPath}/dicdata/dicType/getDicData.do?type=MR-MDC-DRG',
+	async : false,
+	contentType : 'application/json;utf-8',
+	dataType : 'json',
+	data : '',
+	success : function(result){
+		mdcDrgDic = result;
+	},
+	error : function (XMLHttpRequest, textStatus, errorThrown) {
+		$.messager.show({title: '错误', msg:'加载mdc和drg数据字典失败'}); 
+	}
+});
 
+function costFormatter(value){
+	return (value||value===0) ? accounting.formatNumber(value, 2) : value;
+}
 function medicalSubject_Formatter(value) {
 	var medicalSubject = dic.medicalSubject;
 	for ( var i = 0, len = medicalSubject.length; i < len; i++) {
@@ -150,20 +176,11 @@ function liYuanFangShi_Formatter(value) {
 	}
 	return value;
 }
-function mdcFormatter(value){
-	var stateDic = $('#eq_mdc').combobox('getData');
-	for(var i=0,len=stateDic.length;i<len;i++){
-		if(value==stateDic[i]['code']){
-			return stateDic[i]['text'];
-		}
-	}
-	return value;
-}
-function drgFormatter(value){
-	var stateDic = $('#eq_drg').combobox('getData');
-	for(var i=0,len=stateDic.length;i<len;i++){
-		if(value==stateDic[i]['code']){
-			return stateDic[i]['text'];
+function mdcAnddrgFormatter(value){
+	var dic = mdcDrgDic;
+	for(var i=0,len=dic.length;i<len;i++){
+		if(value==dic[i]['code']){
+			return dic[i]['text'];
 		}
 	}
 	return value;
@@ -322,6 +339,29 @@ $(function(){
 	loadAllTabs();
 	$('#dialogMedicalRecordEdit').dialog('close');
 	
+	var mdcDic = [];
+	for(var i=0,len=mdcDrgDic.length; i<len; i++){
+		if(!mdcDrgDic[i]['parent']){
+			mdcDic.push(mdcDrgDic[i]);
+		}
+	}
+	$('#eq_mdc').combobox({
+		data : mdcDic,
+		onSelect : function(record) {
+			var drgDic = [];
+			for(var i=0,len=mdcDrgDic.length; i<len; i++){
+				var parent = mdcDrgDic[i]['parent'];
+				if(parent && parent["id"]===record["id"]){
+					drgDic.push(mdcDrgDic[i]);
+				}
+			}
+			$("#eq_drg").combobox("loadData", drgDic);
+		},
+		onUnselect : function(record) {
+			$("#eq_drg").combobox("loadData", []);
+		}
+	});
+	
 	$('#medicalRecord-btnQuery').click(function(){
 		$('#gridMedicalRecord').datagrid('load',$('#formMedicalRecordQuery').serializeObject());
 	});
@@ -438,7 +478,7 @@ $(function(){
 		Countdown.init(Static.SAVE_DRAFT_INTERVAL).start();
 	});
 	
-	$("#medicalRecord-btnExport").click(function(){
+	$("#medicalRecord-btnExportXML").click(function(){
 		$.blockUI({
             css: {
                 border: 'none', 
@@ -452,7 +492,27 @@ $(function(){
             message:"<b>正在导出，请稍后...</b>"
         });
 		$("#formMedicalRecordQuery").form('load', $('#gridMedicalRecord').datagrid('options').queryParams);
-		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/export.do");
+		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/exportToXML.do");
+		$("#formMedicalRecordQuery").submit();
+		$.unblockUI();
+	});
+
+	
+	$("#medicalRecord-btnExportCSV").click(function(){
+		$.blockUI({
+            css: {
+                border: 'none', 
+                padding: '15px', 
+                backgroundColor: '#000', 
+                '-webkit-border-radius': '10px', 
+                '-moz-border-radius': '10px', 
+                opacity: .5, 
+                color: '#fff' 
+            },
+            message:"<b>正在导出，请稍后...</b>"
+        });
+		$("#formMedicalRecordQuery").form('load', $('#gridMedicalRecord').datagrid('options').queryParams);
+		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/exportToCSV.do");
 		$("#formMedicalRecordQuery").submit();
 		$.unblockUI();
 	});

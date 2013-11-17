@@ -33,4 +33,6 @@ public interface IMedicalRecordService {
 	List<MedicalRecord> importXmlFile(InputStream inputStream) throws Exception;
 
 	List<MedicalRecord> importZipFile(File zipFile) throws Exception;
+
+	void exportToCSV(List<MedicalRecord> list, File csvFile) throws Exception;
 }

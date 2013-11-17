@@ -67,8 +67,13 @@ public class DicDataServiceImpl implements IDicDataService {
 	}
 
 	@Override
-	public DicItem getDicItem(String type, String code) {
-		return dicItemDao.get(type, code);
+	public List<DicItem> getChildrenDicItem(DicItem parent) {
+		return dicItemDao.getChildrenDicItem(parent);
+	}
+
+	@Override
+	public DicItem getDicItem(String type, String code, String parentCode) {
+		return dicItemDao.get(type, code, parentCode);
 	}
 
 	@Override
@@ -86,7 +91,14 @@ public class DicDataServiceImpl implements IDicDataService {
 
 	@Override
 	public void deleteDicItemById(Integer id) {
-		dicItemDao.deleteById(id);
+		deleteDicItem(dicItemDao.get(id));
 	}
 	
+	public void deleteDicItem(DicItem entity){
+		List<DicItem> children = getChildrenDicItem(entity);
+		for (DicItem dicItem : children) {
+			deleteDicItem(dicItem);
+		}
+		dicItemDao.delete(entity);
+	}
 }

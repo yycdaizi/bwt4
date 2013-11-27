@@ -185,12 +185,10 @@ public class MedicalRecordController {
 			User user = SecurityUtils.getCurrentUser();
 			param.setOrgId(user.getOrg().getOrgid());
 
-			List<MedicalRecord> list = medicalRecordService.queryAll(param);
-			
 			File tempDir = new File(tempDirPath);
 			FileUtils.forceMkdir(tempDir);
 			csvFile = new File(tempDir, "exp-"+UUID.randomUUID()+".csv");
-			medicalRecordService.exportToCSV(list, csvFile);
+			medicalRecordService.exportToCSV(param, csvFile);
 
 			response.setContentType("application/csv;charset=" + ENCODING_GBK);
 			response.setCharacterEncoding(ENCODING_UTF8);

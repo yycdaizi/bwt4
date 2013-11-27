@@ -96,6 +96,10 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		entity.setUpdateTime(new Date());
 		entity.setUpdatedBy(user);
 	}
+	
+	private boolean isExist(MedicalRecord entity){
+		return medicalRecordDao.isExist(entity);
+	}
 
 	@Override
 	public void save(MedicalRecord[] entities) {
@@ -447,7 +451,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 
 	@SuppressWarnings("resource")
 	@Override
-	public void exportToCSV(List<MedicalRecord> list, File csvFile)
+	public void exportToCSV(MedicalRecordParam param, File csvFile)
 			throws Exception {
 		String[] header = new String[] { "病案号", "姓名", "出院日期", "出院科室", "主要诊断",
 				"离院方式", "mdc", "drg", "总费用", "住院天数", "权重" };
@@ -472,20 +476,20 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				weightMap.put(key, dicItem.getRemark());
 			}
 		}
+		
+		List<Object[]> list = medicalRecordDao.queryLimitedFields(param, fieldNames);
 
 		CSVWriter writer = new CSVWriter(new FileWriter(csvFile));
 		try {
 			writer.writeNext(header);
-			for (MedicalRecord mr : list) {
+			for (Object[] mr : list) {
 				String[] data = new String[header.length];
-				for (int i = 0; i < fields.length; i++) {
-					if (fields[i] == null) {
+				for (int i = 0; i < mr.length; i++) {
+					if(mr[i] == null||fields[i] == null){
 						continue;
 					}
-					Object value = fields[i].get(mr);
-					if (value == null) {
-						continue;
-					}
+					
+					Object value = mr[i];
 					String valStr = "";
 					Class<?> type = fields[i].getType();
 					if (type == Date.class) {
@@ -518,7 +522,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 					data[i] = valStr;
 				}
 				//权重
-				data[10] = weightMap.get(buildMdcAndDrgCombination(mr.getMdc(), mr.getDrg()));
+				data[10] = weightMap.get(buildMdcAndDrgCombination(data[6], data[7]));
 				writer.writeNext(data);
 			}
 			writer.flush();

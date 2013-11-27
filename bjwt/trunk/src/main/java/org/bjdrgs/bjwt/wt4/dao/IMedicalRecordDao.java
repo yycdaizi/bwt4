@@ -13,4 +13,8 @@ public interface IMedicalRecordDao extends IBaseDao<MedicalRecord> {
 
 	List<MedicalRecord> queryAll(MedicalRecordParam param);
 
+	boolean isExist(MedicalRecord entity);
+
+	List<Object[]> queryLimitedFields(MedicalRecordParam param, String[] fieldNames);
+
 }

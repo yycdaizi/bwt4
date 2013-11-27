@@ -34,5 +34,5 @@ public interface IMedicalRecordService {
 
 	List<MedicalRecord> importZipFile(File zipFile) throws Exception;
 
-	void exportToCSV(List<MedicalRecord> list, File csvFile) throws Exception;
+	void exportToCSV(MedicalRecordParam param, File csvFile) throws Exception;
 }

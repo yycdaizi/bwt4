@@ -27,6 +27,8 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -72,24 +74,28 @@ public class MedicalRecord implements Serializable {
 	private Long id;
 
 	@JsonProperty
+	@BatchSize(size=16)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="medicalRecordId")
 	//@JoinColumn(name="b_wt4_id")
 	private List<Diagnose> ABDS = new ArrayList<Diagnose>();
 
 	@JsonProperty
+	@BatchSize(size=16)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="medicalRecordId")
 	//@JoinColumn(name="b_wt4_id")
 	private List<BirthDefect> AENS = new ArrayList<BirthDefect>();
 
 	@JsonProperty
+	@BatchSize(size=16)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="medicalRecordId")
 	//@JoinColumn(name="b_wt4_id")
 	private List<Surgery> ACAS = new ArrayList<Surgery>();
 
 	@JsonProperty
+	@BatchSize(size=16)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@OneToMany(mappedBy="medicalRecordId")
 	//@JoinColumn(name="b_wt4_id")
@@ -118,75 +124,67 @@ public class MedicalRecord implements Serializable {
 	private User updatedBy;
 
 	/** 行政区划代码 */
-	//TODO ==================================
-	//@Column(name = "ZONE_CODE")
-	@Transient
+	@Column(name = "ZONE_CODE")
 	@JsonProperty private String ZA01C;
 	
 	/** 组织机构代码 */
-	//TODO ==================================
-	//@Column(name = "ORG_CODE")
-	@Transient
+	@Column(name = "ORG_CODE")
 	@JsonProperty private String ZA02C;
 	
 	/** 机构名称 */
-	//TODO
-	//@Column(name = "ORG_NAME")
-	@Transient
+	@Column(name = "ORG_NAME")
 	@JsonProperty private String ZA03;
 	
 	/** 单位负责人 */
 	@Column(name = "CHIEF")
 	@JsonProperty private String ZA04;
 	
+	//填报信息ZB都可以不要，导出的时候再生成==============
 	/** 报表代码 */
-	//TODO ==================================
-	//@Column(name = "text")
-	@Transient
-	@JsonProperty private String ZB01C;
+	// @Column(name = "text")
+	// @Transient
+	// @JsonProperty private String ZB01C;
 	
 	/** 数据年份 */
-	@Column(name = "YEAR_TIME")
-	@JsonProperty private Integer ZB02;
+	// @Column(name = "YEAR_TIME")
+	// @JsonProperty private Integer ZB02;
 	
 	/** 数据月份 */
-	@Column(name = "MONTH_TIME")
-	@JsonProperty private Integer ZB03;
+	// @Column(name = "MONTH_TIME")
+	// @JsonProperty private Integer ZB03;
 	
 	/** 填报人 */
-	@Column(name = "TYPER")
-	@JsonProperty private String ZB04;
+	// @Column(name = "TYPER")
+	// @JsonProperty private String ZB04;
 	
 	/** 填报人联系电话 */
-	@Column(name = "TYPER_TEL")
-	@JsonProperty private String ZB05;
+	// @Column(name = "TYPER_TEL")
+	// @JsonProperty private String ZB05;
 	
 	/** 填报日期 */
-	@JsonDeserialize(using=DateTimeDeserializer.class)
-	@JsonSerialize(using= DateTimeSerializer.class)
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DATE_SUBMIT")
-	@JsonProperty private Date ZB06;
+	// @JsonDeserialize(using=DateTimeDeserializer.class)
+	// @JsonSerialize(using= DateTimeSerializer.class)
+	// @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	// @Temporal(TemporalType.TIMESTAMP)
+	// @Column(name = "DATE_SUBMIT")
+	// @JsonProperty private Date ZB06;
 	
 	/** 记录数 */
-	//TODO ==================================
-	//@Column(name = "text")
-	@Transient
-	@JsonProperty private Integer ZB07;
+	// @Column(name = "text")
+	// @Transient
+	// @JsonProperty private Integer ZB07;
 	
 	/** 邮箱 */
-	//TODO ==================================
-	//@Column(name = "text")
-	@Transient
-	@JsonProperty private String ZB08;
+	// @Column(name = "text")
+	// @Transient
+	// @JsonProperty private String ZB08;
 	
 	/** 手机 */
-	//TODO ==================================
-	//@Column(name = "text")
-	@Transient
-	@JsonProperty private String ZB09;
+	// @Column(name = "text")
+	// @Transient
+	// @JsonProperty private String ZB09;
 	
+	//病案信息开始=================================
 	/** 姓名 */
 	@Column(name = "NAME_PATIENT")
 	@JsonProperty private String AAA01;
@@ -921,78 +919,6 @@ public class MedicalRecord implements Serializable {
 
 	@JsonIgnore public void setZA04(String zA04) {
 		ZA04 = zA04;
-	}
-
-	@JsonIgnore public String getZB01C() {
-		return ZB01C;
-	}
-
-	@JsonIgnore public void setZB01C(String zB01C) {
-		ZB01C = zB01C;
-	}
-
-	@JsonIgnore public Integer getZB02() {
-		return ZB02;
-	}
-
-	@JsonIgnore public void setZB02(Integer zB02) {
-		ZB02 = zB02;
-	}
-
-	@JsonIgnore public Integer getZB03() {
-		return ZB03;
-	}
-
-	@JsonIgnore public void setZB03(Integer zB03) {
-		ZB03 = zB03;
-	}
-
-	@JsonIgnore public String getZB04() {
-		return ZB04;
-	}
-
-	@JsonIgnore public void setZB04(String zB04) {
-		ZB04 = zB04;
-	}
-
-	@JsonIgnore public String getZB05() {
-		return ZB05;
-	}
-
-	@JsonIgnore public void setZB05(String zB05) {
-		ZB05 = zB05;
-	}
-
-	@JsonIgnore public Date getZB06() {
-		return ZB06;
-	}
-
-	@JsonIgnore public void setZB06(Date zB06) {
-		ZB06 = zB06;
-	}
-
-	@JsonIgnore public Integer getZB07() {
-		return ZB07;
-	}
-
-	@JsonIgnore public void setZB07(Integer zB07) {
-		ZB07 = zB07;
-	}
-
-	@JsonIgnore public String getZB08() {
-		return ZB08;
-	}
-
-	@JsonIgnore public void setZB08(String zB08) {
-		ZB08 = zB08;
-	}
-
-	@JsonIgnore public String getZB09() {
-		return ZB09;
-	}
-
-	@JsonIgnore public void setZB09(String zB09) {
-		ZB09 = zB09;
 	}
 
 	@JsonIgnore public String getAAA01() {

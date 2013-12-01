@@ -95,11 +95,12 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 	@Override
 	public boolean isExist(MedicalRecord entity) {
 		// TODO 医院+病案号（AAA28）+出院日期（AAC01） 唯一标识
-		String hql = "select count(1) from " + MedicalRecord.class.getName()
-				+ " where AAA28=:AAA28 and AAC01=:AAC01";
+		String hql = "select count(*) from " + MedicalRecord.class.getName()
+				+ " where ZA02C=:ZA02C and AAA28=:AAA28 and AAC01=:AAC01";
 		Long count = (Long) this.getCurrentSession().createQuery(hql)
-				.setParameter("AAA28", entity.getAAA28())
-				.setParameter("AAC01", entity.getAAC01()).uniqueResult();
+				.setString("ZA02C", entity.getZA02C())
+				.setString("AAA28", entity.getAAA28())
+				.setDate("AAC01", entity.getAAC01()).uniqueResult();
 		return count > 0;
 	}
 

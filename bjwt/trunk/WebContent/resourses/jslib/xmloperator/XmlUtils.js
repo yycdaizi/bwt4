@@ -1,5 +1,5 @@
 var XmlUtils = {
-	isIE: !+"/v1",
+	isIE: $.browser.msie,//!+"/v1",
 
 	/**
 	 * 创建XMLDOM对象

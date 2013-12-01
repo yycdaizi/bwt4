@@ -49,9 +49,9 @@
 							panelHeight="auto" data-options="data:dic.liYuanFangShi"/></td>
 				</tr>
 				<tr>
-					<td align="right"><label for="ge_AAC01">出院时间晚于：</label></td>
+					<td align="right"><label for="ge_AAC01">出院时间：</label></td>
 					<td><input name="ge_AAC01" type="text" onclick="WdatePicker();"></td>
-					<td align="right"><label for="le_AAC01">出院时间早于：</label></td>
+					<td align="right"><label for="le_AAC01">至</label></td>
 					<td><input name="le_AAC01" type="text" onclick="WdatePicker();"></td>
 				</tr>
 				<tr>

@@ -22,6 +22,7 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.format.annotation.DateTimeFormat;
 /**
@@ -49,6 +50,7 @@ public class Surgery implements Serializable {
 	@Column(name="b_wt4_id")
 	private Long medicalRecordId;
 	
+	@BatchSize(size=32)
 	@OneToMany(mappedBy="surgeryId", fetch=FetchType.EAGER)
 	//@JoinColumn(name="b_wt4_surgery_id")
 	@JsonProperty private List<Operation> ACA09S = new ArrayList<Operation>();

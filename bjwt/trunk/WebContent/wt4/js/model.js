@@ -115,6 +115,18 @@ var MedicalRecord = $.ModelValidator.definedModel({
 	drg : {
 		validators : []
 	},
+	ZA01C : {
+		validators : []
+	},
+	ZA02C : {
+		validators : []
+	},
+	ZA03 : {
+		validators : []
+	},
+	ZA04 : {
+		validators : []
+	},
 	ABDS : {
 		defaultValue : new Array(),
 		validators : [{
@@ -1067,7 +1079,9 @@ function getNodeValues(root, tag, model){
 	if(tagNodes.length!=0){
 		var childNodes = tagNodes[0].childNodes;
 		for(var i=0,len=childNodes.length; i<len;i++){
-			res.push(model.parse(childNodes[i]));
+			if(childNodes[i].nodeType === Node.ELEMENT_NODE){
+				res.push(model.parse(childNodes[i]));
+			}
 		}
 	}
 	return res;

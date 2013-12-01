@@ -175,10 +175,21 @@ function parseMedicalRecordXML(path){
 		$.messager.alert('系统错误','XML文件导入失败！请使用IE浏览器。','error');
 		return;
 	}
+	
+	//处理ZA
+	var zaTags = ["ZA01C","ZA02C","ZA03","ZA04"];
+	var za = {};
+	for(var k=0; k<zaTags.length; k++){
+		za[zaTags[k]] = getNodeValue(xmlDoc, zaTags[k]);
+	}
+	
     var cases = xmlDoc.getElementsByTagName("CASE");
     var recordList = [];
     for(var i=0; i<cases.length; i++){
     	var record = MedicalRecord.parse(cases[i]);
+    	//给ZA赋值
+    	$.extend(record, za);
+    	
     	recordList.push(record);
     }
     return recordList;

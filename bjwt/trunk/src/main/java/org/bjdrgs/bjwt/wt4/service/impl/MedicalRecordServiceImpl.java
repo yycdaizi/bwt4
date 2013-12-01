@@ -95,6 +95,12 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		}
 		entity.setUpdateTime(new Date());
 		entity.setUpdatedBy(user);
+		
+		if(StringUtils.isEmpty(entity.getZA02C())){
+			entity.setZA02C(user.getOrg().getOrgcode());
+			entity.setZA03(user.getOrg().getOrgname());
+			//entity.setZA04(user.getOrg().getOrgmanager_showname());
+		}
 	}
 	
 	private boolean isExist(MedicalRecord entity){
@@ -110,7 +116,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 
 	@Override
 	public void save(MedicalRecord entity) {
-		beforeSave(entity);
+		beforeSave(entity);//TODO 检测重复
 
 		// 保存病案
 		medicalRecordDao.save(entity);
@@ -267,13 +273,29 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			throws Exception {
 		SAXReader reader = new SAXReader();
 		Document document = reader.read(inputStream);
+		
+		//处理ZA
+		String[] zaKey = new String[]{"ZA01C","ZA02C","ZA03","ZA04"};
+		Map<String, String> zaMap = new HashMap<String, String>();
+		for(String key : zaKey){
+			Node node = document.selectSingleNode("//" + key);
+			if(node != null){
+				zaMap.put(key, node.getText());
+			}
+		}
 
+		//解析病案
 		BaseVisitor<MedicalRecord> visitor = new BaseVisitor<MedicalRecord>(
 				MedicalRecord.class);
 		document.accept(visitor);
 		List<MedicalRecord> list = visitor.getData();
 
 		for (MedicalRecord medicalRecord : list) {
+			medicalRecord.setZA01C(zaMap.get("ZA01C"));
+			medicalRecord.setZA02C(zaMap.get("ZA02C"));
+			medicalRecord.setZA03(zaMap.get("ZA03"));
+			medicalRecord.setZA04(zaMap.get("ZA04"));
+			
 			medicalRecord.setState(MedicalRecord.STATE_UNVALIDATE);
 		}
 		batchInsert(list);
@@ -289,6 +311,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	public void batchInsert(List<MedicalRecord> list) {
 		for (MedicalRecord medicalRecord : list) {
 			beforeSave(medicalRecord);
+			//isExist(medicalRecord);
 		}
 		medicalRecordDao.saveByBatch(list);
 

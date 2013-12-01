@@ -185,13 +185,15 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 	                        title: '提示',  
 	                        msg: result.message  
 	                    }); 
+	                	var data = result.data;
+	                	var html = "导入成功！  总共：<b>"+data.total+"</b>；  新增：<b>"+data.inserted
+	                			+"</b>；  忽略：<b>"+data.ignored+"</b>。<br/>";
+	                	$("#importInfo").append(html);
 	                } else {
 	                    $.messager.show({  
 	                        title: '错误',  
 	                        msg: result.message  
 	                    });  
-	                }
-	                if(result.message){
 	                	$("#importInfo").append(result.message+"<br/>");
 	                }
 	                $.messager.progress('close');

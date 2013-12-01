@@ -1,5 +1,6 @@
 package org.bjdrgs.bjwt.wt4.dao.impl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +13,10 @@ import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.wt4.dao.IMedicalRecordDao;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 
 @Repository("medicalRecordDao")
 public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
@@ -94,7 +97,7 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 
 	@Override
 	public boolean isExist(MedicalRecord entity) {
-		// TODO 医院+病案号（AAA28）+出院日期（AAC01） 唯一标识
+		// 医院+病案号（AAA28）+出院日期（AAC01） 唯一标识
 		String hql = "select count(*) from " + MedicalRecord.class.getName()
 				+ " where ZA02C=:ZA02C and AAA28=:AAA28 and AAC01=:AAC01";
 		Long count = (Long) this.getCurrentSession().createQuery(hql)
@@ -104,23 +107,108 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 		return count > 0;
 	}
 
+	private static final int BATCH_CHECK_SIZE = 16;
+	private static final String[] uniqueFieldNameGroup = { "ZA02C", "AAA28",
+			"AAC01" };
+	private static Field[] uniqueFieldGroup = null;
+	private static String uniqueFieldGroupCondition = null;
+	static {
+		uniqueFieldGroup = new Field[uniqueFieldNameGroup.length];
+		for (int i = 0; i < uniqueFieldNameGroup.length; i++) {
+			Field field;
+			try {
+				field = MedicalRecord.class
+						.getDeclaredField(uniqueFieldNameGroup[i]);
+				field.setAccessible(true);
+				uniqueFieldGroup[i] = field;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+		//ZA02C=? and AAA28=? and AAC01=?
+		uniqueFieldGroupCondition = org.bjdrgs.bjwt.core.util.CollectionUtils
+				.join(uniqueFieldNameGroup, "=? and ") + "=?";
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Object[]> queryLimitedFields(MedicalRecordParam param, String[] fieldNames) {
-		if(fieldNames.length == 0){
+	public List<Boolean> isExist(List<MedicalRecord> list) throws Exception {
+		if (CollectionUtils.isEmpty(list)) {
+			return new ArrayList<Boolean>(0);
+		}
+
+		StringBuilder mainClause = new StringBuilder();
+		mainClause.append("select ");
+		mainClause.append(org.bjdrgs.bjwt.core.util.CollectionUtils
+				.join(uniqueFieldNameGroup));
+		mainClause.append(" from ").append(MedicalRecord.class.getName());
+		mainClause.append(" where ");
+
+		List<Boolean> results = new ArrayList<Boolean>(list.size());
+		for (int i = 0; i < list.size(); i += BATCH_CHECK_SIZE) {
+			int size = BATCH_CHECK_SIZE;
+			if (i + size > list.size()) {
+				// 最后剩余部分
+				size = list.size() - i;
+			}
+
+			StringBuilder hql = new StringBuilder(mainClause);
+
+			for (int k = 0; k < size - 1; k++) {
+				hql.append(uniqueFieldGroupCondition).append(" or ");
+			}
+			hql.append(uniqueFieldGroupCondition);
+
+			Query query = this.getCurrentSession().createQuery(hql.toString());
+			for (int j = 0; j < size; j++) {
+				MedicalRecord mr = list.get(i + j);
+				for (int x = 0; x < uniqueFieldGroup.length; x++) {
+					query.setParameter(uniqueFieldGroup.length * j + x,
+							uniqueFieldGroup[x].get(mr));
+				}
+			}
+			List<Object[]> ret = query.list();
+			// 判断记录是否存在
+			for (int j = 0; j < size; j++) {
+				MedicalRecord mr = list.get(i + j);
+				boolean exist = false;
+				for (Object[] r : ret) {
+					boolean flag = true;
+					for (int x = 0; x < uniqueFieldGroup.length; x++) {
+						if (!uniqueFieldGroup[x].get(mr).equals(r[x])) {
+							flag = false;
+							break;
+						}
+					}
+					if (flag) {
+						exist = true;
+						break;
+					}
+				}
+				results.add(exist);
+			}
+		}
+		return results;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Object[]> queryLimitedFields(MedicalRecordParam param,
+			String[] fieldNames) {
+		if (fieldNames.length == 0) {
 			return new ArrayList<Object[]>(0);
 		}
-		
+
 		StringBuilder hql = new StringBuilder();
 		hql.append("select ");
-		for (int i=0; i<fieldNames.length-1; i++) {
+		for (int i = 0; i < fieldNames.length - 1; i++) {
 			hql.append(fieldNames[i]).append(",");
 		}
-		hql.append(fieldNames[fieldNames.length-1]).append(" ");
-		
+		hql.append(fieldNames[fieldNames.length - 1]).append(" ");
+
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		this.buildQueryHql(param, hql, paramMap);
-		
+
 		Query query = getCurrentSession().createQuery(hql.toString());
 		DaoUtils.applyParametersToQuery(query, paramMap);
 		return query.list();

@@ -8,6 +8,7 @@ import java.util.List;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
+import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
 import org.dom4j.Document;
 
 
@@ -30,9 +31,9 @@ public interface IMedicalRecordService {
 
 	void delete(MedicalRecord entity);
 
-	List<MedicalRecord> importXmlFile(InputStream inputStream) throws Exception;
+	ImportResult importXmlFile(InputStream inputStream) throws Exception;
 
-	List<MedicalRecord> importZipFile(File zipFile) throws Exception;
+	ImportResult importZipFile(File zipFile) throws Exception;
 
 	void exportToCSV(MedicalRecordParam param, File csvFile) throws Exception;
 }

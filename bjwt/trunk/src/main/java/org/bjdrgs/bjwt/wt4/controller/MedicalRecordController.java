@@ -25,6 +25,7 @@ import org.bjdrgs.bjwt.wt4.Wt4Constants;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
+import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -251,10 +252,11 @@ public class MedicalRecordController {
 			String fileName = importfile.getOriginalFilename();
 			if (fileName != null && fileName.matches("^.+\\.(?i)xml$")) {
 				input = importfile.getInputStream();
-				List<MedicalRecord> list = medicalRecordService
+				ImportResult importResult = medicalRecordService
 						.importXmlFile(input);
 				result.setSuccess(true);
-				result.setMessage("导入成功！共导入了" + list.size() + "条记录。");
+				result.setData(importResult);
+				result.setMessage("导入成功！");
 			} else if (fileName != null && fileName.matches("^.+\\.(?i)zip$")) {
 				String tempDirPath = request.getSession().getServletContext().getRealPath("/temp/mrimport");
 				File tempDir = new File(tempDirPath);
@@ -262,10 +264,11 @@ public class MedicalRecordController {
 				zipFile = File.createTempFile(fileName.substring(0, fileName.lastIndexOf(".")), ".zip", tempDir);
 				importfile.transferTo(zipFile);
 				
-				List<MedicalRecord> list = medicalRecordService
+				ImportResult importResult = medicalRecordService
 						.importZipFile(zipFile);
 				result.setSuccess(true);
-				result.setMessage("导入成功！共导入了" + list.size() + "条记录。");
+				result.setData(importResult);
+				result.setMessage("导入成功！");
 			} else {
 				result.setSuccess(false);
 				result.setMessage("导入失败！导入文件格式有误，只能倒入xml或zip文件！");

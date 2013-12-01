@@ -42,6 +42,7 @@ import org.bjdrgs.bjwt.wt4.model.Operation;
 import org.bjdrgs.bjwt.wt4.model.Surgery;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
+import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
 import org.bjdrgs.bjwt.wt4.xmlvisitor.BaseVisitor;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -101,10 +102,6 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			entity.setZA03(user.getOrg().getOrgname());
 			//entity.setZA04(user.getOrg().getOrgmanager_showname());
 		}
-	}
-	
-	private boolean isExist(MedicalRecord entity){
-		return medicalRecordDao.isExist(entity);
 	}
 
 	@Override
@@ -269,7 +266,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	}
 
 	@Override
-	public List<MedicalRecord> importXmlFile(InputStream inputStream)
+	public ImportResult importXmlFile(InputStream inputStream)
 			throws Exception {
 		SAXReader reader = new SAXReader();
 		Document document = reader.read(inputStream);
@@ -298,21 +295,29 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			
 			medicalRecord.setState(MedicalRecord.STATE_UNVALIDATE);
 		}
-		batchInsert(list);
-
-		return list;
+		return batchInsert(list);
 	}
 
 	/**
 	 * 批量插入,由于不用执行删除，同时还使用了批量提交，速度比save快了近百倍
 	 * 
 	 * @param list
+	 * @return 
+	 * @throws Exception 
 	 */
-	public void batchInsert(List<MedicalRecord> list) {
-		for (MedicalRecord medicalRecord : list) {
+	public ImportResult batchInsert(List<MedicalRecord> entities) throws Exception {
+		for (MedicalRecord medicalRecord : entities) {
 			beforeSave(medicalRecord);
-			//isExist(medicalRecord);
 		}
+		
+		List<Boolean> isExistList = medicalRecordDao.isExist(entities);
+		List<MedicalRecord> list = new ArrayList<MedicalRecord>(entities.size());
+		for(int i=0; i<isExistList.size(); i++){
+			if(!isExistList.get(i)){
+				list.add(entities.get(i));
+			}
+		}
+		
 		medicalRecordDao.saveByBatch(list);
 
 		List<Diagnose> diagnoseList = new ArrayList<Diagnose>();
@@ -369,6 +374,11 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			}
 		}
 		operationDao.saveByBatch(operationList);
+		
+		ImportResult result = new ImportResult();
+		result.setInserted(list.size());
+		result.setIgnored(entities.size()-list.size());
+		return result;
 	}
 
 	public void insert(MedicalRecord entity) {
@@ -430,12 +440,12 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	 */
 
 	@Override
-	public List<MedicalRecord> importZipFile(File file) throws Exception {
+	public ImportResult importZipFile(File file) throws Exception {
 		ZipFile zipFile = new ZipFile(file);
 		try {
 			Enumeration<ZipEntry> enumeration = zipFile.getEntries();
 			ZipEntry zipEntry = null;
-			List<MedicalRecord> list = new ArrayList<MedicalRecord>();
+			ImportResult result = new ImportResult();
 			while (enumeration.hasMoreElements()) {
 				zipEntry = (ZipEntry) enumeration.nextElement();
 				if (zipEntry.isDirectory()) {
@@ -446,13 +456,13 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				if (name != null && name.matches("^.+\\.(?i)xml$")) {
 					InputStream inputStream = zipFile.getInputStream(zipEntry);
 					try {
-						list.addAll(importXmlFile(inputStream));
+						result.addResult(importXmlFile(inputStream));
 					} finally {
 						IOUtils.closeQuietly(inputStream);
 					}
 				}
 			}
-			return list;
+			return result;
 		} finally {
 			ZipFile.closeQuietly(zipFile);
 		}

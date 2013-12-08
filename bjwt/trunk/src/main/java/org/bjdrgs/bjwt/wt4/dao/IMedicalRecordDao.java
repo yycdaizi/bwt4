@@ -15,7 +15,7 @@ public interface IMedicalRecordDao extends IBaseDao<MedicalRecord> {
 
 	boolean isExist(MedicalRecord entity);
 
-	List<Boolean> isExist(List<MedicalRecord> list) throws Exception;
+	List<Boolean> isExist(List<MedicalRecord> list);
 	
 	List<Object[]> queryLimitedFields(MedicalRecordParam param, String[] fieldNames);
 

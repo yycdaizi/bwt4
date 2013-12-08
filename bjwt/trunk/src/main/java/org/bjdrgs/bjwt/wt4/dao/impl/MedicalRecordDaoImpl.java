@@ -9,11 +9,11 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.dao.DaoUtils;
 import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
+import org.bjdrgs.bjwt.core.exception.BaseException;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.wt4.dao.IMedicalRecordDao;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
@@ -125,14 +125,14 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 				throw new RuntimeException(e);
 			}
 		}
-		//ZA02C=? and AAA28=? and AAC01=?
+		// ZA02C=? and AAA28=? and AAC01=?
 		uniqueFieldGroupCondition = org.bjdrgs.bjwt.core.util.CollectionUtils
 				.join(uniqueFieldNameGroup, "=? and ") + "=?";
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Boolean> isExist(List<MedicalRecord> list) throws Exception {
+	public List<Boolean> isExist(List<MedicalRecord> list) {
 		if (CollectionUtils.isEmpty(list)) {
 			return new ArrayList<Boolean>(0);
 		}
@@ -145,48 +145,54 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 		mainClause.append(" where ");
 
 		List<Boolean> results = new ArrayList<Boolean>(list.size());
-		for (int i = 0; i < list.size(); i += BATCH_CHECK_SIZE) {
-			int size = BATCH_CHECK_SIZE;
-			if (i + size > list.size()) {
-				// 最后剩余部分
-				size = list.size() - i;
-			}
 
-			StringBuilder hql = new StringBuilder(mainClause);
-
-			for (int k = 0; k < size - 1; k++) {
-				hql.append(uniqueFieldGroupCondition).append(" or ");
-			}
-			hql.append(uniqueFieldGroupCondition);
-
-			Query query = this.getCurrentSession().createQuery(hql.toString());
-			for (int j = 0; j < size; j++) {
-				MedicalRecord mr = list.get(i + j);
-				for (int x = 0; x < uniqueFieldGroup.length; x++) {
-					query.setParameter(uniqueFieldGroup.length * j + x,
-							uniqueFieldGroup[x].get(mr));
+		try {
+			for (int i = 0; i < list.size(); i += BATCH_CHECK_SIZE) {
+				int size = BATCH_CHECK_SIZE;
+				if (i + size > list.size()) {
+					// 最后剩余部分
+					size = list.size() - i;
 				}
-			}
-			List<Object[]> ret = query.list();
-			// 判断记录是否存在
-			for (int j = 0; j < size; j++) {
-				MedicalRecord mr = list.get(i + j);
-				boolean exist = false;
-				for (Object[] r : ret) {
-					boolean flag = true;
+
+				StringBuilder hql = new StringBuilder(mainClause);
+
+				for (int k = 0; k < size - 1; k++) {
+					hql.append(uniqueFieldGroupCondition).append(" or ");
+				}
+				hql.append(uniqueFieldGroupCondition);
+
+				Query query = this.getCurrentSession().createQuery(
+						hql.toString());
+				for (int j = 0; j < size; j++) {
+					MedicalRecord mr = list.get(i + j);
 					for (int x = 0; x < uniqueFieldGroup.length; x++) {
-						if (!uniqueFieldGroup[x].get(mr).equals(r[x])) {
-							flag = false;
+						query.setParameter(uniqueFieldGroup.length * j + x,
+								uniqueFieldGroup[x].get(mr));
+					}
+				}
+				List<Object[]> ret = query.list();
+				// 判断记录是否存在
+				for (int j = 0; j < size; j++) {
+					MedicalRecord mr = list.get(i + j);
+					boolean exist = false;
+					for (Object[] r : ret) {
+						boolean flag = true;
+						for (int x = 0; x < uniqueFieldGroup.length; x++) {
+							if (!uniqueFieldGroup[x].get(mr).equals(r[x])) {
+								flag = false;
+								break;
+							}
+						}
+						if (flag) {
+							exist = true;
 							break;
 						}
 					}
-					if (flag) {
-						exist = true;
-						break;
-					}
+					results.add(exist);
 				}
-				results.add(exist);
 			}
+		} catch (Exception e) {
+			throw new BaseException(e);
 		}
 		return results;
 	}

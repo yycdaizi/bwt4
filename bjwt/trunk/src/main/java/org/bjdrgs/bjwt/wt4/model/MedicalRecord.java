@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.wt4.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,22 +17,30 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.core.format.DateDeserializer;
 import org.bjdrgs.bjwt.core.format.DateSerializer;
 import org.bjdrgs.bjwt.core.format.DateTimeDeserializer;
 import org.bjdrgs.bjwt.core.format.DateTimeSerializer;
+import org.bjdrgs.bjwt.core.validation.constraints.GreaterThan;
+import org.bjdrgs.bjwt.core.validation.constraints.LessThan;
+import org.bjdrgs.bjwt.wt4.validation.AgeFitBirthday;
+import org.bjdrgs.bjwt.wt4.validation.CheckAAC01;
+import org.bjdrgs.bjwt.wt4.validation.CheckExpenseSum;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.validator.constraints.NotBlank;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -40,6 +49,9 @@ import org.springframework.format.annotation.NumberFormat;
  * @author ying
  *
  */
+@AgeFitBirthday
+@CheckAAC01
+@CheckExpenseSum
 @JsonIgnoreProperties(ignoreUnknown=true)
 @Entity
 @Table(name="b_wt4")
@@ -52,7 +64,8 @@ public class MedicalRecord implements Serializable {
 	
 	public static final String STATE_DRAFT = "0";//草稿
 	public static final String STATE_COMPLETE = "1";//完成
-	public static final String STATE_UNVALIDATE = "2";//未验证
+	public static final String STATE_UNVALIDATED = "2";//未验证
+	public static final String STATE_VALIDATED_FAIL = "3";//验证失败
 	
 	//是否可编辑
 	@Transient
@@ -186,10 +199,12 @@ public class MedicalRecord implements Serializable {
 	
 	//病案信息开始=================================
 	/** 姓名 */
+	@NotBlank
 	@Column(name = "NAME_PATIENT")
 	@JsonProperty private String AAA01;
 	
 	/** 性别代码 */
+	@NotNull
 	@Column(name = "GENDER")
 	@JsonProperty private Integer AAA02C;
 	
@@ -202,6 +217,8 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private Date AAA03;
 	
 	/** 年龄（岁） */
+	@NotNull
+	@Range(min=0, max=150)
 	@Column(name = "AGE")
 	@JsonProperty private Integer AAA04;
 	
@@ -210,6 +227,8 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAA05C;
 	
 	/** 年龄不足1周岁天数 */
+	@LessThan(365)
+	@GreaterThan(0)
 	@Column(name = "SF0100")
 	@JsonProperty private Integer AAA40;
 	
@@ -334,6 +353,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAA25;
 	
 	/** 医疗付费方式代码 */
+	@NotNull
 	@Column(name = "PAYMENT_METHODS")
 	@JsonProperty private Integer AAA26C;
 	
@@ -342,6 +362,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAA27;
 	
 	/** 病案号 */
+	@NotBlank
 	@Column(name = "CASE_ID")
 	@JsonProperty private String AAA28;
 	
@@ -350,6 +371,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private Integer AAA29;
 	
 	/** 入院时间（时） */
+	@NotNull
 	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -358,6 +380,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private Date AAB01;
 	
 	/** 入院科别代码 */
+	@NotBlank
 	@Column(name = "DEPARTMENT_CODE1")
 	@JsonProperty private String AAB02C;
 	
@@ -370,6 +393,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAB06C;
 	
 	/** 出院时间（时） */
+	@NotNull
 	@JsonDeserialize(using=DateTimeDeserializer.class)
 	@JsonSerialize(using= DateTimeSerializer.class)
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -378,6 +402,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private Date AAC01;
 	
 	/** 出院科别代码 */
+	@NotBlank
 	@Column(name = "DEPARTMENT_CODE2")
 	@JsonProperty private String AAC02C;
 	
@@ -386,6 +411,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AAC03;
 	
 	/** 实际住院(天) */
+	@Min(0)
 	@Column(name = "ACCTUAL_DAYS")
 	@JsonProperty private Integer AAC04;
 	
@@ -402,10 +428,12 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String ABA01N;
 	
 	/** 出院时主要诊断编码(ICD-10) */
+	@NotBlank
 	@Column(name = "DISEASE_CODE1")
 	@JsonProperty private String ABC01C;
 	
 	/** 出院主要诊断名称 */
+	@NotBlank
 	@Column(name = "GOOUT_DIAGNOSE_NAME")
 	@JsonProperty private String ABC01N;
 	
@@ -586,6 +614,7 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private Integer AEL01;
 
 	/** 离院方式代码 */
+	@NotBlank
 	@Column(name = "SF0108")
 	@JsonProperty private String AEM01C;
 	
@@ -618,204 +647,245 @@ public class MedicalRecord implements Serializable {
 	@JsonProperty private String AEI08;
 	
 	/** 总费用 */
+	@NotNull
+	@GreaterThan(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "TOTAL_EXPENSE")
-	@JsonProperty private Double ADA01;
+	@JsonProperty private BigDecimal ADA01;
 	
 	/** 自付金额 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "SELFPAYMENT_EXPENSE")
-	@JsonProperty private Double ADA0101;
+	@JsonProperty private BigDecimal ADA0101;
 	
 	/** 诊察（诊疗）费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "EXAMINE_EXPENSE")
-	@JsonProperty private Double ADA11;
+	@JsonProperty private BigDecimal ADA11;
 	
 	/** 一般检查费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CHECK_NORMAL_EXPENSE")
-	@JsonProperty private Double ADA21;
+	@JsonProperty private BigDecimal ADA21;
 	
 	/** 临床物理治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_CLINICAL_EXPENSE")
-	@JsonProperty private Double ADA22;
+	@JsonProperty private BigDecimal ADA22;
 	
 	/** 介入治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_INTRUDE_EXPENSE")
-	@JsonProperty private Double ADA23;
+	@JsonProperty private BigDecimal ADA23;
 	
 	/** 特殊治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_SPECIAL_EXPENSE")
-	@JsonProperty private Double ADA24;
+	@JsonProperty private BigDecimal ADA24;
 	
 	/** 康复治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_RECOVER_EXPENSE")
-	@JsonProperty private Double ADA25;
+	@JsonProperty private BigDecimal ADA25;
 	
 	/** 中医治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_CHINESE_EXPENSE")
-	@JsonProperty private Double ADA26;
+	@JsonProperty private BigDecimal ADA26;
 	
 	/** 一般治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_NORMAL_EXPENSE")
-	@JsonProperty private Double ADA27;
+	@JsonProperty private BigDecimal ADA27;
 	
 	/** 精神治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_MIND_EXPENSE")
-	@JsonProperty private Double ADA28;
+	@JsonProperty private BigDecimal ADA28;
 	
 	/** 接生费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "DELIVER_EXPENSE")
-	@JsonProperty private Double ADA13;
+	@JsonProperty private BigDecimal ADA13;
 	
 	/** 麻醉费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "HORUS_EXPENSE")
-	@JsonProperty private Double ADA15;
+	@JsonProperty private BigDecimal ADA15;
 	
 	/** 手术费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "OPERATION_EXPENSE")
-	@JsonProperty private Double ADA12;
+	@JsonProperty private BigDecimal ADA12;
 	
 	/** 护理治疗费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_TEND_EXPENSE")
-	@JsonProperty private Double ADA29;
+	@JsonProperty private BigDecimal ADA29;
 	
 	/** 护理费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "BED_TEND_EXPENSE")
-	@JsonProperty private Double ADA03;
+	@JsonProperty private BigDecimal ADA03;
 	
 	/** 核素检查 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CHECK_NUCLEUS_EXPENSE")
-	@JsonProperty private Double ADA30;
+	@JsonProperty private BigDecimal ADA30;
 	
 	/** 核素治疗 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CURE_NUCLEUS_EXPENSE")
-	@JsonProperty private Double ADA31;
+	@JsonProperty private BigDecimal ADA31;
 	
 	/** 超声费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "ULTRASOUND_EXPENSE")
-	@JsonProperty private Double ADA32;
+	@JsonProperty private BigDecimal ADA32;
 	
 	/** 放射费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "RADIATE_EXPENSE")
-	@JsonProperty private Double ADA07;
+	@JsonProperty private BigDecimal ADA07;
 	
 	/** 化验费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CHECK_EXPENSE")
-	@JsonProperty private Double ADA08;
+	@JsonProperty private BigDecimal ADA08;
 	
 	/** 病理费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "PATHOLOGY_EXPENSE")
-	@JsonProperty private Double ADA33;
+	@JsonProperty private BigDecimal ADA33;
 	
 	/** 监护及辅助呼吸费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "AUXILIARY_EXPENSE")
-	@JsonProperty private Double ADA34;
+	@JsonProperty private BigDecimal ADA34;
 	
 	/** 治疗用一次性医用材料费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_CURE_EXPENSE")
-	@JsonProperty private Double ADA35;
+	@JsonProperty private BigDecimal ADA35;
 	
 	/** 介入用一次性医用材料费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_INTRUDE_EXPENSE")
-	@JsonProperty private Double ADA36;
+	@JsonProperty private BigDecimal ADA36;
 	
 	/** 手术用一次性医用材料费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_SURGERY_EXPENSE")
-	@JsonProperty private Double ADA37;
+	@JsonProperty private BigDecimal ADA37;
 	
 	/** 检查用一次性医用材料费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "STUFF_CHECK_EXPENSE")
-	@JsonProperty private Double ADA38;
+	@JsonProperty private BigDecimal ADA38;
 	
 	/** 床位费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "BED_EXPENSE")
-	@JsonProperty private Double ADA02;
+	@JsonProperty private BigDecimal ADA02;
 	
 	/** 挂号费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "REGISTER_EXPENSE")
-	@JsonProperty private Double ADA39;
+	@JsonProperty private BigDecimal ADA39;
 	
 	/** 输氧费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "OXYGEN_EXPENSE")
-	@JsonProperty private Double ADA09;
+	@JsonProperty private BigDecimal ADA09;
 	
 	/** 输血费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "TRANSFUSION_EXPENSE")
-	@JsonProperty private Double ADA10;
+	@JsonProperty private BigDecimal ADA10;
 	
 	/** 西药费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "WESTERN_MEDICINE_EXPENSE")
-	@JsonProperty private Double ADA04;
+	@JsonProperty private BigDecimal ADA04;
 	
 	/** 抗菌药物费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "ANTISEPTIC_MEDICINE_EXPENSE")
-	@JsonProperty private Double ADA40;
+	@JsonProperty private BigDecimal ADA40;
 	
 	/** 白蛋白类制品费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_ALBUMIN_EXPENSE")
-	@JsonProperty private Double ADA41;
+	@JsonProperty private BigDecimal ADA41;
 	
 	/** 球蛋白类制品费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_GLOBULIN_EXPENSE")
-	@JsonProperty private Double ADA42;
+	@JsonProperty private BigDecimal ADA42;
 	
 	/** 凝血因子类制品费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_BLOOD_EXPENSE")
-	@JsonProperty private Double ADA43;
+	@JsonProperty private BigDecimal ADA43;
 	
 	/** 细胞因子类制品费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "PRODUCT_CELL_EXPENSE")
-	@JsonProperty private Double ADA44;
+	@JsonProperty private BigDecimal ADA44;
 	
 	/** 中成药费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CHINESE_MEDICINE_EXPENSE1")
-	@JsonProperty private Double ADA05;
+	@JsonProperty private BigDecimal ADA05;
 	
 	/** 中草药费 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "CHINESE_MEDICINE_EXPENSE2")
-	@JsonProperty private Double ADA06;
+	@JsonProperty private BigDecimal ADA06;
 	
 	/** 其他费用 */
+	@Min(0)
 	@NumberFormat(pattern="#.00")
 	@Column(name = "OTHER_EXPENSE")
-	@JsonProperty private Double ADA20;
+	@JsonProperty private BigDecimal ADA20;
 
 	public Long getId() {
 		return id;
@@ -1753,323 +1823,323 @@ public class MedicalRecord implements Serializable {
 		AEI08 = aEI08;
 	}
 
-	@JsonIgnore public Double getADA01() {
+	@JsonIgnore public BigDecimal getADA01() {
 		return ADA01;
 	}
 
-	@JsonIgnore public void setADA01(Double aDA01) {
+	@JsonIgnore public void setADA01(BigDecimal aDA01) {
 		ADA01 = aDA01;
 	}
 
-	@JsonIgnore public Double getADA0101() {
+	@JsonIgnore public BigDecimal getADA0101() {
 		return ADA0101;
 	}
 
-	@JsonIgnore public void setADA0101(Double aDA0101) {
+	@JsonIgnore public void setADA0101(BigDecimal aDA0101) {
 		ADA0101 = aDA0101;
 	}
 
-	@JsonIgnore public Double getADA11() {
+	@JsonIgnore public BigDecimal getADA11() {
 		return ADA11;
 	}
 
-	@JsonIgnore public void setADA11(Double aDA11) {
+	@JsonIgnore public void setADA11(BigDecimal aDA11) {
 		ADA11 = aDA11;
 	}
 
-	@JsonIgnore public Double getADA21() {
+	@JsonIgnore public BigDecimal getADA21() {
 		return ADA21;
 	}
 
-	@JsonIgnore public void setADA21(Double aDA21) {
+	@JsonIgnore public void setADA21(BigDecimal aDA21) {
 		ADA21 = aDA21;
 	}
 
-	@JsonIgnore public Double getADA22() {
+	@JsonIgnore public BigDecimal getADA22() {
 		return ADA22;
 	}
 
-	@JsonIgnore public void setADA22(Double aDA22) {
+	@JsonIgnore public void setADA22(BigDecimal aDA22) {
 		ADA22 = aDA22;
 	}
 
-	@JsonIgnore public Double getADA23() {
+	@JsonIgnore public BigDecimal getADA23() {
 		return ADA23;
 	}
 
-	@JsonIgnore public void setADA23(Double aDA23) {
+	@JsonIgnore public void setADA23(BigDecimal aDA23) {
 		ADA23 = aDA23;
 	}
 
-	@JsonIgnore public Double getADA24() {
+	@JsonIgnore public BigDecimal getADA24() {
 		return ADA24;
 	}
 
-	@JsonIgnore public void setADA24(Double aDA24) {
+	@JsonIgnore public void setADA24(BigDecimal aDA24) {
 		ADA24 = aDA24;
 	}
 
-	@JsonIgnore public Double getADA25() {
+	@JsonIgnore public BigDecimal getADA25() {
 		return ADA25;
 	}
 
-	@JsonIgnore public void setADA25(Double aDA25) {
+	@JsonIgnore public void setADA25(BigDecimal aDA25) {
 		ADA25 = aDA25;
 	}
 
-	@JsonIgnore public Double getADA26() {
+	@JsonIgnore public BigDecimal getADA26() {
 		return ADA26;
 	}
 
-	@JsonIgnore public void setADA26(Double aDA26) {
+	@JsonIgnore public void setADA26(BigDecimal aDA26) {
 		ADA26 = aDA26;
 	}
 
-	@JsonIgnore public Double getADA27() {
+	@JsonIgnore public BigDecimal getADA27() {
 		return ADA27;
 	}
 
-	@JsonIgnore public void setADA27(Double aDA27) {
+	@JsonIgnore public void setADA27(BigDecimal aDA27) {
 		ADA27 = aDA27;
 	}
 
-	@JsonIgnore public Double getADA28() {
+	@JsonIgnore public BigDecimal getADA28() {
 		return ADA28;
 	}
 
-	@JsonIgnore public void setADA28(Double aDA28) {
+	@JsonIgnore public void setADA28(BigDecimal aDA28) {
 		ADA28 = aDA28;
 	}
 
-	@JsonIgnore public Double getADA13() {
+	@JsonIgnore public BigDecimal getADA13() {
 		return ADA13;
 	}
 
-	@JsonIgnore public void setADA13(Double aDA13) {
+	@JsonIgnore public void setADA13(BigDecimal aDA13) {
 		ADA13 = aDA13;
 	}
 
-	@JsonIgnore public Double getADA15() {
+	@JsonIgnore public BigDecimal getADA15() {
 		return ADA15;
 	}
 
-	@JsonIgnore public void setADA15(Double aDA15) {
+	@JsonIgnore public void setADA15(BigDecimal aDA15) {
 		ADA15 = aDA15;
 	}
 
-	@JsonIgnore public Double getADA12() {
+	@JsonIgnore public BigDecimal getADA12() {
 		return ADA12;
 	}
 
-	@JsonIgnore public void setADA12(Double aDA12) {
+	@JsonIgnore public void setADA12(BigDecimal aDA12) {
 		ADA12 = aDA12;
 	}
 
-	@JsonIgnore public Double getADA29() {
+	@JsonIgnore public BigDecimal getADA29() {
 		return ADA29;
 	}
 
-	@JsonIgnore public void setADA29(Double aDA29) {
+	@JsonIgnore public void setADA29(BigDecimal aDA29) {
 		ADA29 = aDA29;
 	}
 
-	@JsonIgnore public Double getADA03() {
+	@JsonIgnore public BigDecimal getADA03() {
 		return ADA03;
 	}
 
-	@JsonIgnore public void setADA03(Double aDA03) {
+	@JsonIgnore public void setADA03(BigDecimal aDA03) {
 		ADA03 = aDA03;
 	}
 
-	@JsonIgnore public Double getADA30() {
+	@JsonIgnore public BigDecimal getADA30() {
 		return ADA30;
 	}
 
-	@JsonIgnore public void setADA30(Double aDA30) {
+	@JsonIgnore public void setADA30(BigDecimal aDA30) {
 		ADA30 = aDA30;
 	}
 
-	@JsonIgnore public Double getADA31() {
+	@JsonIgnore public BigDecimal getADA31() {
 		return ADA31;
 	}
 
-	@JsonIgnore public void setADA31(Double aDA31) {
+	@JsonIgnore public void setADA31(BigDecimal aDA31) {
 		ADA31 = aDA31;
 	}
 
-	@JsonIgnore public Double getADA32() {
+	@JsonIgnore public BigDecimal getADA32() {
 		return ADA32;
 	}
 
-	@JsonIgnore public void setADA32(Double aDA32) {
+	@JsonIgnore public void setADA32(BigDecimal aDA32) {
 		ADA32 = aDA32;
 	}
 
-	@JsonIgnore public Double getADA07() {
+	@JsonIgnore public BigDecimal getADA07() {
 		return ADA07;
 	}
 
-	@JsonIgnore public void setADA07(Double aDA07) {
+	@JsonIgnore public void setADA07(BigDecimal aDA07) {
 		ADA07 = aDA07;
 	}
 
-	@JsonIgnore public Double getADA08() {
+	@JsonIgnore public BigDecimal getADA08() {
 		return ADA08;
 	}
 
-	@JsonIgnore public void setADA08(Double aDA08) {
+	@JsonIgnore public void setADA08(BigDecimal aDA08) {
 		ADA08 = aDA08;
 	}
 
-	@JsonIgnore public Double getADA33() {
+	@JsonIgnore public BigDecimal getADA33() {
 		return ADA33;
 	}
 
-	@JsonIgnore public void setADA33(Double aDA33) {
+	@JsonIgnore public void setADA33(BigDecimal aDA33) {
 		ADA33 = aDA33;
 	}
 
-	@JsonIgnore public Double getADA34() {
+	@JsonIgnore public BigDecimal getADA34() {
 		return ADA34;
 	}
 
-	@JsonIgnore public void setADA34(Double aDA34) {
+	@JsonIgnore public void setADA34(BigDecimal aDA34) {
 		ADA34 = aDA34;
 	}
 
-	@JsonIgnore public Double getADA35() {
+	@JsonIgnore public BigDecimal getADA35() {
 		return ADA35;
 	}
 
-	@JsonIgnore public void setADA35(Double aDA35) {
+	@JsonIgnore public void setADA35(BigDecimal aDA35) {
 		ADA35 = aDA35;
 	}
 
-	@JsonIgnore public Double getADA36() {
+	@JsonIgnore public BigDecimal getADA36() {
 		return ADA36;
 	}
 
-	@JsonIgnore public void setADA36(Double aDA36) {
+	@JsonIgnore public void setADA36(BigDecimal aDA36) {
 		ADA36 = aDA36;
 	}
 
-	@JsonIgnore public Double getADA37() {
+	@JsonIgnore public BigDecimal getADA37() {
 		return ADA37;
 	}
 
-	@JsonIgnore public void setADA37(Double aDA37) {
+	@JsonIgnore public void setADA37(BigDecimal aDA37) {
 		ADA37 = aDA37;
 	}
 
-	@JsonIgnore public Double getADA38() {
+	@JsonIgnore public BigDecimal getADA38() {
 		return ADA38;
 	}
 
-	@JsonIgnore public void setADA38(Double aDA38) {
+	@JsonIgnore public void setADA38(BigDecimal aDA38) {
 		ADA38 = aDA38;
 	}
 
-	@JsonIgnore public Double getADA02() {
+	@JsonIgnore public BigDecimal getADA02() {
 		return ADA02;
 	}
 
-	@JsonIgnore public void setADA02(Double aDA02) {
+	@JsonIgnore public void setADA02(BigDecimal aDA02) {
 		ADA02 = aDA02;
 	}
 
-	@JsonIgnore public Double getADA39() {
+	@JsonIgnore public BigDecimal getADA39() {
 		return ADA39;
 	}
 
-	@JsonIgnore public void setADA39(Double aDA39) {
+	@JsonIgnore public void setADA39(BigDecimal aDA39) {
 		ADA39 = aDA39;
 	}
 
-	@JsonIgnore public Double getADA09() {
+	@JsonIgnore public BigDecimal getADA09() {
 		return ADA09;
 	}
 
-	@JsonIgnore public void setADA09(Double aDA09) {
+	@JsonIgnore public void setADA09(BigDecimal aDA09) {
 		ADA09 = aDA09;
 	}
 
-	@JsonIgnore public Double getADA10() {
+	@JsonIgnore public BigDecimal getADA10() {
 		return ADA10;
 	}
 
-	@JsonIgnore public void setADA10(Double aDA10) {
+	@JsonIgnore public void setADA10(BigDecimal aDA10) {
 		ADA10 = aDA10;
 	}
 
-	@JsonIgnore public Double getADA04() {
+	@JsonIgnore public BigDecimal getADA04() {
 		return ADA04;
 	}
 
-	@JsonIgnore public void setADA04(Double aDA04) {
+	@JsonIgnore public void setADA04(BigDecimal aDA04) {
 		ADA04 = aDA04;
 	}
 
-	@JsonIgnore public Double getADA40() {
+	@JsonIgnore public BigDecimal getADA40() {
 		return ADA40;
 	}
 
-	@JsonIgnore public void setADA40(Double aDA40) {
+	@JsonIgnore public void setADA40(BigDecimal aDA40) {
 		ADA40 = aDA40;
 	}
 
-	@JsonIgnore public Double getADA41() {
+	@JsonIgnore public BigDecimal getADA41() {
 		return ADA41;
 	}
 
-	@JsonIgnore public void setADA41(Double aDA41) {
+	@JsonIgnore public void setADA41(BigDecimal aDA41) {
 		ADA41 = aDA41;
 	}
 
-	@JsonIgnore public Double getADA42() {
+	@JsonIgnore public BigDecimal getADA42() {
 		return ADA42;
 	}
 
-	@JsonIgnore public void setADA42(Double aDA42) {
+	@JsonIgnore public void setADA42(BigDecimal aDA42) {
 		ADA42 = aDA42;
 	}
 
-	@JsonIgnore public Double getADA43() {
+	@JsonIgnore public BigDecimal getADA43() {
 		return ADA43;
 	}
 
-	@JsonIgnore public void setADA43(Double aDA43) {
+	@JsonIgnore public void setADA43(BigDecimal aDA43) {
 		ADA43 = aDA43;
 	}
 
-	@JsonIgnore public Double getADA44() {
+	@JsonIgnore public BigDecimal getADA44() {
 		return ADA44;
 	}
 
-	@JsonIgnore public void setADA44(Double aDA44) {
+	@JsonIgnore public void setADA44(BigDecimal aDA44) {
 		ADA44 = aDA44;
 	}
 
-	@JsonIgnore public Double getADA05() {
+	@JsonIgnore public BigDecimal getADA05() {
 		return ADA05;
 	}
 
-	@JsonIgnore public void setADA05(Double aDA05) {
+	@JsonIgnore public void setADA05(BigDecimal aDA05) {
 		ADA05 = aDA05;
 	}
 
-	@JsonIgnore public Double getADA06() {
+	@JsonIgnore public BigDecimal getADA06() {
 		return ADA06;
 	}
 
-	@JsonIgnore public void setADA06(Double aDA06) {
+	@JsonIgnore public void setADA06(BigDecimal aDA06) {
 		ADA06 = aDA06;
 	}
 
-	@JsonIgnore public Double getADA20() {
+	@JsonIgnore public BigDecimal getADA20() {
 		return ADA20;
 	}
 
-	@JsonIgnore public void setADA20(Double aDA20) {
+	@JsonIgnore public void setADA20(BigDecimal aDA20) {
 		ADA20 = aDA20;
 	}
 

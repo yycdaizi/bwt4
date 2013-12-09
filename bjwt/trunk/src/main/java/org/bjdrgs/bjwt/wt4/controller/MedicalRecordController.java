@@ -22,6 +22,7 @@ import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.wt4.Wt4Constants;
+import org.bjdrgs.bjwt.wt4.exception.IllegalInputException;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
@@ -273,10 +274,14 @@ public class MedicalRecordController {
 				result.setSuccess(false);
 				result.setMessage("导入失败！导入文件格式有误，只能倒入xml或zip文件！");
 			}
+		} catch (IllegalInputException e) {
+			result.setSuccess(false);
+			result.setMessage("导入失败！导入的数据不符合要求！");
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMessage("对不起，系统出错，导入失败！");
 			logger.error(e.toString());
+			// TODO 输出堆栈的日志文件
 			e.printStackTrace();
 		} finally {
 			IOUtils.closeQuietly(input);

@@ -30,6 +30,7 @@ import org.apache.tools.zip.ZipFile;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.exception.BaseException;
+import org.bjdrgs.bjwt.core.util.BeanUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.dicdata.model.DicItem;
@@ -41,6 +42,7 @@ import org.bjdrgs.bjwt.wt4.dao.IICUDao;
 import org.bjdrgs.bjwt.wt4.dao.IMedicalRecordDao;
 import org.bjdrgs.bjwt.wt4.dao.IOperationDao;
 import org.bjdrgs.bjwt.wt4.dao.ISurgeryDao;
+import org.bjdrgs.bjwt.wt4.exception.IllegalInputException;
 import org.bjdrgs.bjwt.wt4.model.BirthDefect;
 import org.bjdrgs.bjwt.wt4.model.Diagnose;
 import org.bjdrgs.bjwt.wt4.model.ICU;
@@ -132,12 +134,12 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		// 保存病案
 		medicalRecordDao.save(entity);
 
-		//删除原有的子表记录
+		// 删除原有的子表记录
 		diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
 		this.deleteSurgerysByMedicalRecordId(entity.getId());
 		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
 		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
-		
+
 		// 保存其他诊断信息
 		if (!CollectionUtils.isEmpty(entity.getABDS())) {
 			for (Diagnose diagnose : entity.getABDS()) {
@@ -319,8 +321,8 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 					.getBean("validator");
 			// validator = validatorFactory.getValidator();
 			// 使用fail fast模式
-			validator = ((HibernateValidatorContext)validatorFactory.usingContext())
-					.failFast(true).getValidator();
+			validator = ((HibernateValidatorContext) validatorFactory
+					.usingContext()).failFast(true).getValidator();
 		}
 
 		@SuppressWarnings("unchecked")
@@ -334,6 +336,14 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				medicalRecord.setZA03(zaMap.get("ZA03"));
 				medicalRecord.setZA04(zaMap.get("ZA04"));
 				fillOrg(medicalRecord);
+
+				// 先验证一下唯一标识的属性组合是否都有值
+				for (String name : MedicalRecord.uniqueKey) {
+					Object value = BeanUtils.getProperty(medicalRecord, name);
+					if (value == null || "".equals(value)) {
+						throw new IllegalInputException("字段" + name + "不能为空！");
+					}
+				}
 
 				// 验证病案
 				Set<ConstraintViolation<MedicalRecord>> errors = validator

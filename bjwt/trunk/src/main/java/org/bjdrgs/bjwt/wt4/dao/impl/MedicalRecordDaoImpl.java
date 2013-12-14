@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.wt4.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,19 +114,19 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Boolean> isExist(List<MedicalRecord> list) {
+	public List<Long> isExist(List<MedicalRecord> list) {
 		if (CollectionUtils.isEmpty(list)) {
-			return new ArrayList<Boolean>(0);
+			return new ArrayList<Long>(0);
 		}
 
 		StringBuilder mainClause = new StringBuilder();
 		mainClause.append("select ");
 		mainClause.append(org.bjdrgs.bjwt.core.util.CollectionUtils
 				.join(MedicalRecord.uniqueKey));
-		mainClause.append(" from ").append(MedicalRecord.class.getName());
+		mainClause.append(",id from ").append(MedicalRecord.class.getName());
 		mainClause.append(" where ");
 
-		List<Boolean> results = new ArrayList<Boolean>(list.size());
+		Long[] results = new Long[list.size()];
 
 		for (int i = 0; i < list.size(); i += BATCH_CHECK_SIZE) {
 			int size = BATCH_CHECK_SIZE;
@@ -156,8 +157,8 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 			List<Object[]> ret = query.list();
 			// 判断记录是否存在
 			for (int j = 0; j < size; j++) {
-				MedicalRecord mr = list.get(i + j);
-				boolean exist = false;
+				int index = i + j;
+				MedicalRecord mr = list.get(index);
 				for (Object[] r : ret) {
 					boolean flag = true;
 					for (int x = 0; x < MedicalRecord.uniqueKey.length; x++) {
@@ -169,14 +170,13 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 						}
 					}
 					if (flag) {
-						exist = true;
+						results[index] = (Long) r[MedicalRecord.uniqueKey.length];
 						break;
 					}
 				}
-				results.add(exist);
 			}
 		}
-		return results;
+		return Arrays.asList(results);
 	}
 
 	@SuppressWarnings("unchecked")

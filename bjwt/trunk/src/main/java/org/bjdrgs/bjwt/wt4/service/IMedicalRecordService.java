@@ -15,9 +15,7 @@ import org.dom4j.Document;
 public interface IMedicalRecordService {
 	String TEMPLATE_FOLDER = "/org/bjdrgs/bjwt/wt4/template";
 	
-	void save(MedicalRecord entity);
-	
-	void save(MedicalRecord[] entities);
+	void save(MedicalRecord... entity);
 
 	Pagination<MedicalRecord> query(MedicalRecordParam param);
 	

@@ -138,7 +138,7 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 <body>
 	<div class="easyui-layout" data-options="fit:true,border:false">
 		<div data-options="region:'north',title:'文件导入'"
-			style="overflow: hidden;height:100px;align:center">
+			style="overflow: hidden;height:140px;align:center">
 			<form id="formImport" action="" method="post"
 				enctype="multipart/form-data" style="width: 600px;padding:10px;line-height: 18px">
 				
@@ -152,6 +152,10 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 				<input id="btnImport" type="button" name="file" class="button" value="导 入"/>
 				</div>	
 			</form>
+			<div style="padding:0px 22px;line-height: 18px;color:grey">
+			<span style="color: red">注意</span>：只能导入xml文件或包含xml文件的zip文件。
+			导入的病案数据中组织机构代码（ZA02C），病案号（AAA28）和出院时间（AAC01）不能为空。
+			</div>
 		</div>
 		<div id="importInfo" data-options="region:'center',title:'导入过程信息'" style="padding:5px;line-height: 18px"></div>
 	</div>
@@ -187,7 +191,7 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 	                    }); 
 	                	var data = result.data;
 	                	var html = "导入成功！  总共：<b>"+data.total+"</b>；  新增：<b>"+data.inserted
-	                			+"</b>；  忽略：<b>"+data.ignored+"</b>。<br/>";
+	                			+"</b>；  更新：<b>"+data.updated+"</b>。<br/>";
 	                	$("#importInfo").append(html);
 	                } else {
 	                    $.messager.show({  

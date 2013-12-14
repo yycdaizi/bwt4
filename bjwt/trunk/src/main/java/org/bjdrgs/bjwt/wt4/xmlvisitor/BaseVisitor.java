@@ -28,7 +28,7 @@ import org.dom4j.Visitor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 public class BaseVisitor<T> extends Observable implements Visitor {
-	private static final int BATCH_SIZE = Integer.MAX_VALUE;
+	private static final int BATCH_SIZE = Integer.MAX_VALUE; // TODO 分批读，优化内存占用
 
 	private Class<T> clazz;
 	private List<T> data = new ArrayList<T>();

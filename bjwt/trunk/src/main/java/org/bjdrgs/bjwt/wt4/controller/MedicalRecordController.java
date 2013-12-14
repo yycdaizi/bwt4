@@ -169,8 +169,7 @@ public class MedicalRecordController {
 			IOUtils.write(xml, output, ENCODING_UTF8);
 			output.flush();
 		} catch (Exception e) {
-			logger.warn(e.toString());
-			e.printStackTrace();
+			logger.warn(e.toString(), e);
 		} finally {
 			IOUtils.closeQuietly(output);
 		}
@@ -206,8 +205,7 @@ public class MedicalRecordController {
 			IOUtils.copy(reader, output, ENCODING_GBK);
 			output.flush();
 		} catch (Exception e) {
-			logger.warn(e.toString());
-			e.printStackTrace();
+			logger.warn(e.toString(), e);
 		} finally {
 			IOUtils.closeQuietly(output);
 			IOUtils.closeQuietly(reader);
@@ -234,8 +232,7 @@ public class MedicalRecordController {
 			IOUtils.write(xml, output, ENCODING_UTF8);
 			output.flush();
 		} catch (Exception e) {
-			logger.warn(e.toString());
-			e.printStackTrace();
+			logger.warn(e.toString(), e);
 		} finally {
 			IOUtils.closeQuietly(output);
 		}
@@ -280,9 +277,7 @@ public class MedicalRecordController {
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMessage("对不起，系统出错，导入失败！");
-			logger.error(e.toString());
-			// TODO 输出堆栈的日志文件
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} finally {
 			IOUtils.closeQuietly(input);
 			//删除临时文件

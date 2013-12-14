@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,7 +60,6 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.hibernate.validator.HibernateValidatorContext;
-import org.hibernate.validator.HibernateValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -120,68 +120,105 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		}
 	}
 
-	@Override
-	public void save(MedicalRecord[] entities) {
-		for (MedicalRecord medicalRecord : entities) {
-			this.save(medicalRecord);
-		}
-	}
-
-	@Override
-	public void save(MedicalRecord entity) {
-		beforeSave(entity);// TODO 检测重复
-
-		// 保存病案
-		medicalRecordDao.save(entity);
-
-		// 删除原有的子表记录
-		diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
-		this.deleteSurgerysByMedicalRecordId(entity.getId());
-		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
-		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
-
-		// 保存其他诊断信息
-		if (!CollectionUtils.isEmpty(entity.getABDS())) {
-			for (Diagnose diagnose : entity.getABDS()) {
-				diagnose.setId(null);
-				diagnose.setMedicalRecordId(entity.getId());
-				diagnoseDao.save(diagnose);
+	/**
+	 * 最基础的save方法，封装了保持病案的逻辑，其他save方法都是调用的本方法。<br/>
+	 * 此方法只执行持久化操作，而不进行其他任何处理。<br/>
+	 * 此方法对批量处理进行了优化：<br/>
+	 * <ul>
+	 * <li>使用了批量处理，可设置hibernate.jdbc.batch_size的大小来调整</li>
+	 * <li>它根据主键id判断是进行新增还是保存操作，当新增时,由于不用执行删除子表，提升了速度。</li>
+	 * <li>及时清理session，防止内存溢出</li>
+	 * </ul>
+	 * 
+	 * @param list
+	 * @return
+	 */
+	private void doSave(List<MedicalRecord> entities) {
+		for (MedicalRecord entity : entities) {
+			if (entity.getId() != null) {
+				// 要更新的病案，删除病案原有的子表记录
+				diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
+				this.deleteSurgerysByMedicalRecordId(entity.getId());
+				ICUDao.deleteByProperty("medicalRecordId", entity.getId());
+				birthDefectDao.deleteByProperty("medicalRecordId",
+						entity.getId());
 			}
 		}
 
-		// 保存手术情况信息
-		if (!CollectionUtils.isEmpty(entity.getACAS())) {
-			for (Surgery surgery : entity.getACAS()) {
-				surgery.setId(null);
-				surgery.setMedicalRecordId(entity.getId());
-				surgeryDao.save(surgery);
-				if (!CollectionUtils.isEmpty(surgery.getACA09S())) {
-					for (Operation operation : surgery.getACA09S()) {
-						operation.setId(null);
-						operation.setSurgeryId(surgery.getId());
-						operationDao.save(operation);
-					}
+		medicalRecordDao.saveByBatch(entities);
+
+		List<Diagnose> diagnoseList = new ArrayList<Diagnose>();
+		List<Surgery> surgeryList = new ArrayList<Surgery>();
+		List<Operation> operationList = new ArrayList<Operation>();
+		List<ICU> icuList = new ArrayList<ICU>();
+		List<BirthDefect> defectList = new ArrayList<BirthDefect>();
+		for (MedicalRecord entity : entities) {
+			if (!CollectionUtils.isEmpty(entity.getABDS())) {
+				for (Diagnose diagnose : entity.getABDS()) {
+					diagnose.setId(null);
+					diagnose.setMedicalRecordId(entity.getId());
+					diagnoseList.add(diagnose);
+				}
+			}
+
+			if (!CollectionUtils.isEmpty(entity.getACAS())) {
+				for (Surgery surgery : entity.getACAS()) {
+					surgery.setId(null);
+					surgery.setMedicalRecordId(entity.getId());
+					surgeryList.add(surgery);
+				}
+			}
+
+			if (!CollectionUtils.isEmpty(entity.getAEKS())) {
+				for (ICU icu : entity.getAEKS()) {
+					icu.setId(null);
+					icu.setMedicalRecordId(entity.getId());
+					icuList.add(icu);
+				}
+			}
+
+			if (!CollectionUtils.isEmpty(entity.getAENS())) {
+				for (BirthDefect obj : entity.getAENS()) {
+					obj.setId(null);
+					obj.setMedicalRecordId(entity.getId());
+					defectList.add(obj);
 				}
 			}
 		}
 
-		// 保存ICU信息
-		if (!CollectionUtils.isEmpty(entity.getAEKS())) {
-			for (ICU icu : entity.getAEKS()) {
-				icu.setId(null);
-				icu.setMedicalRecordId(entity.getId());
-				ICUDao.save(icu);
-			}
-		}
+		diagnoseDao.saveByBatch(diagnoseList);
+		surgeryDao.saveByBatch(surgeryList);
+		ICUDao.saveByBatch(icuList);
+		birthDefectDao.saveByBatch(defectList);
 
-		// 保存新生儿缺陷信息
-		if (!CollectionUtils.isEmpty(entity.getAENS())) {
-			for (BirthDefect obj : entity.getAENS()) {
-				obj.setId(null);
-				obj.setMedicalRecordId(entity.getId());
-				birthDefectDao.save(obj);
+		for (Surgery surgery : surgeryList) {
+			if (!CollectionUtils.isEmpty(surgery.getACA09S())) {
+				for (Operation operation : surgery.getACA09S()) {
+					operation.setId(null);
+					operation.setSurgeryId(surgery.getId());
+					operationList.add(operation);
+				}
 			}
 		}
+		operationDao.saveByBatch(operationList);
+	}
+
+	@Override
+	public void save(MedicalRecord... entities) {
+		List<MedicalRecord> list = Arrays.asList(entities);
+		for (MedicalRecord entity : entities) {
+			beforeSave(entity);
+			// 如果不为草稿，则检测是否重复
+			if (!MedicalRecord.STATE_DRAFT.equals(entity.getState())) {
+				List<Long> isExistList = medicalRecordDao.isExist(list);
+				for (int i = 0; i < isExistList.size(); i++) {
+					if (isExistList.get(i) != null) {
+						list.get(i).setId(isExistList.get(i));
+					}
+				}
+			}
+		}
+		doSave(list);
 	}
 
 	private void deleteSurgerysByMedicalRecordId(Long medicalRecordId) {
@@ -286,6 +323,8 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	@Override
 	public ImportResult importXmlFile(InputStream inputStream) throws Exception {
 		SAXReader reader = new SAXReader();
+		reader.setIgnoreComments(true);
+		reader.setStripWhitespaceText(true);
 		Document document = reader.read(inputStream);
 
 		// 处理ZA
@@ -335,7 +374,8 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				medicalRecord.setZA02C(zaMap.get("ZA02C"));
 				medicalRecord.setZA03(zaMap.get("ZA03"));
 				medicalRecord.setZA04(zaMap.get("ZA04"));
-				fillOrg(medicalRecord);
+
+				beforeSave(medicalRecord);
 
 				// 先验证一下唯一标识的属性组合是否都有值
 				for (String name : MedicalRecord.uniqueKey) {
@@ -355,149 +395,19 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				}
 			}
 
-			List<Boolean> isExistList = medicalRecordDao.isExist(list);
-			List<MedicalRecord> validList = new ArrayList<MedicalRecord>(
-					list.size());
+			List<Long> isExistList = medicalRecordDao.isExist(list);
 			for (int i = 0; i < isExistList.size(); i++) {
-				if (!isExistList.get(i)) {
-					validList.add(list.get(i));
+				if (isExistList.get(i) != null) {
+					list.get(i).setId(isExistList.get(i));
+					result.addUpdated(1);
+				} else {
+					result.addInserted(1);
 				}
 			}
 
-			batchInsert(validList);
-
-			result.addInserted(validList.size());
-			result.addIgnored(list.size() - validList.size());
+			doSave(list);
 		}
 	}
-
-	/**
-	 * 批量插入,由于不用执行删除，同时还使用了批量提交，速度比save快了近百倍
-	 * 
-	 * @param list
-	 * @return
-	 * @throws Exception
-	 */
-	public void batchInsert(List<MedicalRecord> list) {
-		for (MedicalRecord medicalRecord : list) {
-			beforeSave(medicalRecord);
-		}
-
-		medicalRecordDao.saveByBatch(list);
-
-		List<Diagnose> diagnoseList = new ArrayList<Diagnose>();
-		List<Surgery> surgeryList = new ArrayList<Surgery>();
-		List<Operation> operationList = new ArrayList<Operation>();
-		List<ICU> icuList = new ArrayList<ICU>();
-		List<BirthDefect> defectList = new ArrayList<BirthDefect>();
-		for (MedicalRecord entity : list) {
-			if (!CollectionUtils.isEmpty(entity.getABDS())) {
-				for (Diagnose diagnose : entity.getABDS()) {
-					diagnose.setId(null);
-					diagnose.setMedicalRecordId(entity.getId());
-					diagnoseList.add(diagnose);
-				}
-			}
-
-			if (!CollectionUtils.isEmpty(entity.getACAS())) {
-				for (Surgery surgery : entity.getACAS()) {
-					surgery.setId(null);
-					surgery.setMedicalRecordId(entity.getId());
-					surgeryList.add(surgery);
-				}
-			}
-
-			if (!CollectionUtils.isEmpty(entity.getAEKS())) {
-				for (ICU icu : entity.getAEKS()) {
-					icu.setId(null);
-					icu.setMedicalRecordId(entity.getId());
-					icuList.add(icu);
-				}
-			}
-
-			if (!CollectionUtils.isEmpty(entity.getAENS())) {
-				for (BirthDefect obj : entity.getAENS()) {
-					obj.setId(null);
-					obj.setMedicalRecordId(entity.getId());
-					defectList.add(obj);
-				}
-			}
-		}
-
-		diagnoseDao.saveByBatch(diagnoseList);
-		surgeryDao.saveByBatch(surgeryList);
-		ICUDao.saveByBatch(icuList);
-		birthDefectDao.saveByBatch(defectList);
-
-		for (Surgery surgery : surgeryList) {
-			if (!CollectionUtils.isEmpty(surgery.getACA09S())) {
-				for (Operation operation : surgery.getACA09S()) {
-					operation.setId(null);
-					operation.setSurgeryId(surgery.getId());
-					operationList.add(operation);
-				}
-			}
-		}
-		operationDao.saveByBatch(operationList);
-	}
-
-	public void insert(MedicalRecord entity) {
-		beforeSave(entity);
-
-		// 保存病案
-		medicalRecordDao.save(entity);
-
-		// 保存其他诊断信息
-		if (!CollectionUtils.isEmpty(entity.getABDS())) {
-			for (Diagnose diagnose : entity.getABDS()) {
-				diagnose.setId(null);
-				diagnose.setMedicalRecordId(entity.getId());
-				diagnoseDao.save(diagnose);
-			}
-		}
-
-		// 保存手术情况信息
-		if (!CollectionUtils.isEmpty(entity.getACAS())) {
-			for (Surgery surgery : entity.getACAS()) {
-				surgery.setId(null);
-				surgery.setMedicalRecordId(entity.getId());
-				surgeryDao.save(surgery);
-				if (!CollectionUtils.isEmpty(surgery.getACA09S())) {
-					for (Operation operation : surgery.getACA09S()) {
-						operation.setId(null);
-						operation.setSurgeryId(surgery.getId());
-						operationDao.save(operation);
-					}
-				}
-			}
-		}
-
-		// 保存ICU信息
-		if (!CollectionUtils.isEmpty(entity.getAEKS())) {
-			for (ICU icu : entity.getAEKS()) {
-				icu.setId(null);
-				icu.setMedicalRecordId(entity.getId());
-				ICUDao.save(icu);
-			}
-		}
-
-		// 保存新生儿缺陷信息
-		if (!CollectionUtils.isEmpty(entity.getAENS())) {
-			for (BirthDefect obj : entity.getAENS()) {
-				obj.setId(null);
-				obj.setMedicalRecordId(entity.getId());
-				birthDefectDao.save(obj);
-			}
-		}
-	}
-
-	/*
-	 * 批量插入的另一种备选，速度差不多，不过有内存溢出的风险。 另外还有一种方案是使用原生的jdbc批量执行。
-	 * 通过sessionFactory.getClassMetadata(clazz)，得到的实际是AbstractEntityPersister
-	 * 的子类，里面有个sqlInsertStrings属性可以获得插入sql public void
-	 * batchInsert(List<MedicalRecord> list){ for (MedicalRecord medicalRecord :
-	 * list) { insert(medicalRecord); } }
-	 */
 
 	@Override
 	public ImportResult importZipFile(File file) throws Exception {

@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.utils.Constants;
+import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.dao.DaoUtils;
 import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
 import org.bjdrgs.bjwt.core.util.BeanUtils;
@@ -84,9 +87,13 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 			hql.append(" and obj.state = :eq_state");
 			paramMap.put("eq_state", param.getEq_state());
 		}
-		if (param.getOrgId() != null) {
-			hql.append(" and obj.createdBy.org.orgid = :orgId");
-			paramMap.put("orgId", param.getOrgId());
+
+		//控制数据权限
+		User user = SecurityUtils.getCurrentUser();
+		if (param.isEnableAuthority()
+				&& !Constants.ROOTUSER_NAME.equals(user.getUsername())) {
+			hql.append(" and obj.ZA02C = :orgCode");
+			paramMap.put("orgCode", user.getOrg().getOrgcode());
 		}
 
 		if (StringUtils.isNotEmpty(param.getSort())) {

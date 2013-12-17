@@ -167,6 +167,75 @@
 			<artifactId>shiro-spring</artifactId>
 			<version>${org.apache.shiro-version}</version>
 		</dependency>
+		<!-- 快逸报表 -->
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>barcode</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/barcode.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>datetimeformat</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/datetimeformat.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>itext2_rq</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/itext2_rq.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>jai_codec</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/jai_codec.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>jai_core</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/jai_core.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>parser</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/parser.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>poi2</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/poi2.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>com.runqian</groupId>
+			<artifactId>report4</artifactId>
+			<version>4.0</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/WebContent/WEB-INF/lib/report4.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.17</version>
+		</dependency>
+		<!-- 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>log4j-over-slf4j</artifactId>
+			<version>1.6.6</version>
+		</dependency>
+		 -->
 	</dependencies>
 
 	<repositories>

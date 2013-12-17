@@ -58,7 +58,7 @@
 	        </div>
 	        <div class="fitem">    
 	            <label>菜单路径：</label>    
-	            <input name="menuurl" class="easyui-validatebox" validType="maxLength[30]"> 
+	            <input name="menuurl" class="easyui-validatebox" validType="maxLength[60]"> 
 	        </div>
 	        <div class="fitem">    
 	            <label>菜单图标：</label>  

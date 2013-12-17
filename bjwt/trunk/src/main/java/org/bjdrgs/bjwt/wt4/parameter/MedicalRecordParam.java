@@ -26,7 +26,8 @@ public class MedicalRecordParam extends GridParam{
 	private String eq_mdc;
 	private String eq_drg;
 
-	private Integer orgId;
+	// 权限控制，只能查询本机构下面的病案
+	private boolean enableAuthority = true;
 	
 	public String getBlike_AAA28() {
 		return blike_AAA28;
@@ -77,20 +78,6 @@ public class MedicalRecordParam extends GridParam{
 	}
 
 	/**
-	 * @return the orgId
-	 */
-	public Integer getOrgId() {
-		return orgId;
-	}
-
-	/**
-	 * @param orgId the orgId to set
-	 */
-	public void setOrgId(Integer orgId) {
-		this.orgId = orgId;
-	}
-
-	/**
 	 * @return the eq_state
 	 */
 	public String getEq_state() {
@@ -130,5 +117,19 @@ public class MedicalRecordParam extends GridParam{
 	 */
 	public void setEq_drg(String eq_drg) {
 		this.eq_drg = eq_drg;
+	}
+
+	/**
+	 * @return the enableAuthority
+	 */
+	public boolean isEnableAuthority() {
+		return enableAuthority;
+	}
+
+	/**
+	 * @param enableAuthority the enableAuthority to set
+	 */
+	public void setEnableAuthority(boolean enableAuthority) {
+		this.enableAuthority = enableAuthority;
 	}
 }

@@ -59,14 +59,12 @@ public class MedicalRecordController {
 			date.setTime(date.getTime() + 24 * 3600 * 1000 - 1);
 			param.setLe_AAC01(date);
 		}
-		// 只能查询本机构下面的病案
-		User user = SecurityUtils.getCurrentUser();
-		param.setOrgId(user.getOrg().getOrgid());
 
 		GridPage<MedicalRecord> page = GridPage.valueOf(medicalRecordService
 				.query(param));
 
 		// 控制编辑权限
+		User user = SecurityUtils.getCurrentUser();
 		boolean isDirector = userService.hasRole(user,
 				Wt4Constants.ROLE_DIRECTOR);
 		for (MedicalRecord obj : page.getRows()) {
@@ -149,10 +147,6 @@ public class MedicalRecordController {
 		String xml = null;
 		OutputStream output = null;
 		try {
-			// 只能查询本机构下面的病案
-			User user = SecurityUtils.getCurrentUser();
-			param.setOrgId(user.getOrg().getOrgid());
-
 			List<MedicalRecord> list = medicalRecordService.queryAll(param);
 			xml = medicalRecordService.exportToXML(list);
 
@@ -182,10 +176,6 @@ public class MedicalRecordController {
 		Reader reader = null;
 		String tempDirPath = request.getSession().getServletContext().getRealPath("/temp/mrexport");
 		try {
-			// 只能查询本机构下面的病案
-			User user = SecurityUtils.getCurrentUser();
-			param.setOrgId(user.getOrg().getOrgid());
-
 			File tempDir = new File(tempDirPath);
 			FileUtils.forceMkdir(tempDir);
 			csvFile = new File(tempDir, "exp-"+UUID.randomUUID()+".csv");

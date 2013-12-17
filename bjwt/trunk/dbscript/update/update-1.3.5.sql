@@ -1,0 +1,10 @@
+insert into b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) values (15, '统计查看', null, 'icon icon-nav', '2013-03-28 00:38:21', 0);
+INSERT INTO b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) VALUES (16, 'hp-year', 'reportJsp/showReport.jsp?raq=/hp-year.raq', '', '2013-12-16 22:18:56', 15);
+INSERT INTO b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) VALUES (17, 'hp-month', 'reportJsp/showReport.jsp?raq=/hp-month.raq', '', '2013-12-16 22:19:05', 15);
+INSERT INTO b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) VALUES (18, 'hq-dept', 'reportJsp/showReport.jsp?raq=/hp-dept.raq', '', '2013-12-16 22:19:15', 15);
+INSERT INTO b_menu (menuid, menuname, menuurl, menuicon, ts, parentid) VALUES (19, 'hp-dept-month', 'reportJsp/showReport.jsp?raq=/hp-dept-month.raq', '', '2013-12-16 22:15:51', 15);
+insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 15, '1', '2013-03-28 01:26:54');
+insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 16, '1', '2013-03-28 01:26:54');
+insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 17, '1', '2013-03-28 01:26:54');
+insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 18, '1', '2013-03-28 01:26:54');
+insert into b_previlege (orgid, master, mastervalue, resource, resourcevalue, permission, ts) values (1, 'role', 1, 'menu', 19, '1', '2013-03-28 01:26:54');

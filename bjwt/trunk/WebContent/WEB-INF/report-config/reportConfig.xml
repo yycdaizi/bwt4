@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <reportConfig>
     <config>
-      <name>logConfig</name>
-      <value>/WEB-INF/report-config/runqianReportLog.properties</value>
-    </config>
-    <config>
       <name>license</name>
       <value>/WEB-INF/report-config/quieeServerYV4.0Windows.lic</value>
     </config>
@@ -27,7 +23,7 @@
     </config>
 	<config>
       <name>alwaysReloadDefine</name>
-      <value>yes</value>
+      <value>no</value>
     </config>
     <config>
       <name>cachedParamsTimeout</name>

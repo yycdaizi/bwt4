@@ -19,5 +19,7 @@ public interface IMedicalRecordDao extends IBaseDao<MedicalRecord> {
 	
 	List<Object[]> queryLimitedFields(MedicalRecordParam param, String[] fieldNames);
 
+	void deleteSubObjectBySQL(List<Long> idList);
+
 
 }

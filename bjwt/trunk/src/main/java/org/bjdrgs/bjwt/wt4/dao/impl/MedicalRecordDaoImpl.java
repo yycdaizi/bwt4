@@ -1,5 +1,8 @@
 package org.bjdrgs.bjwt.wt4.dao.impl;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -15,15 +18,25 @@ import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
 import org.bjdrgs.bjwt.core.util.BeanUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.wt4.dao.IMedicalRecordDao;
+import org.bjdrgs.bjwt.wt4.model.BirthDefect;
+import org.bjdrgs.bjwt.wt4.model.Diagnose;
+import org.bjdrgs.bjwt.wt4.model.ICU;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
+import org.bjdrgs.bjwt.wt4.model.Operation;
+import org.bjdrgs.bjwt.wt4.model.Surgery;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.hibernate.Query;
+import org.hibernate.jdbc.Work;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.CollectionUtils;
 
 @Repository("medicalRecordDao")
 public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 		IMedicalRecordDao {
+	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public Pagination<MedicalRecord> query(MedicalRecordParam param) {
@@ -88,7 +101,7 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 			paramMap.put("eq_state", param.getEq_state());
 		}
 
-		//控制数据权限
+		// 控制数据权限
 		User user = SecurityUtils.getCurrentUser();
 		if (param.isEnableAuthority()
 				&& !Constants.ROOTUSER_NAME.equals(user.getUsername())) {
@@ -209,4 +222,45 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 		return query.list();
 	}
 
+	@Override
+	public void deleteSubObjectBySQL(final List<Long> idList) {
+		doWork(new Work() {
+
+			@Override
+			public void execute(Connection connection) throws SQLException {
+				PreparedStatement[] stmtList = new PreparedStatement[5];
+				try {
+					stmtList[0] = connection
+							.prepareStatement(Diagnose.deleteByMedicalRecordIdSQL);
+					stmtList[1] = connection
+							.prepareStatement(Surgery.deleteByMedicalRecordIdSQL);
+					stmtList[2] = connection
+							.prepareStatement(ICU.deleteByMedicalRecordIdSQL);
+					stmtList[3] = connection
+							.prepareStatement(BirthDefect.deleteByMedicalRecordIdSQL);
+					stmtList[4] = connection
+							.prepareStatement(Operation.deleteByMedicalRecordIdSQL);
+
+					for (int i = 0; i < idList.size(); i++) {
+						for (PreparedStatement stmt : stmtList) {
+							stmt.setLong(1, idList.get(i));
+							stmt.addBatch();
+						}
+						// 每200执行一次
+						if ((i + 1) % 200 == 0 || i == idList.size() - 1) {
+							for (PreparedStatement stmt : stmtList) {
+								stmt.executeBatch();
+								stmt.clearBatch();
+							}
+							logger.debug("已删除" + (i + 1) + "条病案的子记录");
+						}
+					}
+				} finally {
+					for (PreparedStatement stmt : stmtList) {
+						JdbcUtils.closeStatement(stmt);
+					}
+				}
+			}
+		});
+	}
 }

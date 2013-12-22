@@ -20,11 +20,12 @@ import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.jdbc.Work;
 import org.springframework.util.CollectionUtils;
 
 public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T> {
 
-	private Class<T> entityClass;
+	protected Class<T> entityClass;
 	
 	@Resource(name="sessionFactory")
 	private SessionFactory sessionFactory;
@@ -337,4 +338,7 @@ public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T>
 		return new Pagination<T>(result, newPageSize, idx, recordCount, pageCount);
 	}
 
+	protected void doWork(Work work){
+		getCurrentSession().doWork(work);
+	}
 }

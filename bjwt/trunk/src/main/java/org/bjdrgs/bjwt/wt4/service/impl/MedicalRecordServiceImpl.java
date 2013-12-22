@@ -134,6 +134,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	 * @return
 	 */
 	private void doSave(List<MedicalRecord> entities) {
+		/*
 		for (MedicalRecord entity : entities) {
 			if (entity.getId() != null) {
 				// 要更新的病案，删除病案原有的子表记录
@@ -144,6 +145,16 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 						entity.getId());
 			}
 		}
+		*/
+		
+		List<Long> idList = new ArrayList<Long>();
+		for (MedicalRecord entity : entities) {
+			if (entity.getId() != null) {
+				idList.add(entity.getId());
+			}
+		}
+		//删除病案原有的所有子表记录
+		medicalRecordDao.deleteSubObjectBySQL(idList);
 
 		medicalRecordDao.saveByBatch(entities);
 

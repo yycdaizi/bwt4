@@ -1,7 +1,6 @@
 package org.bjdrgs.bjwt.core.util;
 
 import java.util.Locale;
-import java.util.Map;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -43,9 +42,9 @@ public class SpringContextUtils implements ApplicationContextAware {
 	/**
 	 * 从静态变量ApplicationContext中取得Bean, 自动转型为所赋值对象的类型.
 	 */
-	public static <T> Map<String, T> getBean(Class<T> clazz) {
+	public static <T> T getBean(Class<T> clazz) {
 		checkApplicationContext();
-		return applicationContext.getBeansOfType(clazz);
+		return applicationContext.getBean(clazz);
 	}
 	
 	/**

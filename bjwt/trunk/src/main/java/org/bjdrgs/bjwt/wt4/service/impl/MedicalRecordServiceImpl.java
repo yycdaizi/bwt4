@@ -368,7 +368,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		public BatchInserter(Map<String, String> zaMap) {
 			this.zaMap = zaMap;
 			ValidatorFactory validatorFactory = SpringContextUtils
-					.getBean("validator");
+					.getBean(ValidatorFactory.class);
 			// validator = validatorFactory.getValidator();
 			// 使用fail fast模式
 			validator = ((HibernateValidatorContext) validatorFactory

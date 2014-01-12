@@ -26,11 +26,11 @@ public class DicDataServiceImpl implements IDicDataService {
 
 	@Resource(name = "dicTypeDao")
 	private IDicTypeDao dicTypeDao;
-	
-	@Resource(name="dicItemDao")
+
+	@Resource(name = "dicItemDao")
 	private IDicItemDao dicItemDao;
-	
-	//字典类型操作函数
+
+	// 字典类型操作函数
 	@Override
 	public Pagination<DicType> queryDicType(DicTypeParam param) {
 		return dicTypeDao.query(param);
@@ -38,7 +38,7 @@ public class DicDataServiceImpl implements IDicDataService {
 
 	@Override
 	public void saveDicType(DicType entity) {
-		if(entity.getCreateTime()==null){
+		if (entity.getCreateTime() == null) {
 			entity.setCreateTime(new Date());
 		}
 		dicTypeDao.save(entity);
@@ -49,7 +49,7 @@ public class DicDataServiceImpl implements IDicDataService {
 		dicItemDao.deleteByProperty("type.id", id);
 		dicTypeDao.deleteById(id);
 	}
-	
+
 	@Override
 	public DicType getDicTypeById(Integer id) {
 		return dicTypeDao.get(id);
@@ -59,8 +59,8 @@ public class DicDataServiceImpl implements IDicDataService {
 	public DicType getDicTypeByCode(String code) {
 		return dicTypeDao.getByUnique("code", code);
 	}
-	
-	//字典数据项操作函数
+
+	// 字典数据项操作函数
 	@Override
 	public List<DicItem> listDicItemsByType(String type) {
 		return dicItemDao.queryByProperty("type.code", type);
@@ -72,14 +72,22 @@ public class DicDataServiceImpl implements IDicDataService {
 	}
 
 	@Override
-	public DicItem getDicItem(String type, String code, String parentCode) {
-		return dicItemDao.get(type, code, parentCode);
+	public List<DicItem> getChildrenDicItem(String type, Integer parentId) {
+		return dicItemDao.getChildrenDicItem(type, parentId);
+	}
+
+	@Override
+	public DicItem getDicItem(String type, String code, Integer parentId) {
+		return dicItemDao.get(type, code, parentId);
 	}
 
 	@Override
 	public void saveDicItem(DicItem entity) {
-		if(entity.getCreateTime()==null){
+		if (entity.getCreateTime() == null) {
 			entity.setCreateTime(new Date());
+		}
+		if (entity.getParent() != null && entity.getParent().getId() == null) {
+			entity.setParent(null);
 		}
 		dicItemDao.save(entity);
 	}
@@ -93,8 +101,8 @@ public class DicDataServiceImpl implements IDicDataService {
 	public void deleteDicItemById(Integer id) {
 		deleteDicItem(dicItemDao.get(id));
 	}
-	
-	public void deleteDicItem(DicItem entity){
+
+	public void deleteDicItem(DicItem entity) {
 		List<DicItem> children = getChildrenDicItem(entity);
 		for (DicItem dicItem : children) {
 			deleteDicItem(dicItem);

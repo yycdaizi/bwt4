@@ -1,6 +1,7 @@
 package org.bjdrgs.bjwt.core.web;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class TreeNode {
 	/**
 	 * 用户自定义属性
 	 */
-	private Map<String, String> attributes;
+	private Map<String, Object> attributes = new HashMap<String, Object>();
 
 	public Integer getId() {
 		return id;
@@ -80,12 +81,20 @@ public class TreeNode {
 		this.children = children;
 	}
 
-	public Map<String, String> getAttributes() {
+	public Map<String, Object> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(Map<String, String> attributes) {
-		this.attributes = attributes;
+	public void setAttributes(Map<String, Object> attributes) {
+		if(attributes == null){
+			this.attributes.clear();
+		}else{
+			this.attributes = attributes;
+		}
+	}
+	
+	public void setAttribute(String name, Object value){
+		attributes.put(name, value);
 	}
 	
 	public void addChildren(TreeNode child){
@@ -95,4 +104,5 @@ public class TreeNode {
 		this.children.add(child);
 	}
 
+	
 }

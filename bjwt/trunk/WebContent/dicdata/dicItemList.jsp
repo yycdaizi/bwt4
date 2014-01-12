@@ -8,6 +8,15 @@
 <jsp:include page="/include.jsp"></jsp:include>
 </head>
 <body>
+<style type="text/css">
+.fitem input {
+	width: 300px;
+}
+.fitem textarea {
+	width: 300px;
+	height: 60px;
+}
+</style>
 	<table id="gridDicItem" fit="true" 
 		autoRowHeight="false" singleSelect="true" url="${pageContext.request.contextPath}/dicdata/dicItem/page.do"
 		pagination="true" rownumbers="true" fitColumns="true" sortName="code" 
@@ -16,7 +25,10 @@
 			<tr>
 				<th data-options="field:'code',width:100,sortable:true">编码</th>
 				<th data-options="field:'text',width:200">名称</th>
+				<!-- 
 				<th data-options="field:'type.id',width:100, formatter:function(){return $('#gridDicItem').data('dicType').code;}">字典类型</th>
+				 -->
+				<th data-options="field:'parent',width:250,formatter:formatDicParent">上级</th>
 				<th	data-options="field:'createTime',width:180,sortable:true">创建时间</th>
 				<th	data-options="field:'operate',width:150,formatter:dicItemOperater">操作</th>
 			</tr>
@@ -25,7 +37,7 @@
 	<div id="gridDicItem-toolbar" style="height: 28px;">
 		<a id="dicItem-btnAdd" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-add" style="float:right">新增</a>
 	</div>
-	<div id="dialogDicItem" class="easyui-dialog" closed="true" modal="true" buttons="#formDicItem-buttons" style="width:400px;height:270px;padding:10px 20px">
+	<div id="dialogDicItem" class="easyui-dialog" closed="true" modal="true" buttons="#formDicItem-buttons" style="width:500px;height:400px;padding:10px 20px">
 		<div class="ftitle">数据字典项</div> 
 		<form id="formDicItem" method="post" class="fform">
 			<input name="id" type="hidden">
@@ -40,9 +52,17 @@
 	            <input name="text" class="easyui-validatebox" validType="maxLength[60]">    
 	        </div>
 	        <div class="fitem">    
+	            <label>上级：</label>  
+	            <input id="formDicItem-parentId" name="parent.id" class="easyui-combotree" style="width:300px;">    
+	        </div>
+	        <div class="fitem">    
 	            <label>描述：</label>  
 	            <textarea name="description" class="easyui-validatebox" validType="maxLength[100]"></textarea>    
 	        </div> 
+	        <div class="fitem">    
+	            <label>备注：</label>  
+	            <textarea name="remark" class="easyui-validatebox" validType="maxLength[100]"></textarea>    
+	        </div>
 		</form>
 	</div>
 	<div id="formDicItem-buttons" style="text-align: center;" >
@@ -50,6 +70,19 @@
     	<a id="formDicItem-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
 	<script type="text/javascript">
+	function formatDicParent(value, row, index){
+		if(row.parentCode && row.parentText){
+			return row.parentCode + " - " + row.parentText;
+		}
+		if(row.parentCode){
+			return row.parentCode;
+		}
+		if(row.parentText){
+			return row.parentText;
+		}
+		return '';
+	}
+	
 	function dicItemOperater(value, row, index){
 		var html = [];
 		html.push($.operateButton('icon-edit','修改','updateDicItem('+index+')'));
@@ -62,7 +95,10 @@
 		var row = rows[index];
 		$('#dialogDicItem').dialog({title:'编辑字典项',iconCls:'icon-edit'}).dialog('open');  
         $('#formDicItem').form('load',row);
-        $("#formDicItem [name='type.id']").val($('#gridDicItem').data('dicType').id);
+        var typeId = $('#gridDicItem').data('dicType').id;
+        $("#formDicItem [name='type.id']").val(typeId);
+        $("#formDicItem-parentId").combotree('reload', '${pageContext.request.contextPath}/dicdata/dicItem/tree.do?typeId='+typeId+'&excludeId='+row.id);
+        $("#formDicItem-parentId").combotree('setValue', row.parentId);
 	}
 	function deleteDicItem(index){
 		var rows = $('#gridDicItem').datagrid('getRows');
@@ -97,7 +133,9 @@
 			$("#dialogDicItem").dialog({title:'新增字典项',iconCls:'icon-add'}).dialog('open');  
 	        $('#formDicItem').form('clear');
 	        //$('#formDicItem').form('load',{type:{id:$('#gridDicItem').data('dicType').id}});
-	        $("#formDicItem [name='type.id']").val($('#gridDicItem').data('dicType').id);
+	        var typeId = $('#gridDicItem').data('dicType').id;
+	        $("#formDicItem [name='type.id']").val(typeId);
+	        $("#formDicItem-parentId").combotree('reload', '${pageContext.request.contextPath}/dicdata/dicItem/tree.do?typeId='+typeId);
 		});
 		
 		$("#formDicItem-btnSubmit").click(function(){

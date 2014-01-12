@@ -46,7 +46,7 @@
     	<a id="formDicType-btnCancel" href="#" class="easyui-linkbutton" iconCls="icon-cancel">取消</a>
 	</div>
 	
-	<div id="winDicItemEdit" class="easyui-window" title="字典数据项列表" style="width:600px;height:400px"
+	<div id="winDicItemEdit" class="easyui-window" title="字典数据项列表" style="width:800px;height:400px"
 		collapsible="false" minimizable="false" closed="true" modal="true" href="${pageContext.request.contextPath}/dicdata/dicItemList.jsp">
 	</div>
 <script type="text/javascript">

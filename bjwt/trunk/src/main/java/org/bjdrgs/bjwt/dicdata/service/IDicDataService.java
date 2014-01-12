@@ -65,13 +65,21 @@ public interface IDicDataService {
 	List<DicItem> getChildrenDicItem(DicItem parent);
 	
 	/**
+	 * 获得字典项的所有下级字典项
+	 * @param type 字典类型编码
+	 * @param parentId 字典项上级id
+	 * @return
+	 */
+	List<DicItem> getChildrenDicItem(String type, Integer parentId);
+	
+	/**
 	 * 根据字典类型编码、字典项编码和字典项上级编码获得字典项
 	 * @param type 字典类型编码
 	 * @param code 字典数据项编码
-	 * @param parentCode 字典数据项上级编码
+	 * @param parentId 字典数据项上级Id
 	 * @return
 	 */
-	DicItem getDicItem(String type, String code, String parentCode);
+	DicItem getDicItem(String type, String code, Integer parentId);
 	
 	/**
 	 * 字典数据项分页查询

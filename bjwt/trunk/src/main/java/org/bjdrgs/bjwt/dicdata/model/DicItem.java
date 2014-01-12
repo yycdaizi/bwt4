@@ -47,7 +47,7 @@ public class DicItem implements Serializable {
 	@Column(name="text",length=60)
 	private String text;
 	
-	//@JsonIgnore
+	@JsonIgnore
 	@ManyToOne
 	@JoinColumn(name="parent_id")
 	private DicItem parent;
@@ -130,4 +130,14 @@ public class DicItem implements Serializable {
 		this.createTime = createTime;
 	}
 
+	//为展示而加的属性
+	public Integer getParentId(){
+		return parent == null?null:parent.getId();
+	}
+	public String getParentCode(){
+		return parent == null?null:parent.getCode();
+	}
+	public String getParentText(){
+		return parent == null?null:parent.getText();
+	}
 }

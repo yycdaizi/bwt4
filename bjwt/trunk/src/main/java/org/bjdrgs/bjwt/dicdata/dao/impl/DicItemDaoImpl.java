@@ -17,20 +17,21 @@ import org.springframework.util.CollectionUtils;
 public class DicItemDaoImpl extends BaseDaoImpl<DicItem> implements IDicItemDao {
 
 	@Override
-	public DicItem get(String type, String code, String parentCode) {
-		String hql = "from "+DicItem.class.getName()+" where type.code=? and code=?";
+	public DicItem get(String type, String code, Integer parentId) {
+		String hql = "from " + DicItem.class.getName()
+				+ " where type.code=? and code=?";
 		List<DicItem> list = null;
-		if(StringUtils.isEmpty(parentCode)){
+		if (parentId == null) {
 			hql += " and parent is null";
 			list = this.query(hql, type, code);
-		}else{
-			hql += " and parent.code =?";
-			list = this.query(hql, type, code, parentCode);
+		} else {
+			hql += " and parent.id =?";
+			list = this.query(hql, type, code, parentId);
 		}
-		
-		if(CollectionUtils.isEmpty(list)){
+
+		if (CollectionUtils.isEmpty(list)) {
 			return null;
-		}else{
+		} else {
 			return list.get(0);
 		}
 	}
@@ -41,23 +42,40 @@ public class DicItemDaoImpl extends BaseDaoImpl<DicItem> implements IDicItemDao 
 		hql.append("from ");
 		hql.append(DicItem.class.getName());
 		hql.append(" where 1=1");
-		
+
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		if(param.getTypeId()!=null){
+		if (param.getTypeId() != null) {
 			hql.append(" and type.id= :typeId");
 			paramMap.put("typeId", param.getTypeId());
 		}
-		
-		if(StringUtils.isNotEmpty(param.getSort())){
-			hql.append(" order by "+param.getSort()+" "+param.getOrder());
+
+		if (StringUtils.isNotEmpty(param.getSort())) {
+			hql.append(" order by " + param.getSort() + " " + param.getOrder());
 		}
-		
-		return this.queryForPage(hql.toString(), param.getPage(), param.getRows(), paramMap);
+
+		return this.queryForPage(hql.toString(), param.getPage(),
+				param.getRows(), paramMap);
 	}
 
 	@Override
 	public List<DicItem> getChildrenDicItem(DicItem parent) {
-		String hql = "from "+DicItem.class.getName()+" where type.id=? and parent.id=?";
-		return this.query(hql, parent.getType().getId(), parent.getParent().getId());
+		String hql = "from " + DicItem.class.getName()
+				+ " where type.id=? and parent.id=?";
+		return this.query(hql, parent.getType().getId(), parent.getParent()
+				.getId());
+	}
+
+	@Override
+	public List<DicItem> getChildrenDicItem(String type, Integer parentId) {
+		String hql = "from " + DicItem.class.getName() + " where type.code=?";
+		List<DicItem> list = null;
+		if (parentId == null) {
+			hql += " and parent is null";
+			list = this.query(hql, type);
+		} else {
+			hql += " and parent.id =?";
+			list = this.query(hql, type, parentId);
+		}
+		return list;
 	}
 }

@@ -31,7 +31,7 @@ public class Operation implements Serializable {
 	// orcale中使用 delete from b_wt4_operation p where exist (select 1 from
 	// b_wt4_surgery s where p.b_wt4_surgery_id=s.b_wt4_surgery_id and
 	// s.b_wt4_id=?)
-	public static final String deleteByMedicalRecordIdSQL = "delete p from b_wt4_operation p join b_wt4_surgery s on p.b_wt4_surgery_id=s.b_wt4_surgery_id where s.b_wt4_id=?";
+	public static final String deleteByMedicalRecordIdSQL = "delete p from b_wt4_operation p join b_wt4_surgery s on p.b_wt4_surgery_id=s.b_wt4_surgery_id where s.b_wt4_id in (:ids)";
 
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "increment")

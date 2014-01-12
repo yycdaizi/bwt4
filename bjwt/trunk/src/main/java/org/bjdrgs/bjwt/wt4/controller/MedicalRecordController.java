@@ -1,16 +1,21 @@
 package org.bjdrgs.bjwt.wt4.controller;
 
+import static org.bjdrgs.bjwt.wt4.Wt4Constants.ENCODING_GBK;
+import static org.bjdrgs.bjwt.wt4.Wt4Constants.ENCODING_UTF8;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.FileUtils;
@@ -19,6 +24,8 @@ import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IUserService;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
+import org.bjdrgs.bjwt.core.util.TempFileUtils;
+import org.bjdrgs.bjwt.core.util.ZipUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.wt4.Wt4Constants;
@@ -27,6 +34,7 @@ import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
 import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
+import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -39,8 +47,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Controller
 @RequestMapping("/wt4/medicalRecord")
 public class MedicalRecordController {
-	public static final String ENCODING_UTF8 = "UTF-8";
-	public static final String ENCODING_GBK = "GBK";
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -50,15 +56,19 @@ public class MedicalRecordController {
 	@Resource(name = "UserService")
 	private IUserService userService;
 
-	@RequestMapping("/page")
-	@ResponseBody
-	public GridPage<MedicalRecord> page(MedicalRecordParam param) {
+	protected void transPram(MedicalRecordParam param) {
 		if (param.getLe_AAC01() != null) {
 			// 将晚于的时间设为当天的23:59:59 999
 			Date date = param.getLe_AAC01();
 			date.setTime(date.getTime() + 24 * 3600 * 1000 - 1);
 			param.setLe_AAC01(date);
 		}
+	}
+
+	@RequestMapping("/page")
+	@ResponseBody
+	public GridPage<MedicalRecord> page(MedicalRecordParam param) {
+		transPram(param);
 
 		GridPage<MedicalRecord> page = GridPage.valueOf(medicalRecordService
 				.query(param));
@@ -124,67 +134,67 @@ public class MedicalRecordController {
 		return result;
 	}
 
-	// @RequestMapping("/export")
-	// public ResponseEntity<byte[]> export(MedicalRecordParam param){
-	// String xml = null;
-	// try {
-	// List<MedicalRecord> list = medicalRecordService.queryAll(param);
-	// xml = medicalRecordService.exportToXML(list);
-	// HttpHeaders headers = new HttpHeaders();
-	// headers.setContentType(MediaType.APPLICATION_XML);
-	// headers.setContentDispositionFormData("attachment", "export.xml");
-	// return new ResponseEntity<byte[]>(xml.getBytes(), headers,
-	// HttpStatus.CREATED);
-	// } catch (Exception e) {
-	// logger.warn(e.toString());
-	// e.printStackTrace();
-	// return null;
-	// }
-	// }
-
 	@RequestMapping("/exportToXML")
-	public void exportToXML(MedicalRecordParam param, HttpServletResponse response) {
-		String xml = null;
-		OutputStream output = null;
-		try {
-			List<MedicalRecord> list = medicalRecordService.queryAll(param);
-			xml = medicalRecordService.exportToXML(list);
+	public void exportToXML(MedicalRecordParam param,
+			HttpServletResponse response) {
 
-			response.setContentType("text/xml;charset=" + ENCODING_UTF8);
+		transPram(param);
+
+		File tempDir = null;
+		OutputStream output = null;
+		InputStream input = null;
+		try {
+			tempDir = TempFileUtils.createTempDir();
+			List<File> xmlFiles = medicalRecordService.exportToXML(param,
+					tempDir);
+
+			String fileName = "export@"
+					+ new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+			File zipFile = new File(tempDir, fileName + ".zip");
+			ZipUtils.zip(xmlFiles, zipFile);// 压缩
+
+			response.setContentType("application/zip;charset=" + ENCODING_UTF8);
 			response.setCharacterEncoding(ENCODING_UTF8);
-			response.setHeader("Content-disposition",
-					"attachment;filename=untitled.xml");
-			long fileLength = xml.length();
+			response.setHeader("Content-disposition", "attachment;filename="
+					+ fileName + ".zip");
+			long fileLength = FileUtils.sizeOf(zipFile);
 			String length = String.valueOf(fileLength);
 			response.setHeader("Content_Length", length + 1024 * 10);
 
 			output = response.getOutputStream();
+			input = new FileInputStream(zipFile);
 
-			IOUtils.write(xml, output, ENCODING_UTF8);
+			IOUtils.copy(input, output);
 			output.flush();
 		} catch (Exception e) {
 			logger.warn(e.toString(), e);
 		} finally {
 			IOUtils.closeQuietly(output);
+			IOUtils.closeQuietly(input);
+			// 删除临时文件
+			FileUtils.deleteQuietly(tempDir);
 		}
 	}
-	
+
 	@RequestMapping("/exportToCSV")
-	public void exportToCSV(MedicalRecordParam param, HttpServletRequest request, HttpServletResponse response) {
-		File csvFile = null;
+	public void exportToCSV(MedicalRecordParam param,
+			HttpServletResponse response) {
+		transPram(param);
+
+		File tempDir = null;
 		OutputStream output = null;
 		Reader reader = null;
-		String tempDirPath = request.getSession().getServletContext().getRealPath("/temp/mrexport");
 		try {
-			File tempDir = new File(tempDirPath);
-			FileUtils.forceMkdir(tempDir);
-			csvFile = new File(tempDir, "exp-"+UUID.randomUUID()+".csv");
+			tempDir = TempFileUtils.createTempDir();
+			String fileName = "export@"
+					+ new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+			File csvFile = new File(tempDir, fileName + ".csv");
 			medicalRecordService.exportToCSV(param, csvFile);
 
 			response.setContentType("application/csv;charset=" + ENCODING_GBK);
-			response.setCharacterEncoding(ENCODING_UTF8);
-			response.setHeader("Content-disposition",
-					"attachment;filename=untitled.csv");
+			response.setCharacterEncoding(ENCODING_GBK);
+			response.setHeader("Content-disposition", "attachment;filename="
+					+ fileName + ".csv");
 			long fileLength = FileUtils.sizeOf(csvFile);
 			String length = String.valueOf(fileLength);
 			response.setHeader("Content_Length", length + 1024 * 10);
@@ -199,8 +209,8 @@ public class MedicalRecordController {
 		} finally {
 			IOUtils.closeQuietly(output);
 			IOUtils.closeQuietly(reader);
-			//删除临时文件
-			FileUtils.deleteQuietly(csvFile);
+			// 删除临时文件
+			FileUtils.deleteQuietly(tempDir);
 		}
 	}
 
@@ -231,36 +241,38 @@ public class MedicalRecordController {
 
 	@RequestMapping("/importFile")
 	@ResponseBody
-	public AjaxResult importFile(MultipartFile importfile,
-			HttpServletRequest request) {
+	public AjaxResult importFile(MultipartFile importfile) {
 		AjaxResult result = new AjaxResult();
-		InputStream input = null;
-		File zipFile = null;
+		File tempDir = null;
 		try {
 			String fileName = importfile.getOriginalFilename();
+			tempDir = TempFileUtils.createTempDir();
+			File file = new File(tempDir, fileName);
+			importfile.transferTo(file);
+
+			Collection<File> xmlFileList = null;
 			if (fileName != null && fileName.matches("^.+\\.(?i)xml$")) {
-				input = importfile.getInputStream();
-				ImportResult importResult = medicalRecordService
-						.importXmlFile(input);
-				result.setSuccess(true);
-				result.setData(importResult);
-				result.setMessage("导入成功！");
+				xmlFileList = new ArrayList<File>();
+				xmlFileList.add(file);
 			} else if (fileName != null && fileName.matches("^.+\\.(?i)zip$")) {
-				String tempDirPath = request.getSession().getServletContext().getRealPath("/temp/mrimport");
-				File tempDir = new File(tempDirPath);
-				FileUtils.forceMkdir(tempDir);
-				zipFile = File.createTempFile(fileName.substring(0, fileName.lastIndexOf(".")), ".zip", tempDir);
-				importfile.transferTo(zipFile);
-				
-				ImportResult importResult = medicalRecordService
-						.importZipFile(zipFile);
-				result.setSuccess(true);
-				result.setData(importResult);
-				result.setMessage("导入成功！");
+				File unzipDir = new File(tempDir, fileName.substring(0,
+						fileName.lastIndexOf(".")));
+				ZipUtils.unZip(file, unzipDir);
+				xmlFileList = FileUtils.listFiles(unzipDir,
+						new String[] { "xml" }, true);
 			} else {
 				result.setSuccess(false);
 				result.setMessage("导入失败！导入文件格式有误，只能倒入xml或zip文件！");
+				return result;
 			}
+			ImportResult importResult = medicalRecordService
+					.importXmlFile(xmlFileList);
+			result.setSuccess(true);
+			result.setData(importResult);
+			result.setMessage("导入成功！");
+		} catch (DocumentException e) {
+			result.setSuccess(false);
+			result.setMessage("导入失败！导入的xml文件中存在错误！");
 		} catch (IllegalInputException e) {
 			result.setSuccess(false);
 			result.setMessage("导入失败！导入的数据不符合要求！");
@@ -269,9 +281,8 @@ public class MedicalRecordController {
 			result.setMessage("对不起，系统出错，导入失败！");
 			logger.error(e.getMessage(), e);
 		} finally {
-			IOUtils.closeQuietly(input);
-			//删除临时文件
-			FileUtils.deleteQuietly(zipFile);
+			// 删除临时文件
+			FileUtils.deleteQuietly(tempDir);
 		}
 		return result;
 	}

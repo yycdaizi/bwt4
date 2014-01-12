@@ -1,8 +1,14 @@
 package org.bjdrgs.bjwt.wt4.service.impl;
 
+import static org.bjdrgs.bjwt.wt4.Wt4Constants.DEFAULT_ENCODING;
+import static org.bjdrgs.bjwt.wt4.Wt4Constants.MR_XML_ROOT;
+
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -10,13 +16,13 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.Resource;
@@ -24,19 +30,24 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import net.sf.cglib.beans.BeanMap;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.zip.ZipEntry;
-import org.apache.tools.zip.ZipFile;
+import org.apache.commons.lang3.time.DateUtils;
+import org.bjdrgs.bjwt.authority.model.Org;
 import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.service.IOrgService;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.exception.BaseException;
-import org.bjdrgs.bjwt.core.util.BeanUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
+import org.bjdrgs.bjwt.core.util.TempFileUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
 import org.bjdrgs.bjwt.dicdata.model.DicItem;
 import org.bjdrgs.bjwt.dicdata.service.IDicDataService;
 import org.bjdrgs.bjwt.wt4.Wt4Constants;
+import org.bjdrgs.bjwt.wt4.dao.EntityReader;
 import org.bjdrgs.bjwt.wt4.dao.IBirthDefectDao;
 import org.bjdrgs.bjwt.wt4.dao.IDiagnoseDao;
 import org.bjdrgs.bjwt.wt4.dao.IICUDao;
@@ -53,12 +64,15 @@ import org.bjdrgs.bjwt.wt4.model.Surgery;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
 import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
-import org.bjdrgs.bjwt.wt4.xmlvisitor.BaseVisitor;
+import org.bjdrgs.bjwt.wt4.xml.XmlTransferUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.Node;
+import org.dom4j.ElementHandler;
+import org.dom4j.ElementPath;
+import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
+import org.dom4j.io.XMLWriter;
 import org.hibernate.validator.HibernateValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,6 +110,9 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	@Resource(name = "dicDataService")
 	private IDicDataService dicDataService;
 
+	@Resource(name = "OrgService")
+	private IOrgService orgService;
+
 	private void beforeSave(MedicalRecord entity) {
 		User user = SecurityUtils.getCurrentUser();
 		// 一些处理
@@ -116,7 +133,9 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			User user = SecurityUtils.getCurrentUser();
 			entity.setZA02C(user.getOrg().getOrgcode());
 			entity.setZA03(user.getOrg().getOrgname());
-			// entity.setZA04(user.getOrg().getOrgmanager_showname());
+			if(user.getOrg().getOrgmanager() != null){
+				entity.setZA04(user.getOrg().getOrgmanager().getDisplayName());
+			}
 		}
 	}
 
@@ -134,26 +153,25 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	 * @return
 	 */
 	private void doSave(List<MedicalRecord> entities) {
-		/*
-		for (MedicalRecord entity : entities) {
-			if (entity.getId() != null) {
-				// 要更新的病案，删除病案原有的子表记录
-				diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
-				this.deleteSurgerysByMedicalRecordId(entity.getId());
-				ICUDao.deleteByProperty("medicalRecordId", entity.getId());
-				birthDefectDao.deleteByProperty("medicalRecordId",
-						entity.getId());
-			}
-		}
-		*/
-		
+
+		// for (MedicalRecord entity : entities) {
+		// if (entity.getId() != null) {
+		// // 要更新的病案，删除病案原有的子表记录
+		// diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
+		// this.deleteSurgerysByMedicalRecordId(entity.getId());
+		// ICUDao.deleteByProperty("medicalRecordId", entity.getId());
+		// birthDefectDao.deleteByProperty("medicalRecordId",
+		// entity.getId());
+		// }
+		// }
+
 		List<Long> idList = new ArrayList<Long>();
 		for (MedicalRecord entity : entities) {
 			if (entity.getId() != null) {
 				idList.add(entity.getId());
 			}
 		}
-		//删除病案原有的所有子表记录
+		// 删除病案原有的所有子表记录
 		medicalRecordDao.deleteSubObjectBySQL(idList);
 
 		medicalRecordDao.saveByBatch(entities);
@@ -232,6 +250,15 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		doSave(list);
 	}
 
+	@Override
+	public void delete(MedicalRecord entity) {
+		diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
+		this.deleteSurgerysByMedicalRecordId(entity.getId());
+		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
+		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
+		medicalRecordDao.delete(entity);
+	}
+
 	private void deleteSurgerysByMedicalRecordId(Long medicalRecordId) {
 		List<Surgery> list = surgeryDao.queryByProperty("medicalRecordId",
 				medicalRecordId);
@@ -242,131 +269,70 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	}
 
 	@Override
-	public Pagination<MedicalRecord> query(MedicalRecordParam param) {
-		return medicalRecordDao.query(param);
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Document toXML(Object entity) throws Exception {
-		SAXReader reader = new SAXReader();
-		Document document = null;
-
-		String path = TEMPLATE_FOLDER + File.separatorChar
-				+ entity.getClass().getSimpleName() + ".xml";
-		document = reader.read(this.getClass().getResourceAsStream(path));
-
-		Field[] fields = entity.getClass().getDeclaredFields();
-
-		for (Field field : fields) {
-			field.setAccessible(true);
-			if (field.get(entity) != null) {
-				String key = field.getName();
-				Node node = document.selectSingleNode("//" + key);
-				if (node != null) {
-					String value = field.get(entity).toString();
-					String type = field.getGenericType().toString();
-					if ("class java.util.Date".equals(type)) {
-						if (field.isAnnotationPresent(DateTimeFormat.class)) {
-							DateTimeFormat format = field
-									.getAnnotation(DateTimeFormat.class);
-							value = new SimpleDateFormat(format.pattern())
-									.format(field.get(entity));
-						}
-						node.setText(value);
-					} else if ("class java.lang.Double".equals(type)) {
-						if (field.isAnnotationPresent(NumberFormat.class)) {
-							NumberFormat format = field
-									.getAnnotation(NumberFormat.class);
-							value = new DecimalFormat(format.pattern())
-									.format(field.get(entity));
-						}
-						node.setText(value);
-					} else if (type.startsWith("java.util.List")) {
-						List list = (List) field.get(entity);
-						for (Object object : list) {
-							Document child = this.toXML(object);
-							((Element) node).add(child.getRootElement());
-						}
-					} else {
-						node.setText(value);
-					}
-				}
-			}
-		}
-		// 去除空节点
-		removeEmptyNode(document.getRootElement());
-		return document;
-	}
-
-	private void removeEmptyNode(Element element) {
-		if (element == null) {
-			return;
-		}
-		for (Object child : element.elements()) {
-			removeEmptyNode((Element) child);
-		}
-		String content = element.getStringValue();
-		if (StringUtils.isBlank(content)) {
-			element.detach();
-		}
-	}
-
-	@Override
 	public MedicalRecord get(Serializable id) {
 		return medicalRecordDao.get(id);
 	}
 
 	@Override
-	public String exportToXML(List<MedicalRecord> entities) throws Exception {
-		Document document = DocumentHelper.createDocument();
-		Element root = document.addElement("CASES");
-
-		for (MedicalRecord medicalRecord : entities) {
-			Document node = toXML(medicalRecord);
-			if (node.getRootElement() != null) {
-				root.add(node.getRootElement());
-			}
-		}
-		return document.asXML();
+	public Pagination<MedicalRecord> query(MedicalRecordParam param) {
+		return medicalRecordDao.query(param);
 	}
 
 	@Override
-	public ImportResult importXmlFile(InputStream inputStream) throws Exception {
-		SAXReader reader = new SAXReader();
-		reader.setIgnoreComments(true);
-		reader.setStripWhitespaceText(true);
-		Document document = reader.read(inputStream);
-
-		// 处理ZA
-		String[] zaKey = new String[] { "ZA01C", "ZA02C", "ZA03", "ZA04" };
-		Map<String, String> zaMap = new HashMap<String, String>();
-		for (String key : zaKey) {
-			Node node = document.selectSingleNode("//" + key);
-			if (node != null) {
-				zaMap.put(key, node.getText());
-			}
-		}
-
-		// 解析病案
-		BaseVisitor<MedicalRecord> visitor = new BaseVisitor<MedicalRecord>(
-				MedicalRecord.class);
-		BatchInserter batchInserter = new BatchInserter(zaMap);
-		visitor.addObserver(batchInserter);
-		document.accept(visitor);
-		visitor.flush(); // 处理末尾的小部分
-
-		return batchInserter.result;
+	public List<MedicalRecord> queryAll(MedicalRecordParam param) {
+		return medicalRecordDao.queryAll(param);
 	}
 
-	class BatchInserter implements Observer {
+	@Override
+	public ImportResult importXmlFile(Collection<File> xmlFileList)
+			throws Exception {
 		ImportResult result = new ImportResult();
-		Map<String, String> zaMap;
+		if (xmlFileList == null) {
+			return result;
+		}
+		for (File xmlFile : xmlFileList) {
+			if (xmlFile == null) {
+				continue;
+			}
+			SAXReader reader = new SAXReader();
+			reader.setIgnoreComments(true);
+			reader.setStripWhitespaceText(true);
+
+			// 验证和预处理
+			XmlPreprocessor preprocessor = new XmlPreprocessor();
+			reader.setDefaultHandler(preprocessor);
+			reader.read(xmlFile);
+
+			if (!preprocessor.isValid()) {
+				throw new IllegalInputException("xml数据有误！");
+			}
+
+			Map<String, Object> commonPropMap = preprocessor.getCommonPropMap();
+
+			// 导入
+			XmlImporter importer = new XmlImporter(commonPropMap);
+			reader.setDefaultHandler(null);
+			reader.addHandler("/" + MR_XML_ROOT, importer);
+			reader.addHandler(
+					"/" + MR_XML_ROOT + "/" + MedicalRecord.ROOT_NAME, importer);
+			reader.read(xmlFile);
+
+			result.addResult(importer.getResult());
+		}
+		return result;
+	}
+
+	class XmlImporter implements ElementHandler {
+		private static final int BATCH_SIZE = 100;
+
+		private Map<String, Object> commonPropMap = new HashMap<String, Object>();
+		private List<MedicalRecord> dataList = new ArrayList<MedicalRecord>();
 
 		Validator validator;
+		ImportResult result = new ImportResult();
 
-		public BatchInserter(Map<String, String> zaMap) {
-			this.zaMap = zaMap;
+		public XmlImporter(Map<String, Object> commonPropMap) {
+			this.commonPropMap = commonPropMap;
 			ValidatorFactory validatorFactory = SpringContextUtils
 					.getBean(ValidatorFactory.class);
 			// validator = validatorFactory.getValidator();
@@ -375,27 +341,47 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 					.usingContext()).failFast(true).getValidator();
 		}
 
-		@SuppressWarnings("unchecked")
 		@Override
-		public void update(Observable o, Object arg) {
-			List<MedicalRecord> list = (List<MedicalRecord>) arg;
+		public void onStart(ElementPath elementPath) {
 
-			for (MedicalRecord medicalRecord : list) {
-				medicalRecord.setZA01C(zaMap.get("ZA01C"));
-				medicalRecord.setZA02C(zaMap.get("ZA02C"));
-				medicalRecord.setZA03(zaMap.get("ZA03"));
-				medicalRecord.setZA04(zaMap.get("ZA04"));
+		}
 
-				beforeSave(medicalRecord);
+		@Override
+		public void onEnd(ElementPath elementPath) {
+			Element element = elementPath.getCurrent();
 
-				// 先验证一下唯一标识的属性组合是否都有值
-				for (String name : MedicalRecord.uniqueKey) {
-					Object value = BeanUtils.getProperty(medicalRecord, name);
-					if (value == null || "".equals(value)) {
-						throw new IllegalInputException("字段" + name + "不能为空！");
+			if (MedicalRecord.ROOT_NAME.equalsIgnoreCase(element.getName())) {
+				List<MedicalRecord> plist = XmlTransferUtils.parseXML(element,
+						MedicalRecord.class);
+				for (MedicalRecord medicalRecord : plist) {
+					fillCommonProperties(medicalRecord);
+					dataList.add(medicalRecord);
+
+					if (dataList.size() == BATCH_SIZE) {
+						doImport(dataList);
+						dataList.clear();
 					}
 				}
+			} else if (Wt4Constants.MR_XML_ROOT.equalsIgnoreCase(element
+					.getName())) {
+				doImport(dataList);
+				dataList.clear();
+			}
 
+			element.detach();
+			element = null;
+		}
+
+		private void fillCommonProperties(MedicalRecord entity) {
+			BeanMap beanMap = BeanMap.create(entity);
+			for (Entry<String, Object> entry : commonPropMap.entrySet()) {
+				beanMap.put(entity, entry.getKey(), entry.getValue());
+			}
+		}
+
+		private void doImport(List<MedicalRecord> list) {
+			for (MedicalRecord medicalRecord : list) {
+				beforeSave(medicalRecord);
 				// 验证病案
 				Set<ConstraintViolation<MedicalRecord>> errors = validator
 						.validate(medicalRecord);
@@ -418,49 +404,220 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 
 			doSave(list);
 		}
+
+		public ImportResult getResult() {
+			return result;
+		}
 	}
 
-	@Override
-	public ImportResult importZipFile(File file) throws Exception {
-		ZipFile zipFile = new ZipFile(file);
-		try {
-			Enumeration<ZipEntry> enumeration = zipFile.getEntries();
-			ZipEntry zipEntry = null;
-			ImportResult result = new ImportResult();
-			while (enumeration.hasMoreElements()) {
-				zipEntry = (ZipEntry) enumeration.nextElement();
-				if (zipEntry.isDirectory()) {
-					continue;
+	private Element buildXmlHeader(MedicalRecordParam param, long count) {
+		Element header = DocumentHelper.createElement("Z");
+
+		Element nodeZA = header.addElement("ZA");
+
+		if (StringUtils.isNotEmpty(param.getZA02C())) {
+			Org org = orgService.getOrgByCode(param.getZA02C());
+			if (org != null) {
+				// 行政区划代码
+				if (org.getZoneCode() != null) {
+					nodeZA.addElement("ZA01C").addText(org.getZoneCode());
 				}
-				String name = zipEntry.getName();
-				// 只解析压缩文件中的xml文件
-				if (name != null && name.matches("^.+\\.(?i)xml$")) {
-					InputStream inputStream = zipFile.getInputStream(zipEntry);
-					try {
-						result.addResult(importXmlFile(inputStream));
-					} finally {
-						IOUtils.closeQuietly(inputStream);
-					}
+				// 组织机构代码
+				nodeZA.addElement("ZA02C").addText(param.getZA02C());
+				// 机构名称
+				if (org.getOrgname() != null) {
+					nodeZA.addElement("ZA03").addText(org.getOrgname());
+				}
+				// 单位负责人
+				if (org.getOrgmanager() != null
+						&& org.getOrgmanager().getDisplayName() != null) {
+					nodeZA.addElement("ZA04").addText(
+							org.getOrgmanager().getDisplayName());
+				}
+			} else {
+				nodeZA.addElement("ZA02C").addText(param.getZA02C());
+			}
+		}
+
+		Element nodeZB = header.addElement("ZB");
+		nodeZB.addElement("ZB01C").addText("B_WT4-2012");
+
+		// 只有查询整月的时候才设年月
+		if (param.getLe_AAC01() != null && param.getGe_AAC01() != null) {
+			Calendar start = DateUtils.toCalendar(param.getGe_AAC01());
+			Calendar end = DateUtils.toCalendar(param.getLe_AAC01());
+			if (start.get(Calendar.YEAR) == end.get(Calendar.YEAR)
+					&& start.get(Calendar.MONTH) == end.get(Calendar.MONTH)
+					&& start.get(Calendar.DAY_OF_MONTH) == 1) {
+				// 此月最后一天
+				start.add(Calendar.MONTH, 1);
+				start.add(Calendar.DAY_OF_MONTH, -1);
+				if (start.get(Calendar.DAY_OF_MONTH) == end
+						.get(Calendar.DAY_OF_MONTH)) {
+					// 数据年份月份
+					nodeZB.addElement("ZB02").addText(
+							String.valueOf(end.get(Calendar.YEAR)));
+					nodeZB.addElement("ZB03").addText(
+							String.valueOf(end.get(Calendar.MONTH) + 1));
 				}
 			}
-			return result;
+		}
+		User user = SecurityUtils.getCurrentUser();
+		// 填报人
+		if (user.getDisplayName() != null) {
+			nodeZB.addElement("ZB04").addText(user.getDisplayName());
+		}
+		// 填报人联系电话
+		if (user.getTelphone() != null) {
+			nodeZB.addElement("ZB05").addText(user.getTelphone());
+		}
+		// 填报日期
+		nodeZB.addElement("ZB06").addText(
+				new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+		// 记录数
+		nodeZB.addElement("ZB07").addText(String.valueOf(count));
+		// 邮箱
+		if (user.getEmail() != null) {
+			nodeZB.addElement("ZB08").addText(user.getEmail());
+		}
+		// 手机
+		if (user.getMobilephone() != null) {
+			nodeZB.addElement("ZB09").addText(user.getMobilephone());
+		}
+
+		XmlTransferUtils.removeEmptyNode(header);
+		return header;
+	}
+
+	public void exportToSingleXML(MedicalRecordParam param, File xmlFile)
+			throws Exception {
+		if (StringUtils.isEmpty(param.getZA02C())) {
+			throw new IllegalArgumentException("查询参数ZA02C不能为空");
+		}
+
+		OutputStream output = null;
+		XMLWriter xmlWriter = null;
+		XMLWriter tempWriter = null;
+		File tempFile = null;
+		try {
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			format.setEncoding(DEFAULT_ENCODING);
+
+			// 将所有病案节点写入临时文件
+			tempFile = TempFileUtils.createTempFile();
+			tempWriter = new XMLWriter(new BufferedWriter(new FileWriter(
+					tempFile)), format);
+			tempWriter.setIndentLevel(1);
+			XmlExporter exporter = new XmlExporter(tempWriter);
+			medicalRecordDao.readAll(param, exporter);
+			tempWriter.flush();
+			tempWriter.close();
+
+			// 写完整的xml文件
+			output = new FileOutputStream(xmlFile);
+			xmlWriter = new XMLWriter(output, format);
+			Element root = DocumentHelper.createElement(MR_XML_ROOT);
+			xmlWriter.startDocument();
+			xmlWriter.writeOpen(root);
+			// ZA&ZB
+			Element header = buildXmlHeader(param, exporter.getCount());
+			xmlWriter.setIndentLevel(1);
+			xmlWriter.write(header);
+			xmlWriter.flush();
+
+			FileUtils.copyFile(tempFile, output);
+
+			xmlWriter.setIndentLevel(0);
+			xmlWriter.println();
+			xmlWriter.writeClose(root);
+			xmlWriter.endDocument();
+			xmlWriter.flush();
+			xmlWriter.close();
 		} finally {
-			ZipFile.closeQuietly(zipFile);
+			try {
+				if (tempWriter != null)
+					tempWriter.close();
+			} catch (Exception e) {
+			}
+			try {
+				if (xmlWriter != null)
+					xmlWriter.close();
+			} catch (Exception e) {
+			}
+			IOUtils.closeQuietly(output);
+			FileUtils.deleteQuietly(tempFile);
+		}
+	}
+
+	class XmlExporter implements EntityReader<MedicalRecord> {
+		private long count = 0;
+		private XMLWriter writer;
+
+		public XmlExporter(XMLWriter writer) {
+			this.writer = writer;
+		}
+
+		@Override
+		public void read(MedicalRecord entity) {
+			Document node = XmlTransferUtils.toXML(entity);
+			try {
+				writer.write(node.getRootElement());
+			} catch (IOException e) {
+				throw new BaseException(e);
+			}
+			count++;
+		}
+
+		public long getCount() {
+			return count;
+		}
+	}
+
+	private void writeEmptyXML(MedicalRecordParam param, File xmlFile)
+			throws Exception {
+		XMLWriter xmlWriter = null;
+		try {
+			Document document = DocumentHelper.createDocument();
+			Element root = document.addElement(MR_XML_ROOT);
+			root.add(buildXmlHeader(param, 0));
+
+			OutputFormat format = OutputFormat.createPrettyPrint();
+			format.setEncoding(DEFAULT_ENCODING);
+			xmlWriter = new XMLWriter(new BufferedWriter(
+					new FileWriter(xmlFile)), format);
+			xmlWriter.write(document);
+			xmlWriter.flush();
+			xmlWriter.close();
+		} finally {
+			try {
+				if (xmlWriter != null)
+					xmlWriter.close();
+			} catch (Exception e) {
+			}
 		}
 	}
 
 	@Override
-	public List<MedicalRecord> queryAll(MedicalRecordParam param) {
-		return medicalRecordDao.queryAll(param);
-	}
+	public List<File> exportToXML(MedicalRecordParam param, File baseDir)
+			throws Exception {
+		List<File> fileList = new ArrayList<File>();
+		List<String> orgCodeList = medicalRecordDao.listOrgCode(param);
 
-	@Override
-	public void delete(MedicalRecord entity) {
-		diagnoseDao.deleteByProperty("medicalRecordId", entity.getId());
-		this.deleteSurgerysByMedicalRecordId(entity.getId());
-		ICUDao.deleteByProperty("medicalRecordId", entity.getId());
-		birthDefectDao.deleteByProperty("medicalRecordId", entity.getId());
-		medicalRecordDao.delete(entity);
+		if (CollectionUtils.isEmpty(orgCodeList)) {
+			File xmlFile = new File(baseDir, "export-0.xml");
+			writeEmptyXML(param, xmlFile);
+			fileList.add(xmlFile);
+			return fileList;
+		}
+
+		for (String orgCode : orgCodeList) {
+			File xmlFile = new File(baseDir, "export-" + orgCode + ".xml");
+			MedicalRecordParam singleParam = (MedicalRecordParam) param.clone();
+			singleParam.setZA02C(orgCode);
+			exportToSingleXML(singleParam, xmlFile);
+			fileList.add(xmlFile);
+		}
+		return fileList;
 	}
 
 	@SuppressWarnings("resource")

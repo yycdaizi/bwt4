@@ -4,7 +4,7 @@
 
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <div id="north_main">
-	<span class="head">欢迎:<shiro:principal property="username"/>,&nbsp;
+	<span class="head">欢迎:<shiro:principal property="displayName"/>,&nbsp;
 	<a href="#" id="changePswd">修改密码</a>&nbsp;|
 	<a href="${pageContext.request.contextPath }/user/loginout.do" id="loginOut">安全退出</a>
 	</span>

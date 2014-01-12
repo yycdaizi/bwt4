@@ -5,6 +5,10 @@ import org.springframework.beans.BeanUtils;
 
 public class OrgView extends Org {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public OrgView(){};
 	public OrgView(Org org){
 		BeanUtils.copyProperties(org, this);

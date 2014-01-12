@@ -1,10 +1,6 @@
 package org.bjdrgs.bjwt.authority.dao;
 
-import java.util.List;
-
-import org.bjdrgs.bjwt.authority.model.Role;
 import org.bjdrgs.bjwt.authority.model.Roleuser;
-import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.parameter.RoleuserParam;
 import org.bjdrgs.bjwt.core.dao.IBaseDao;
 import org.bjdrgs.bjwt.core.web.Pagination;

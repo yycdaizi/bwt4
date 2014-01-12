@@ -1,13 +1,9 @@
 package org.bjdrgs.bjwt.authority.service.impl;
 
-import java.util.List;
-
 import javax.annotation.Resource;
 
 import org.bjdrgs.bjwt.authority.dao.IRoleuserDao;
-import org.bjdrgs.bjwt.authority.model.Role;
 import org.bjdrgs.bjwt.authority.model.Roleuser;
-import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.parameter.RoleuserParam;
 import org.bjdrgs.bjwt.authority.service.IRoleuserService;
 import org.bjdrgs.bjwt.core.web.Pagination;

@@ -21,6 +21,7 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.jdbc.Work;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
 public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T> {
@@ -29,6 +30,9 @@ public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T>
 	
 	@Resource(name="sessionFactory")
 	private SessionFactory sessionFactory;
+	
+	@Value("${hibernate.jdbc.batch_size}")
+	private int jdbcBatchSize = 20;
 	
 	/**
 	 * @constructor
@@ -77,7 +81,7 @@ public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T>
 		for (T entity : entities) {
 			this.save(entity);
 			count++;
-			if(count%50 == 0){
+			if(count%jdbcBatchSize == 0){
 				getCurrentSession().flush();
 				getCurrentSession().clear();
 			}
@@ -258,7 +262,7 @@ public abstract class BaseDaoImpl<T extends Serializable> implements IBaseDao<T>
         return pagination;
 	}
 	
-	private Query createQuery(String hql){
+	protected Query createQuery(String hql){
 		return this.getCurrentSession().createQuery(hql);
 	}
 	

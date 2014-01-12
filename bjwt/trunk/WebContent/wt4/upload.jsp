@@ -164,7 +164,7 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 		$("input[type=file]").change(function(){$(this).parents(".uploader").find(".filename").val($(this).val());});
 		
 		$("#btnImport").click(function(){
-			$.messager.progress({
+        	$.messager.progress({
 				//msg:'正在导入...',
 				text:'正在导入...'
 			});
@@ -174,9 +174,11 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#dddddd', endCo
 	            	var filename = $("#importfile").val();
 	            	if(!filename){
 	            		$.messager.alert('提示','请先选择一个文件！','warning');
+	            		$.messager.progress('close');
 	            		return false;
 	            	}else if(!(/.+\.(xml|zip)$/i.test(filename))){
 	            		$.messager.alert('提示','文件格式错误！只能导入xml或zip文件！','warning');
+	            		$.messager.progress('close');
 	            		return false;
 	            	}
 	            	$("#importInfo").append('正在导入文件 <b>'+filename+'</b>，请稍候...<br/>');

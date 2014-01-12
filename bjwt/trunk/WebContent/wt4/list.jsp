@@ -491,6 +491,7 @@ $(function(){
             },
             message:"<b>正在导出，请稍后...</b>"
         });
+		$("#formMedicalRecordQuery").form('clear');
 		$("#formMedicalRecordQuery").form('load', $('#gridMedicalRecord').datagrid('options').queryParams);
 		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/exportToXML.do");
 		$("#formMedicalRecordQuery").submit();
@@ -511,6 +512,7 @@ $(function(){
             },
             message:"<b>正在导出，请稍后...</b>"
         });
+		$("#formMedicalRecordQuery").form('clear');
 		$("#formMedicalRecordQuery").form('load', $('#gridMedicalRecord').datagrid('options').queryParams);
 		$("#formMedicalRecordQuery").attr("action", "${pageContext.request.contextPath}/wt4/medicalRecord/exportToCSV.do");
 		$("#formMedicalRecordQuery").submit();

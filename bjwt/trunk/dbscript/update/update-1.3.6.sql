@@ -4,3 +4,5 @@ ALTER TABLE `b_user` ADD COLUMN `display_name` VARCHAR(100);
 
 SET SQL_SAFE_UPDATES=0;
 update `b_user` set `display_name`=username where display_name is null;
+
+commit;

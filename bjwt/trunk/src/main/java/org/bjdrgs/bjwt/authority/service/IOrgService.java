@@ -31,4 +31,11 @@ public interface IOrgService {
 	 * @return
 	 */
 	public List<Org> queryForTree(Integer parentId);
+	
+	/**
+	 * 根据机构代码查找机构
+	 * @param orgCode
+	 * @return
+	 */
+	public Org getOrgByCode(String orgCode);
 }

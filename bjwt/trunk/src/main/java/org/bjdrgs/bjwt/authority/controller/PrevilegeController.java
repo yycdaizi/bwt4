@@ -3,7 +3,6 @@ package org.bjdrgs.bjwt.authority.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
 
 import org.bjdrgs.bjwt.authority.model.Previlege;
 import org.bjdrgs.bjwt.authority.model.PrevilegeView;

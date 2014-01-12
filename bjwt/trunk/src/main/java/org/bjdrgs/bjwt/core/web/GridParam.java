@@ -1,5 +1,7 @@
 package org.bjdrgs.bjwt.core.web;
 
+import org.springframework.beans.BeanUtils;
+
 /**
  * DataGrid数据加载的请求参数
  * @author ying
@@ -11,6 +13,14 @@ public class GridParam {
 	private int rows;
 	private String sort;
 	private String order;
+	
+	@Override
+	public Object clone() {
+		Object obj = BeanUtils.instantiate(this.getClass());
+		BeanUtils.copyProperties(this, obj);
+		return obj;
+	}
+	
 	/**
 	 * @return the page
 	 */
@@ -59,5 +69,4 @@ public class GridParam {
 	public void setOrder(String order) {
 		this.order = order;
 	}
-	
 }

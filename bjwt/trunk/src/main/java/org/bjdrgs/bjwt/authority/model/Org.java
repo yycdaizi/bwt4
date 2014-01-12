@@ -41,6 +41,10 @@ public class Org implements Serializable {
 	@Length(max = 150, message = "{common.length.limit}")
 	@Column(name = "orgcode", nullable = false, length = 150)
 	private String orgcode;
+	
+	@Length(max = 30, message = "{common.length.limit}")
+	@Column(name = "zone_code", nullable = false, length = 30)
+	private String zoneCode;
    
 	@Length(max = 150, message = "{common.length.limit}")
 	@Column(name = "orgname", nullable = false, length = 150)
@@ -136,6 +140,14 @@ public class Org implements Serializable {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getZoneCode() {
+		return zoneCode;
+	}
+
+	public void setZoneCode(String zoneCode) {
+		this.zoneCode = zoneCode;
 	}
    
 }

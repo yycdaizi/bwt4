@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
-import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.authority.dao.IOrgDao;
 import org.bjdrgs.bjwt.authority.model.Org;
 import org.bjdrgs.bjwt.authority.parameter.OrgParam;
@@ -84,6 +83,11 @@ public class OrgServiceImpl implements IOrgService {
 			handleOrgState(org);
 		}
 		return orgList;
+	}
+
+	@Override
+	public Org getOrgByCode(String orgCode) {
+		return orgDao.getByUnique("orgcode", orgCode);
 	}
 
 }

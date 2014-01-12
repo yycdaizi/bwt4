@@ -1,16 +1,11 @@
-package org.bjdrgs.bjwt.wt4.template;
+package org.bjdrgs.bjwt.wt4.xml.template;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.Node;
-import org.dom4j.Text;
 import org.dom4j.io.SAXReader;
 
 public class GetXMLTemplate {
@@ -18,6 +13,7 @@ public class GetXMLTemplate {
 	/**
 	 * @param args
 	 */
+	@SuppressWarnings("unused")
 	public static void main(String[] args) {
 		SAXReader reader = new SAXReader();
 		Document document = null;
@@ -40,6 +36,7 @@ public class GetXMLTemplate {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void clear(Element element){
 		List<Node> children = element.content();
 		for(int i=children.size()-1;i>=0;i--) {

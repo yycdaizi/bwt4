@@ -50,13 +50,14 @@
 		<thead>
 			<tr>
 				<th data-options="field:'userid',align:'center',width:30,sortable:true">编号</th>
-				<th	data-options="field:'org_orgname',width:120">所属机构</th>
-				<th data-options="field:'username',width:200"> 用户名</th>
-				<th data-options="field:'sex',width:100">性别</th>
+				<th	data-options="field:'org_orgname',width:200">所属机构</th>
+				<th data-options="field:'username',width:100"> 用户名</th>
+				<th data-options="field:'displayName',width:100"> 姓名</th>
+				<th data-options="field:'sex',width:60">性别</th>
 				<th data-options="field:'telphone',width:200"> 电话号码</th>
 				<th data-options="field:'mobilephone',width:200"> 手机号码</th>
 				<th data-options="field:'email',width:200"> Email地址</th>
-				<th	data-options="field:'ts',width:120">更新时间</th>
+				<th	data-options="field:'ts',width:150">更新时间</th>
 			</tr>
 		</thead>
 		</table>
@@ -68,6 +69,10 @@
 			<div class="fitem">    
 	            <label> 用户名：</label>  
 	            <input name="username" class="easyui-validatebox" required="true" validType="maxLength[30]">    
+	        </div>
+			<div class="fitem">    
+	            <label> 姓名：</label>  
+	            <input name="displayName" class="easyui-validatebox" required="true" validType="maxLength[30]">    
 	        </div>
 	        <!-- 
 	        <div class="fitem">    

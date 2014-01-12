@@ -41,6 +41,10 @@ public class User implements Serializable {
 	@Length(max = 300, message = "{common.length.limit}")
 	@Column(name = "password", nullable = false, length = 300)
 	private String password;
+	
+	@Length(max = 300, message = "{common.length.limit}")
+	@Column(name = "display_name", nullable = false, length = 300)
+	private String displayName;
 
 	@Length(max = 3, message = "{common.length.limit}")
 	@Column(name = "sex", nullable = false, length = 3)
@@ -147,5 +151,13 @@ public class User implements Serializable {
 	// girdview prop
 	public String getOrg_orgname() {
 		return org != null ? org.getOrgname() : null;
+	}
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
 	}
 }

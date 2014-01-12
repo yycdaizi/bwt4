@@ -7,6 +7,13 @@
 		<link href="css/basic.css" rel="stylesheet" type="text/css" />
 		<link href="css/content.css" rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="js/formutils.js"></script>
+		<style type="text/css">
+		.fitem label {
+			display: inline-block;
+			width: 100px;
+			text-align: right;
+		}
+		</style>
 	</head>
 	<body>
 		<div id="topations">
@@ -50,6 +57,7 @@
 				<th data-options="field:'orgname',width:180">机构名称</th>
 				<th data-options="field:'orgcode',width:120">机构编码</th>
 				<th data-options="field:'parentOrg_showname',width:120">父机构</th>
+				<th data-options="field:'zoneCode',width:120">行政区划代码</th>
 				<th data-options="field:'orgaddr',width:200">所在地址</th>
 				<th	data-options="field:'orgmanager_showname',width:120">机构负责人</th>
 				<th	data-options="field:'ts',width:120">更新时间</th>
@@ -58,7 +66,7 @@
 		</table>
 		</div>
 		<!-- 新增对话框 -->
-		<div id="dialog_org" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:400px;height:240px;left:200;top:100;padding:10px 20px">
+		<div id="dialog_org" class="easyui-dialog" closed="true" cache="false" modal="true" buttons="#formSub-buttons" style="width:440px;height:280px;left:200;top:100;padding:10px 20px">
 		<form id="formorg" method="post" class="fform">
 			<input name="orgid" type="hidden" />
 			<div class="fitem">    
@@ -89,6 +97,10 @@
 	                }); 
 	            });
 	            </script>
+	        </div>
+			<div class="fitem">    
+	            <label>行政区划代码：</label>  
+	            <input name="zoneCode" class="easyui-combobox" style="width:200px;" data-options="url:'data/dic-area.json'" required="true" validType="maxLength[30]">    
 	        </div>
 	        <div class="fitem">    
 	            <label>所在地址：</label>  

@@ -5,6 +5,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>欢迎登录</title>
+
+<script type="text/javascript">
+if(window.top&&window.top != window){
+	window.top.location.href = window.location.href;
+}
+</script>
+
 <jsp:include page="/include.jsp"></jsp:include>
 </head>
 <body>

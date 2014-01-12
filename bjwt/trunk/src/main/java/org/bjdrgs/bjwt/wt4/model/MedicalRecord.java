@@ -763,280 +763,280 @@ public class MedicalRecord implements Serializable {
 	/** 总费用 */
 	@NotNull
 	@GreaterThan(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "TOTAL_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA01;
 
 	/** 自付金额 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "SELFPAYMENT_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA0101;
 
 	/** 诊察（诊疗）费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "EXAMINE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA11;
 
 	/** 一般检查费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CHECK_NORMAL_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA21;
 
 	/** 临床物理治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_CLINICAL_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA22;
 
 	/** 介入治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_INTRUDE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA23;
 
 	/** 特殊治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_SPECIAL_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA24;
 
 	/** 康复治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_RECOVER_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA25;
 
 	/** 中医治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_CHINESE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA26;
 
 	/** 一般治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_NORMAL_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA27;
 
 	/** 精神治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_MIND_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA28;
 
 	/** 接生费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "DELIVER_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA13;
 
 	/** 麻醉费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "HORUS_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA15;
 
 	/** 手术费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "OPERATION_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA12;
 
 	/** 护理治疗费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_TEND_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA29;
 
 	/** 护理费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "BED_TEND_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA03;
 
 	/** 核素检查 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CHECK_NUCLEUS_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA30;
 
 	/** 核素治疗 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CURE_NUCLEUS_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA31;
 
 	/** 超声费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "ULTRASOUND_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA32;
 
 	/** 放射费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "RADIATE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA07;
 
 	/** 化验费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CHECK_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA08;
 
 	/** 病理费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "PATHOLOGY_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA33;
 
 	/** 监护及辅助呼吸费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "AUXILIARY_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA34;
 
 	/** 治疗用一次性医用材料费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "STUFF_CURE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA35;
 
 	/** 介入用一次性医用材料费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "STUFF_INTRUDE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA36;
 
 	/** 手术用一次性医用材料费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "STUFF_SURGERY_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA37;
 
 	/** 检查用一次性医用材料费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "STUFF_CHECK_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA38;
 
 	/** 床位费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "BED_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA02;
 
 	/** 挂号费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "REGISTER_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA39;
 
 	/** 输氧费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "OXYGEN_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA09;
 
 	/** 输血费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "TRANSFUSION_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA10;
 
 	/** 西药费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "WESTERN_MEDICINE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA04;
 
 	/** 抗菌药物费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "ANTISEPTIC_MEDICINE_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA40;
 
 	/** 白蛋白类制品费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "PRODUCT_ALBUMIN_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA41;
 
 	/** 球蛋白类制品费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "PRODUCT_GLOBULIN_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA42;
 
 	/** 凝血因子类制品费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "PRODUCT_BLOOD_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA43;
 
 	/** 细胞因子类制品费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "PRODUCT_CELL_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA44;
 
 	/** 中成药费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CHINESE_MEDICINE_EXPENSE1")
 	@JsonProperty
 	private BigDecimal ADA05;
 
 	/** 中草药费 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "CHINESE_MEDICINE_EXPENSE2")
 	@JsonProperty
 	private BigDecimal ADA06;
 
 	/** 其他费用 */
 	@Min(0)
-	@NumberFormat(pattern = "#.00")
+	@NumberFormat(pattern = "0.00")
 	@Column(name = "OTHER_EXPENSE")
 	@JsonProperty
 	private BigDecimal ADA20;

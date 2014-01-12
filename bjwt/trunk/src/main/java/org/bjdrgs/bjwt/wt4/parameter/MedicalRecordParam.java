@@ -2,33 +2,38 @@ package org.bjdrgs.bjwt.wt4.parameter;
 
 import java.util.Date;
 
+import org.apache.commons.lang3.StringUtils;
+import org.bjdrgs.bjwt.authority.model.User;
+import org.bjdrgs.bjwt.authority.utils.Constants;
+import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.web.GridParam;
 import org.springframework.format.annotation.DateTimeFormat;
 
-public class MedicalRecordParam extends GridParam{
-	//病案号
+public class MedicalRecordParam extends GridParam {
+	// 病案号
 	private String blike_AAA28;
-	//姓名
+	// 姓名
 	private String blike_AAA01;
-	//科室
+	// 科室
 	private String eq_AAB02C;
-	//出院日期
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	// 出院日期
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date le_AAC01;
-	@DateTimeFormat(pattern="yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date ge_AAC01;
-	
-	//离院方式
+
+	// 离院方式
 	private String eq_AEM01C;
-	//病案状态
+	// 病案状态
 	private String eq_state;
-	
+
 	private String eq_mdc;
 	private String eq_drg;
 
 	// 权限控制，只能查询本机构下面的病案
 	private boolean enableAuthority = true;
-	
+	private String ZA02C;
+
 	public String getBlike_AAA28() {
 		return blike_AAA28;
 	}
@@ -85,7 +90,8 @@ public class MedicalRecordParam extends GridParam{
 	}
 
 	/**
-	 * @param eq_state the eq_state to set
+	 * @param eq_state
+	 *            the eq_state to set
 	 */
 	public void setEq_state(String eq_state) {
 		this.eq_state = eq_state;
@@ -99,7 +105,8 @@ public class MedicalRecordParam extends GridParam{
 	}
 
 	/**
-	 * @param eq_mdc the eq_mdc to set
+	 * @param eq_mdc
+	 *            the eq_mdc to set
 	 */
 	public void setEq_mdc(String eq_mdc) {
 		this.eq_mdc = eq_mdc;
@@ -113,7 +120,8 @@ public class MedicalRecordParam extends GridParam{
 	}
 
 	/**
-	 * @param eq_drg the eq_drg to set
+	 * @param eq_drg
+	 *            the eq_drg to set
 	 */
 	public void setEq_drg(String eq_drg) {
 		this.eq_drg = eq_drg;
@@ -127,9 +135,27 @@ public class MedicalRecordParam extends GridParam{
 	}
 
 	/**
-	 * @param enableAuthority the enableAuthority to set
+	 * @param enableAuthority
+	 *            the enableAuthority to set
 	 */
 	public void setEnableAuthority(boolean enableAuthority) {
 		this.enableAuthority = enableAuthority;
+	}
+
+	public String getZA02C() {
+		if (StringUtils.isNotEmpty(ZA02C)) {
+			return ZA02C;
+		}
+		// 控制数据权限
+		User user = SecurityUtils.getCurrentUser();
+		if (enableAuthority
+				&& !Constants.ROOTUSER_NAME.equals(user.getUsername())) {
+			return user.getOrg().getOrgcode();
+		}
+		return null;
+	}
+
+	public void setZA02C(String zA02C) {
+		ZA02C = zA02C;
 	}
 }

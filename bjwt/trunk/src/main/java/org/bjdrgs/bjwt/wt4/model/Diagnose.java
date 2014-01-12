@@ -27,7 +27,7 @@ public class Diagnose implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	public static final String ROOT_NAME = "ABD";
-	public static final String deleteByMedicalRecordIdSQL = "delete from b_wt4_diagnose where b_wt4_id=?";
+	public static final String deleteByMedicalRecordIdSQL = "delete from b_wt4_diagnose where b_wt4_id in (:ids)";
 	
 	@Id
 	@GenericGenerator(name = "idGenerator", strategy = "increment")

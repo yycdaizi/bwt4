@@ -1,22 +1,21 @@
 package org.bjdrgs.bjwt.wt4.dao.impl;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
-import org.bjdrgs.bjwt.authority.model.User;
-import org.bjdrgs.bjwt.authority.utils.Constants;
-import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
 import org.bjdrgs.bjwt.core.dao.DaoUtils;
 import org.bjdrgs.bjwt.core.dao.impl.BaseDaoImpl;
 import org.bjdrgs.bjwt.core.util.BeanUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
+import org.bjdrgs.bjwt.wt4.dao.EntityReader;
 import org.bjdrgs.bjwt.wt4.dao.IMedicalRecordDao;
 import org.bjdrgs.bjwt.wt4.model.BirthDefect;
 import org.bjdrgs.bjwt.wt4.model.Diagnose;
@@ -25,7 +24,10 @@ import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.model.Operation;
 import org.bjdrgs.bjwt.wt4.model.Surgery;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
+import org.hibernate.CacheMode;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
+import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,30 +103,17 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 			paramMap.put("eq_state", param.getEq_state());
 		}
 
-		// 控制数据权限
-		User user = SecurityUtils.getCurrentUser();
-		if (param.isEnableAuthority()
-				&& !Constants.ROOTUSER_NAME.equals(user.getUsername())) {
+		// getZA02C方法中控制了数据权限
+		String ZA02C = param.getZA02C();
+		if (StringUtils.isNotEmpty(ZA02C)) {
 			hql.append(" and obj.ZA02C = :orgCode");
-			paramMap.put("orgCode", user.getOrg().getOrgcode());
+			paramMap.put("orgCode", ZA02C);
 		}
 
 		if (StringUtils.isNotEmpty(param.getSort())) {
 			hql.append(" order by obj." + param.getSort() + " "
 					+ param.getOrder());
 		}
-	}
-
-	@Override
-	public boolean isExist(MedicalRecord entity) {
-		// 医院+病案号（AAA28）+出院日期（AAC01） 唯一标识
-		String hql = "select count(*) from " + MedicalRecord.class.getName()
-				+ " where ZA02C=:ZA02C and AAA28=:AAA28 and AAC01=:AAC01";
-		Long count = (Long) this.getCurrentSession().createQuery(hql)
-				.setString("ZA02C", entity.getZA02C())
-				.setString("AAA28", entity.getAAA28())
-				.setDate("AAC01", entity.getAAC01()).uniqueResult();
-		return count > 0;
 	}
 
 	private static final int BATCH_CHECK_SIZE = 16;
@@ -222,45 +211,153 @@ public class MedicalRecordDaoImpl extends BaseDaoImpl<MedicalRecord> implements
 		return query.list();
 	}
 
+	private SQLQuery createSQLQuery(String sql) {
+		return getCurrentSession().createSQLQuery(sql);
+	}
+
 	@Override
 	public void deleteSubObjectBySQL(final List<Long> idList) {
-		doWork(new Work() {
+		final int BATCH_SIZE = 50;
 
+		List<Long> param = new ArrayList<Long>();
+		for (int k = 0; k < idList.size(); k++) {
+			param.add(idList.get(k));
+			if ((k + 1) % BATCH_SIZE == 0 || k == idList.size() - 1) {
+				createSQLQuery(Diagnose.deleteByMedicalRecordIdSQL)
+						.setParameterList("ids", param).executeUpdate();
+
+				createSQLQuery(ICU.deleteByMedicalRecordIdSQL)
+						.setParameterList("ids", param).executeUpdate();
+
+				createSQLQuery(BirthDefect.deleteByMedicalRecordIdSQL)
+						.setParameterList("ids", param).executeUpdate();
+
+				// 必须先删除操作，再删除手术
+				createSQLQuery(Operation.deleteByMedicalRecordIdSQL)
+						.setParameterList("ids", param).executeUpdate();
+
+				createSQLQuery(Surgery.deleteByMedicalRecordIdSQL)
+						.setParameterList("ids", param).executeUpdate();
+
+				param = new ArrayList<Long>();
+			}
+		}
+	}
+
+	@Deprecated
+	public void deleteSubObjectByJDBC(final List<Long> idList) {
+		final int BATCH_SIZE = 50;
+		final List<String> paramList = new ArrayList<String>();
+		StringBuilder sb = new StringBuilder();
+
+		int count = 0;
+		for (int k = 0; k < idList.size(); k++) {
+			if (idList.get(k) != null) {
+				sb.append(idList.get(k));
+				count++;
+				if (count % BATCH_SIZE == 0 || k == idList.size() - 1) {
+					paramList.add(sb.toString());
+					sb = new StringBuilder();
+				} else {
+					sb.append(",");
+				}
+			}
+		}
+
+		doWork(new Work() {
 			@Override
 			public void execute(Connection connection) throws SQLException {
-				PreparedStatement[] stmtList = new PreparedStatement[5];
+				Statement stmt = null;
 				try {
-					stmtList[0] = connection
-							.prepareStatement(Diagnose.deleteByMedicalRecordIdSQL);
-					stmtList[1] = connection
-							.prepareStatement(Surgery.deleteByMedicalRecordIdSQL);
-					stmtList[2] = connection
-							.prepareStatement(ICU.deleteByMedicalRecordIdSQL);
-					stmtList[3] = connection
-							.prepareStatement(BirthDefect.deleteByMedicalRecordIdSQL);
-					stmtList[4] = connection
-							.prepareStatement(Operation.deleteByMedicalRecordIdSQL);
+					stmt = connection.createStatement();
+					for (int i = 0; i < paramList.size(); i++) {
+						String deleteDiagnose = Diagnose.deleteByMedicalRecordIdSQL
+								.replace(":ids", paramList.get(i));
+						String deleteICU = ICU.deleteByMedicalRecordIdSQL
+								.replace(":ids", paramList.get(i));
+						String deleteBirthDefect = BirthDefect.deleteByMedicalRecordIdSQL
+								.replace(":ids", paramList.get(i));
+						String deleteOperation = Operation.deleteByMedicalRecordIdSQL
+								.replace(":ids", paramList.get(i));
+						String deleteSurgery = Surgery.deleteByMedicalRecordIdSQL
+								.replace(":ids", paramList.get(i));
 
-					for (int i = 0; i < idList.size(); i++) {
-						for (PreparedStatement stmt : stmtList) {
-							stmt.setLong(1, idList.get(i));
-							stmt.addBatch();
-						}
-						// 每200执行一次
-						if ((i + 1) % 200 == 0 || i == idList.size() - 1) {
-							for (PreparedStatement stmt : stmtList) {
-								stmt.executeBatch();
-								stmt.clearBatch();
-							}
-							logger.debug("已删除" + (i + 1) + "条病案的子记录");
+						stmt.addBatch(deleteDiagnose);
+						logger.debug(deleteDiagnose);
+						stmt.addBatch(deleteICU);
+						logger.debug(deleteICU);
+						stmt.addBatch(deleteBirthDefect);
+						logger.debug(deleteBirthDefect);
+						// 必须先删除操作，再删除手术
+						stmt.addBatch(deleteOperation);
+						logger.debug(deleteOperation);
+						stmt.addBatch(deleteSurgery);
+						logger.debug(deleteSurgery);
+
+						// 每BATCH_SIZE执行一次
+						if ((i + 1) % BATCH_SIZE == 0
+								|| i == paramList.size() - 1) {
+							stmt.executeBatch();
+							stmt.clearBatch();
 						}
 					}
 				} finally {
-					for (PreparedStatement stmt : stmtList) {
-						JdbcUtils.closeStatement(stmt);
-					}
+					JdbcUtils.closeStatement(stmt);
 				}
 			}
 		});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void readAll(MedicalRecordParam param,
+			EntityReader<MedicalRecord> reader) {
+		final int batchSize = 64;
+		Long gtId = Long.MIN_VALUE;
+
+		Session session = getCurrentSession();
+		session.setCacheMode(CacheMode.IGNORE);
+
+		List<MedicalRecord> list = Collections.EMPTY_LIST;
+
+		param.setSort(null);
+		param.setOrder(null);
+		StringBuilder hql = new StringBuilder();
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		this.buildQueryHql(param, hql, paramMap);
+		// 防止导出过程中数据有变动而做的处理
+		hql.append(" and obj.id > :gt_id order by obj.id asc");
+
+		do {
+			paramMap.put("gt_id", gtId);
+			Query query = session.createQuery(hql.toString());
+			query.setCacheable(false);
+			DaoUtils.applyParametersToQuery(query, paramMap);
+			query.setFirstResult(0);
+			query.setMaxResults(batchSize);
+			list = query.list();
+
+			// 将gtId设为查出的记录的最大的id,因为已经排过序了，所以可以直接取；
+			gtId = list.get(list.size() - 1).getId();
+
+			for (MedicalRecord entity : list) {
+				reader.read(entity);
+			}
+			session.clear();
+		} while (list.size() == batchSize);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> listOrgCode(MedicalRecordParam param) {
+		StringBuilder hql = new StringBuilder();
+		hql.append("select distinct obj.ZA02C ");
+
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		this.buildQueryHql(param, hql, paramMap);
+
+		Query query = getCurrentSession().createQuery(hql.toString());
+		DaoUtils.applyParametersToQuery(query, paramMap);
+		return query.list();
 	}
 }

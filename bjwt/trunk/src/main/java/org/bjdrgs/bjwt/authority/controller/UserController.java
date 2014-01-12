@@ -3,7 +3,6 @@ package org.bjdrgs.bjwt.authority.controller;
 import java.util.List;
 
 import javax.annotation.Resource;
-import javax.security.auth.Subject;
 import javax.validation.Valid;
 
 import org.apache.shiro.SecurityUtils;

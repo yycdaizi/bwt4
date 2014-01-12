@@ -13,13 +13,13 @@ public interface IMedicalRecordDao extends IBaseDao<MedicalRecord> {
 
 	List<MedicalRecord> queryAll(MedicalRecordParam param);
 
-	boolean isExist(MedicalRecord entity);
-
 	List<Long> isExist(List<MedicalRecord> list);
 	
 	List<Object[]> queryLimitedFields(MedicalRecordParam param, String[] fieldNames);
 
 	void deleteSubObjectBySQL(List<Long> idList);
 
-
+	void readAll(MedicalRecordParam param, EntityReader<MedicalRecord> reader);
+	
+	List<String> listOrgCode(MedicalRecordParam param);
 }

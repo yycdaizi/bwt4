@@ -627,7 +627,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		String[] header = new String[] { "病案号", "姓名", "出院日期", "出院科室", "主要诊断",
 				"离院方式", "mdc", "drg", "总费用", "住院天数", "权重" };
 		String[] fieldNames = new String[] { "AAA28", "AAA01", "AAC01",
-				"AAC02C", "ABC01N", "AEM01C", "mdc", "drg", "ADA01", "AAC04",
+				"AAC02C", "ABC01C", "AEM01C", "mdc", "drg", "ADA01", "AAC04",
 				null };
 		Field[] fields = new Field[fieldNames.length];
 		for (int i = 0; i < fieldNames.length; i++) {

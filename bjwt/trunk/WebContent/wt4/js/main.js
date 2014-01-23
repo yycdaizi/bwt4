@@ -3,10 +3,21 @@
  */
 var MedicalRecordForm = {};
 
+//自动计算的操作
+MedicalRecordForm.autoCalculatorList = [];
+MedicalRecordForm.regestAutoCalculator = function(func){
+	this.autoCalculatorList.push(func);
+};
+MedicalRecordForm.autoCalculate = function(){
+	for(var i=0,len=this.autoCalculatorList.length; i<len; i++){
+		this.autoCalculatorList[i]();
+	}
+};
+
 //加载病案数据
 MedicalRecordForm.loadData = function(data){
     //将填充的原始数据缓存，以免部分表单中没有的字段丢失
-    $("#mainTabs").data('MRdata', data)
+    $("#mainTabs").data('MRdata', data);
     
 	//转经科别 特殊处理（因为输入框需要的值是数组）
 	if(!data["AAD01C"]){
@@ -31,6 +42,7 @@ MedicalRecordForm.loadData = function(data){
 
 //获得表单数据
 MedicalRecordForm.getData = function(){
+	this.autoCalculate();
 	var obj = $("#mainTabs").data('MRdata')||new MedicalRecord();
 	var fields = MedicalRecord.fields;
 	for (var tag in fields){
@@ -62,6 +74,7 @@ MedicalRecordForm.getData = function(){
 			}
 		}
 	}
+	
 	return obj;
 };
 

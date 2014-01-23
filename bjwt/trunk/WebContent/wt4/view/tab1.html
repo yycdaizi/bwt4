@@ -54,7 +54,9 @@
 					$("#AAA42").numberbox("validate");
 				});
 				//自动计算年龄
-				function generateAge(birth, enterDate) {
+				function generateAge() {
+					var birth = $("#AAA03").val();
+					var enterDate = $("#AAB01").val();
 					if (birth && enterDate) {
 						birth = $D(birth);
 						enterDate = $D(enterDate);
@@ -65,10 +67,9 @@
 					}
 				}
 				$("#AAA03,#AAB01").blur(function() {
-					var birth = $("#AAA03").val();
-					var enterDate = $("#AAB01").val();
-					generateAge(birth, enterDate);
+					generateAge();
 				});
+				MedicalRecordForm.regestAutoCalculator(generateAge);
 			});
 		</script>
 		<table class="layout-table">

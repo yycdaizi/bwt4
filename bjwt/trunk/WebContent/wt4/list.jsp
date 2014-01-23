@@ -57,10 +57,10 @@
 				<tr>
 					<td align="right"><label for="eq_mdc">mdc：</label></td>
 					<td><input id="eq_mdc" name="eq_mdc" type="text"	class="easyui-combobox"
-							 valueField="code" textField="text" /></td>
+							 valueField="code" textField="code" /></td>
 					<td align="right"><label for="eq_drg">drg：</label></td>
 					<td><input id="eq_drg" name="eq_drg" type="text"	class="easyui-combobox"
-							valueField="code" textField="text" /></td>
+							valueField="code" textField="code" /></td>
 				</tr>
 				<tr>
 					<td align="right"><label for="eq_state">病案状态：</label></td>
@@ -85,12 +85,12 @@
 				<tr>
 					<th data-options="field:'AAA28',width:100,sortable:true">病案号</th>
 					<th data-options="field:'AAA01',width:200">姓名</th>
-					<th data-options="field:'AAC01',width:200">出院时间</th>
+					<th data-options="field:'AAC01',width:200,sortable:true">出院时间</th>
 					<th data-options="field:'AAC02C',width:200,formatter:medicalSubject_Formatter">出院科别</th>
-					<th data-options="field:'ABC01N',width:200">主要诊断</th>
+					<th data-options="field:'ABC01C',width:200">主要诊断</th>
 					<th data-options="field:'AEM01C',width:200,formatter:liYuanFangShi_Formatter">离院方式</th>
-					<th	data-options="field:'mdc',width:100,formatter:mdcAnddrgFormatter">mdc</th>
-					<th	data-options="field:'drg',width:100,formatter:mdcAnddrgFormatter">drg</th>
+					<th	data-options="field:'mdc',width:100">mdc</th>
+					<th	data-options="field:'drg',width:100">drg</th>
 					<th data-options="field:'ADA01',width:100,align:'right',formatter:costFormatter">总费用</th>
 					<th data-options="field:'AAC04',width:100,align:'right'">住院天数</th>
 					<th	data-options="field:'createTime',width:150,sortable:true">创建时间</th>
@@ -341,7 +341,7 @@ $(function(){
 	
 	var mdcDic = [];
 	for(var i=0,len=mdcDrgDic.length; i<len; i++){
-		if(!mdcDrgDic[i]['parent']){
+		if(!mdcDrgDic[i]['parentId']){
 			mdcDic.push(mdcDrgDic[i]);
 		}
 	}
@@ -350,8 +350,7 @@ $(function(){
 		onSelect : function(record) {
 			var drgDic = [];
 			for(var i=0,len=mdcDrgDic.length; i<len; i++){
-				var parent = mdcDrgDic[i]['parent'];
-				if(parent && parent["id"]===record["id"]){
+				if(mdcDrgDic[i]['parentId']===record["id"]){
 					drgDic.push(mdcDrgDic[i]);
 				}
 			}

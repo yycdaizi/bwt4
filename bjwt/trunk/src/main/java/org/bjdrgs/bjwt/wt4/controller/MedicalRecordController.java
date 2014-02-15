@@ -23,18 +23,17 @@ import org.apache.commons.io.IOUtils;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IUserService;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
+import org.bjdrgs.bjwt.core.exception.BusinessLogicException;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.util.TempFileUtils;
 import org.bjdrgs.bjwt.core.util.ZipUtils;
 import org.bjdrgs.bjwt.core.web.AjaxResult;
 import org.bjdrgs.bjwt.core.web.GridPage;
 import org.bjdrgs.bjwt.wt4.Wt4Constants;
-import org.bjdrgs.bjwt.wt4.exception.IllegalInputException;
 import org.bjdrgs.bjwt.wt4.model.MedicalRecord;
 import org.bjdrgs.bjwt.wt4.parameter.MedicalRecordParam;
 import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
 import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
-import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -270,12 +269,9 @@ public class MedicalRecordController {
 			result.setSuccess(true);
 			result.setData(importResult);
 			result.setMessage("导入成功！");
-		} catch (DocumentException e) {
+		} catch (BusinessLogicException e) {
 			result.setSuccess(false);
-			result.setMessage("导入失败！导入的xml文件中存在错误！");
-		} catch (IllegalInputException e) {
-			result.setSuccess(false);
-			result.setMessage("导入失败！导入的数据不符合要求！");
+			result.setMessage("导入失败: " + e.getMessage());
 		} catch (Exception e) {
 			result.setSuccess(false);
 			result.setMessage("对不起，系统出错，导入失败！");

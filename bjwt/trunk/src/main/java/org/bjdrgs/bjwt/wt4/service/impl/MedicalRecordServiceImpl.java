@@ -10,9 +10,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +37,11 @@ import org.bjdrgs.bjwt.authority.model.Org;
 import org.bjdrgs.bjwt.authority.model.User;
 import org.bjdrgs.bjwt.authority.service.IOrgService;
 import org.bjdrgs.bjwt.authority.utils.SecurityUtils;
+import org.bjdrgs.bjwt.core.bean.FieldAccessor;
+import org.bjdrgs.bjwt.core.bean.FieldDescriptor;
 import org.bjdrgs.bjwt.core.exception.BaseException;
+import org.bjdrgs.bjwt.core.exception.BusinessLogicException;
+import org.bjdrgs.bjwt.core.util.FieldUtils;
 import org.bjdrgs.bjwt.core.util.SpringContextUtils;
 import org.bjdrgs.bjwt.core.util.TempFileUtils;
 import org.bjdrgs.bjwt.core.web.Pagination;
@@ -54,7 +55,6 @@ import org.bjdrgs.bjwt.wt4.dao.IICUDao;
 import org.bjdrgs.bjwt.wt4.dao.IMedicalRecordDao;
 import org.bjdrgs.bjwt.wt4.dao.IOperationDao;
 import org.bjdrgs.bjwt.wt4.dao.ISurgeryDao;
-import org.bjdrgs.bjwt.wt4.exception.IllegalInputException;
 import org.bjdrgs.bjwt.wt4.model.BirthDefect;
 import org.bjdrgs.bjwt.wt4.model.Diagnose;
 import org.bjdrgs.bjwt.wt4.model.ICU;
@@ -66,6 +66,7 @@ import org.bjdrgs.bjwt.wt4.service.IMedicalRecordService;
 import org.bjdrgs.bjwt.wt4.viewmodel.ImportResult;
 import org.bjdrgs.bjwt.wt4.xml.XmlTransferUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.ElementHandler;
@@ -76,8 +77,9 @@ import org.dom4j.io.XMLWriter;
 import org.hibernate.validator.HibernateValidatorContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.NumberFormat;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -113,6 +115,9 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	@Resource(name = "OrgService")
 	private IOrgService orgService;
 
+	@Autowired
+	private ConversionService conversionService;
+
 	private void beforeSave(MedicalRecord entity) {
 		User user = SecurityUtils.getCurrentUser();
 		// 一些处理
@@ -133,7 +138,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			User user = SecurityUtils.getCurrentUser();
 			entity.setZA02C(user.getOrg().getOrgcode());
 			entity.setZA03(user.getOrg().getOrgname());
-			if(user.getOrg().getOrgmanager() != null){
+			if (user.getOrg().getOrgmanager() != null) {
 				entity.setZA04(user.getOrg().getOrgmanager().getDisplayName());
 			}
 		}
@@ -284,8 +289,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	}
 
 	@Override
-	public ImportResult importXmlFile(Collection<File> xmlFileList)
-			throws Exception {
+	public ImportResult importXmlFile(Collection<File> xmlFileList) {
 		ImportResult result = new ImportResult();
 		if (xmlFileList == null) {
 			return result;
@@ -301,10 +305,14 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			// 验证和预处理
 			XmlPreprocessor preprocessor = new XmlPreprocessor();
 			reader.setDefaultHandler(preprocessor);
-			reader.read(xmlFile);
+			try {
+				reader.read(xmlFile);
+			} catch (DocumentException e) {
+				throw new BusinessLogicException("XML文件有错误。", e);
+			}
 
 			if (!preprocessor.isValid()) {
-				throw new IllegalInputException("xml数据有误！");
+				throw new BusinessLogicException("xml数据不符合要求。");
 			}
 
 			Map<String, Object> commonPropMap = preprocessor.getCommonPropMap();
@@ -315,7 +323,11 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			reader.addHandler("/" + MR_XML_ROOT, importer);
 			reader.addHandler(
 					"/" + MR_XML_ROOT + "/" + MedicalRecord.ROOT_NAME, importer);
-			reader.read(xmlFile);
+			try {
+				reader.read(xmlFile);
+			} catch (DocumentException e) {
+				throw new BusinessLogicException("XML文件有错误。", e);
+			}
 
 			result.addResult(importer.getResult());
 		}
@@ -489,8 +501,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		return header;
 	}
 
-	public void exportToSingleXML(MedicalRecordParam param, File xmlFile)
-			throws Exception {
+	public void exportToSingleXML(MedicalRecordParam param, File xmlFile) {
 		if (StringUtils.isEmpty(param.getZA02C())) {
 			throw new IllegalArgumentException("查询参数ZA02C不能为空");
 		}
@@ -533,6 +544,8 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			xmlWriter.endDocument();
 			xmlWriter.flush();
 			xmlWriter.close();
+		} catch (Exception e) {
+			throw new BaseException(e);
 		} finally {
 			try {
 				if (tempWriter != null)
@@ -573,8 +586,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		}
 	}
 
-	private void writeEmptyXML(MedicalRecordParam param, File xmlFile)
-			throws Exception {
+	private void writeEmptyXML(MedicalRecordParam param, File xmlFile) {
 		XMLWriter xmlWriter = null;
 		try {
 			Document document = DocumentHelper.createDocument();
@@ -588,6 +600,8 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 			xmlWriter.write(document);
 			xmlWriter.flush();
 			xmlWriter.close();
+		} catch (Exception e) {
+			throw new BaseException(e);
 		} finally {
 			try {
 				if (xmlWriter != null)
@@ -598,8 +612,7 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 	}
 
 	@Override
-	public List<File> exportToXML(MedicalRecordParam param, File baseDir)
-			throws Exception {
+	public List<File> exportToXML(MedicalRecordParam param, File baseDir) {
 		List<File> fileList = new ArrayList<File>();
 		List<String> orgCodeList = medicalRecordDao.listOrgCode(param);
 
@@ -620,22 +633,24 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		return fileList;
 	}
 
-	@SuppressWarnings("resource")
 	@Override
-	public void exportToCSV(MedicalRecordParam param, File csvFile)
-			throws Exception {
+	public void exportToCSV(MedicalRecordParam param, File csvFile) {
 		String[] header = new String[] { "病案号", "姓名", "出院日期", "出院科室", "主要诊断",
 				"离院方式", "mdc", "drg", "总费用", "住院天数", "权重" };
 		String[] fieldNames = new String[] { "AAA28", "AAA01", "AAC01",
 				"AAC02C", "ABC01C", "AEM01C", "mdc", "drg", "ADA01", "AAC04",
 				null };
-		Field[] fields = new Field[fieldNames.length];
+		FieldDescriptor[] fieldDescriptors = new FieldDescriptor[fieldNames.length];
+		FieldAccessor accessor = FieldUtils
+				.getFieldAccessor(MedicalRecord.class);
 		for (int i = 0; i < fieldNames.length; i++) {
 			if (fieldNames[i] != null) {
-				Field field = MedicalRecord.class
-						.getDeclaredField(fieldNames[i]);
-				field.setAccessible(true);
-				fields[i] = field;
+				try {
+					fieldDescriptors[i] = accessor
+							.getFieldDescriptor(fieldNames[i]);
+				} catch (Exception e) {
+					logger.warn("部分导出字段未找到");
+				}
 			}
 		}
 
@@ -654,46 +669,21 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 		List<Object[]> list = medicalRecordDao.queryLimitedFields(param,
 				fieldNames);
 
-		CSVWriter writer = new CSVWriter(new FileWriter(csvFile));
+		CSVWriter writer = null;
 		try {
+			writer = new CSVWriter(new FileWriter(csvFile));
 			writer.writeNext(header);
 			for (Object[] mr : list) {
 				String[] data = new String[header.length];
 				for (int i = 0; i < mr.length; i++) {
-					if (mr[i] == null || fields[i] == null) {
+					if (mr[i] == null || fieldDescriptors[i] == null) {
 						continue;
 					}
 
-					Object value = mr[i];
-					String valStr = "";
-					Class<?> type = fields[i].getType();
-					if (type == Date.class) {
-						if (fields[i].isAnnotationPresent(DateTimeFormat.class)) {
-							DateTimeFormat format = fields[i]
-									.getAnnotation(DateTimeFormat.class);
-							valStr = new SimpleDateFormat(format.pattern())
-									.format(value);
-						} else {
-							throw new BaseException("字段" + fieldNames[i]
-									+ "未找到日期格式化注解");
-						}
-					} else if (type == Integer.class || type == Double.class
-							|| type == BigDecimal.class) {
-						if (fields[i].isAnnotationPresent(NumberFormat.class)) {
-							NumberFormat format = fields[i]
-									.getAnnotation(NumberFormat.class);
-							valStr = new DecimalFormat(format.pattern())
-									.format(value);
-						} else {
-							valStr = value.toString();
-						}
-					} else if (type == String.class) {
-						valStr = (String) value;
-					} else {
-						throw new BaseException("未识别字段" + fieldNames[i]
-								+ "的类型，无法处理");
-					}
-					data[i] = valStr;
+					data[i] = (String) conversionService.convert(mr[i],
+							fieldDescriptors[i].getTypeDescriptor(),
+							TypeDescriptor.valueOf(String.class));
+					;
 				}
 				// 权重
 				data[10] = weightMap.get(buildMdcAndDrgCombination(data[6],
@@ -701,6 +691,8 @@ public class MedicalRecordServiceImpl implements IMedicalRecordService {
 				writer.writeNext(data);
 			}
 			writer.flush();
+		} catch (Exception e) {
+			throw new BaseException(e);
 		} finally {
 			IOUtils.closeQuietly(writer);
 		}

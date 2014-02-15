@@ -17,7 +17,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.validator.constraints.Length;
 
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 @Table(name = "b_user")
 public class User implements Serializable {
@@ -35,13 +35,13 @@ public class User implements Serializable {
 	private Org org;
 
 	@Length(max = 300, message = "{common.length.limit}")
-	@Column(name = "username", nullable = false, length = 300,unique = true)
+	@Column(name = "username", nullable = false, length = 300, unique = true)
 	private String username;
 
 	@Length(max = 300, message = "{common.length.limit}")
 	@Column(name = "password", nullable = false, length = 300)
 	private String password;
-	
+
 	@Length(max = 300, message = "{common.length.limit}")
 	@Column(name = "display_name", nullable = false, length = 300)
 	private String displayName;
@@ -61,8 +61,8 @@ public class User implements Serializable {
 	@Length(max = 600, message = "{common.length.limit}")
 	@Column(name = "email", nullable = true, length = 600)
 	private String email;
-	
-	@Column(name = "locked", nullable = true,length=1)
+
+	@Column(name = "locked", nullable = true, length = 1)
 	private Integer locked;
 
 	@Column(name = "ts")
@@ -101,7 +101,7 @@ public class User implements Serializable {
 	}
 
 	public String getSex() {
-		return ContentUtils.parseSexName(sex);
+		return sex;
 	}
 
 	public void setSex(String sex) {
@@ -131,7 +131,7 @@ public class User implements Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
 	public Integer getLocked() {
 		return locked;
 	}
@@ -159,5 +159,9 @@ public class User implements Serializable {
 
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
+	}
+
+	public String getSexName() {
+		return ContentUtils.parseSexName(sex);
 	}
 }

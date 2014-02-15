@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.sf.cglib.beans.BeanMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.bjdrgs.bjwt.core.bean.FieldAccessor;
 import org.bjdrgs.bjwt.core.bean.FieldDescriptor;
 import org.bjdrgs.bjwt.core.exception.BaseException;
@@ -87,8 +88,12 @@ public class DeserializeVisitor<T> extends VisitorSupport {
 			} else {
 				// Object value = conversionService.convert(node.getTextTrim(),
 				// TypeDescriptor.valueOf(String.class), typeDescriptor);
-				Object value = null;
 				String text = node.getTextTrim();
+				if(StringUtils.isEmpty(text)){
+					return;
+				}
+				
+				Object value = null;
 				Class<?> type = typeDescriptor.getType();
 				try {
 					if (type == Date.class) {

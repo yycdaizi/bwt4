@@ -53,7 +53,7 @@
 				<th	data-options="field:'org_orgname',width:200">所属机构</th>
 				<th data-options="field:'username',width:100"> 用户名</th>
 				<th data-options="field:'displayName',width:100"> 姓名</th>
-				<th data-options="field:'sex',width:60">性别</th>
+				<th data-options="field:'sexName',width:60">性别</th>
 				<th data-options="field:'telphone',width:200"> 电话号码</th>
 				<th data-options="field:'mobilephone',width:200"> 手机号码</th>
 				<th data-options="field:'email',width:200"> Email地址</th>

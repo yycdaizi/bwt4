@@ -23,9 +23,9 @@ public interface IMedicalRecordService {
 	
 	List<MedicalRecord> queryAll(MedicalRecordParam param);
 	
-	ImportResult importXmlFile(Collection<File> xmlFileList) throws Exception;
+	ImportResult importXmlFile(Collection<File> xmlFileList);
 	
-	List<File> exportToXML(MedicalRecordParam param, File baseDir) throws Exception;
+	List<File> exportToXML(MedicalRecordParam param, File baseDir);
 	
-	void exportToCSV(MedicalRecordParam param, File csvFile) throws Exception;
+	void exportToCSV(MedicalRecordParam param, File csvFile);
 }

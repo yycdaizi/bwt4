@@ -13,6 +13,7 @@
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/xmloperator/XmlUtils.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/base/accounting.min.js"></script>
+<script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/base/math.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jslib/oop.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resourses/jscommon/ModelValidator.js"></script>
 

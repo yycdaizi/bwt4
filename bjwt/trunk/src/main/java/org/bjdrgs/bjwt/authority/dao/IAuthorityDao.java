@@ -1,6 +1,6 @@
 package org.bjdrgs.bjwt.authority.dao;
 
-import java.util.List;
+import java.util.Collection;
 
 import org.bjdrgs.bjwt.authority.model.Menu;
 
@@ -10,5 +10,5 @@ public interface IAuthorityDao {
 	 * @param userid
 	 * @return
 	 */
-	public List<Menu> getAuthedMenu(Integer userid);
+	public Collection<Menu> getAuthedMenu(Integer userid);
 }

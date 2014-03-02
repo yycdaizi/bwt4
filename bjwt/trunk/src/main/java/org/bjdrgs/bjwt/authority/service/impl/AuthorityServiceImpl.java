@@ -1,7 +1,9 @@
 package org.bjdrgs.bjwt.authority.service.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -28,34 +30,36 @@ public class AuthorityServiceImpl implements IAuthorityService{
 	@Override
 	public List<MenuTree> getAuthedMenuTree(User user) {
 		Integer userid = user.getUserid();
-		List<Menu> menuList = authDao.getAuthedMenu(userid);
-		return buildMenuTree(menuList);
+		Collection<Menu> menus = authDao.getAuthedMenu(userid);
+		return buildMenuTree(menus);
 	}
 	/**
 	 * 构造树
-	 * @param menuList
+	 * @param menus
 	 */
-	private List<MenuTree> buildMenuTree(List<Menu> menuList){
-		if(menuList == null || menuList.size()==0) return null;
+	private List<MenuTree> buildMenuTree(Collection<Menu> menus){
+		if(menus == null || menus.size()==0) return null;
 		List<MenuTree> rootsMenu = new ArrayList<MenuTree>();
 		Map<Integer,MenuTree> helpMap = new HashMap<Integer, MenuTree>();
-		for(int i=0;i<menuList.size();i++){
-			Menu menu = menuList.get(i);
+		for(Iterator<Menu> it = menus.iterator(); it.hasNext();){
+			Menu menu = it.next();
 			if(menu.getParentid()==null || menu.getParentid()==0){
 				MenuTree menuTreeItem = menuToTreeItem(menu);
 				rootsMenu.add(menuTreeItem);
-				menuList.remove(i);
 				helpMap.put(menu.getMenuid(), menuTreeItem);
+				it.remove();
 			}
 		}
-		while(menuList.size()>0){
-			for(int i=0;i<menuList.size();i++){
-				Menu menu = menuList.get(i);
-				Integer id = menu.getParentid();
-				MenuTree treeItem = menuToTreeItem(menu);
-				helpMap.get(id).addChildren(treeItem);
-				helpMap.put(menu.getMenuid(), treeItem);
-				menuList.remove(menu);
+		while(menus.size()>0){
+			for(Iterator<Menu> it = menus.iterator(); it.hasNext();){
+				Menu menu = it.next();
+				MenuTree parent = helpMap.get(menu.getParentid());
+				if(parent != null){
+					MenuTree treeItem = menuToTreeItem(menu);
+					parent.addChildren(treeItem);
+					helpMap.put(menu.getMenuid(), treeItem);
+					it.remove();
+				}
 			}
 		}
 		return rootsMenu;
@@ -74,7 +78,7 @@ public class AuthorityServiceImpl implements IAuthorityService{
 	
 	@Override
 	public List<String> getPermissionsByUser(User user) {
-		List<Menu> menuList = authDao.getAuthedMenu(user.getUserid());
+		Collection<Menu> menuList = authDao.getAuthedMenu(user.getUserid());
 		List<String> permissionList = new ArrayList<String>();
 		for(Menu menu : menuList){
 			permissionList.add(menu.getMenuid().toString());
